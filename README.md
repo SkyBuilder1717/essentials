@@ -25,9 +25,12 @@ by other mods some already new but similar to other mods.
 | config param                 | type   |  value     | req | default/min/mx  | observations and examples        |
 | ---------------------------- | ------ | ---------- | --- | --------------- | -------------------------------- |
 | secure.http_mods             | string | essentials | yes | none set        | geoip,governing,essentials       |
-| essentials_additional_privileges | bool | true | no | true          | Enables extra refined privilegies for the commands, see privilege tables       |
+| essentials_additional_privileges | bool | true | no | true          | Enables extra refined privilegies for the commands, see privilege tables |
+| essentials_trolling          | bool | false | no  | false           | Enables a command for trolling players by exclusive menu |
+| essentials_ip                | bool | false | no  | false           | Enables a command for verified ip admins to see IP address of other players, and where is he live |
 | essentials_changed_by        | bool | true  | no  | true            | Allows to see if a player property whas altered (by) when was made by some admin |
 | essentials_killed_by         | bool | true  | no  | true            | Allows to see who a player was killed (by) when was killed by some admin |
+| essentials_trolled_by        | bool | false | no  | false           | Allows to see who a player was trolled (by) when was trolled by some admin |
 | essentials_biome             | bool | true  | no  | true            | Allows to see for anyone request biome infos, otherwise only admins allows |
 | essentials_seed              | bool | false | no  | false           | Allows to see for anyone the seed of the world, otherwise only admins allows |
 | essentials_ip_verified       | bool | true  | yes | true/singleplayer | On every join, if administrator verified ip user to only allows from those ip/name combination  |
