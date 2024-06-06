@@ -49,6 +49,7 @@ essentials = {
     },
     privstring = "",
 }
+local S = essentials.translate
 for i, priv in ipairs(essentials.privs) do
     if i == 1 then
         essentials.privstring = essentials.privstring..priv
@@ -61,7 +62,7 @@ if essentials.beta_test then
 else
     essentials.add_privs_list = string.split(essentials.privstring, ", ")
 end
-essentials.main_tr = "["..essentials.translate("Essentials").."]"
+essentials.main_tr = "["..S("Essentials").."]"
 
 --==[[ Connections ]]==--
 loadfile(modpath.."/commands.lua")(http)
@@ -134,22 +135,22 @@ minetest.after(0, function()
                 --minetest.chat_send_all(dump(git).." "..dump(this))
                 local _type = {}
                 if core.is_singleplayer() then
-                    _type = {"World", essentials.translate("World")}
+                    _type = {"World", S("World")}
                 else
-                    _type = {"Server", essentials.translate("Server")}
+                    _type = {"Server", S("Server")}
                 end
                 if git > this then
                     minetest.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    core.chat_send_all(essentials.main_tr.." "..essentials.translate("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
+                    core.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
                 else
                     if essentials.last_update_message then
-                        minetest.chat_send_all(essentials.main.." "..essentials.translate("All ok! @1 using lastest version of mod.", _type[2]))
+                        minetest.chat_send_all(essentials.main.." "..S("All ok! @1 using lastest version of mod.", _type[2]))
                     end
                     minetest.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
                 end
             end)
         else
-            core.chat_send_all(essentials.main_tr..essentials.translate("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
+            core.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
         end
     end
 end)
