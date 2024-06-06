@@ -38,17 +38,18 @@ by other mods some already new but similar to other mods.
 
 | command & format       | mint/privs | Esse/privs |  description function   | observations            |
 | ---------------------- | ---------- | ---------- | ----------------------- | ----------------------- |
-| `/ip <name>`           | server     | server     | Show the IP of a player |  |
+| `/ip [<name>]`         | server     | server     | Show the IP of a player | To use this command you must be verified ip user! |
 | `/broadcast <message>` | bring      | broadcast  | Send GLOBAL message in chat |  |
-| `/speed <name>`        | rollback   | speed      | Sets a speed for an any player. |  |
+| `/speed <speed> [<name>]`        | rollback   | speed      | Sets a speed for an any player. |  |
 | `/biome [<info_name>]` | rollback (& server) | biome (& server) | Shows the current(or provided name) biome info | If no assentials privs, any player wil be able, `biome` privilege works if confg params are set, otherwise admin only |
 | `/seed`                | rollback   | seed       | Shows the seed number of the server world | If no assentials privs, any player wil be able, `biome` privilege works if confg params are set, otherwise admin only |
 | `/god [<name>]`        | noclip     | god_mode   | Enable the god mode for current or given player | `enable_damage` enabled only of course |
 | `/ban_menu`            | ban        | ban        | Open the ban menu | Requires GUI sfind/ui  |
+| `/troll`               | ban        | troll      | Opens the trolling menu | Requires GUI sfind/ui  |
 | `/kick_menu`           | kick       | kick       | Open the kick menu | Requires GUI sfind/ui  |
 | `/mute_menu`           | mute       | mute       | Open the mute menu | Requires GUI sfind/ui  |
 | `/getpos <name>`       | teleport   | get_pos    | Allows the player to find out the position of another player |  |
-| `/kill <name>`         | protection_bypass | kill  | Kill anyone with command. |  | Check `essentials_killed_by` |
+| `/kill [<name>]`       | protection_bypass | kill  | Kill anyone with command. |  | Check `essentials_killed_by` |
 | `/heal [<name>]`       | rollback   | heal       | Heals full health for a player. | Check `essentials_changed_by` |
 
 
