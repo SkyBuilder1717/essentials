@@ -1,1 +1,4 @@
 unified_inventory?
+nextgen_bedrock?
+sfinv?
+sethome?
