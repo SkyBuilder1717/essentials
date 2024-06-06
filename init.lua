@@ -143,7 +143,7 @@ minetest.after(0, function()
                     core.chat_send_all(essentials.main_tr.." "..essentials.translate("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
                 else
                     if essentials.last_update_message then
-                        minetest.chat_send_all(essentials.main.." "..essentials.translate("All ok! %s using lastest version of mod.", _type[2]))
+                        minetest.chat_send_all(essentials.main.." "..essentials.translate("All ok! @1 using lastest version of mod.", _type[2]))
                     end
                     minetest.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
                 end
