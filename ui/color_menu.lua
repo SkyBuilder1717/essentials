@@ -31,9 +31,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
     local name = player:get_player_name()
-    if fields.close_btn then
-        minetest.sound_play("clicked", name)
-    end
+	minetest.sound_play("clicked", {to_player = name})
+    
     if fields.done then
         if core.is_singleplayer() then
             minetest.chat_send_player(name, core.colorize("red", "Cannot coloring nickname or other in singleplayer"))

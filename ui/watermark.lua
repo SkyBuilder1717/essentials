@@ -1,3 +1,4 @@
+local S = essentials.translate
 local defs = {
     {
         hud_elem_type = "image",
@@ -11,7 +12,7 @@ local defs = {
         hud_elem_type = "text",
         position  = {x = 0.055, y = 0.0145},
         offset    = {x = 0, y = 0},
-        text      = "Essentials",
+        text      = S("Essentials"),
         alignment = -1,
         scale     = { x = 50, y = 10},
         number    = 0x00FFFF,
@@ -20,7 +21,7 @@ local defs = {
         hud_elem_type = "text",
         position  = {x = 0.081, y = 0.03},
         offset    = {x = 0, y = 0},
-        text      = "Powered and created by",
+        text      = S("Powered and created by"),
         alignment = -1,
         scale     = { x = 50, y = 10},
         number    = 0xFFFFFF,
@@ -45,8 +46,10 @@ if essentials.watermark then
     end)
 end
 
+--[[
 minetest.register_on_leaveplayer(function(player)
     for i, def in pairs(defs) do
         player:hud_remove(def)
     end
 end)
+]]--

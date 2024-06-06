@@ -25,17 +25,14 @@ function show_rename_menu(name)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, field)
+	if formname ~= FORMNAME then
+		return
+	end
     local name = player:get_player_name();
     local new_name = field.new_name
     local color = field.color
     local othername = field.name
-	if formname ~= FORMNAME then
-		return
-	end
-
-    if field.close_btn then
-        minetest.sound_play("clicked")
-    end
+	minetest.sound_play("clicked", {to_player = name})
 
     if field.rename then
         if core.is_singleplayer() then

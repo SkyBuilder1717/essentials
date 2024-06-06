@@ -19,10 +19,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
-
-    if fields.close_btn then
-        minetest.sound_play("clicked", name)
-    end
+	minetest.sound_play("clicked", {to_player = name})
 
     if fields.unmute_btn then
         local admin = player:get_player_name()
