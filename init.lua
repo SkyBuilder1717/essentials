@@ -149,7 +149,7 @@ minetest.after(0, function()
                 end
             end)
         else
-            core.chat_send_all(essentials.main_tr..string.format("Please, add mod %s to %s for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
+            core.chat_send_all(essentials.main_tr..essentials.translate("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
         end
     end
 end)
