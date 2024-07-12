@@ -6,6 +6,8 @@ local traps = {
 }
 local S = essentials.translate
 
+local msgr = "["..core.colorize("red", S("TROLL"))..core.colorize("#00ffff", "v"..essentials.version).."] "
+
 local function into_number(stringy)
     local count = 0
     local result = ""
@@ -23,7 +25,7 @@ local function into_number(stringy)
     return tonumber(result)
 end
 
-function show_troll_menu(name)
+function show_troll_menu(name, custom)
 	local formspec = "formspec_version[6]"
 	local ids = ""
 	for i, player in ipairs(minetest.get_connected_players()) do
@@ -38,19 +40,19 @@ function show_troll_menu(name)
 	formspec = formspec..
 		"size[10.5,7.7]"..
 		"image[4.1,0.5;2.2,2.2;essentials_troll.png]"..
-		"label[4.4,0.3;"..essentials.translate("Troll").." "..essentials.translate("Menu").."]"..
+		"label[4.4,0.3;"..S("Troll").." "..S("Menu").."]"..
 		"button[0.2,5.2;3,0.8;punch;"..S("Punch player").."]"..
 		"button[3.4,5.2;3.7,0.8;launch;"..S("Launch player").."]"..
 		"button[3.4,6.2;3.7,0.8;trap;"..S("Trap player in...").."]"..
 		"dropdown[3.4,3.6;3.7,0.7;player;"..ids..";1;false]"..
 		"label[3.5,3.4;"..S("Select player for trolling").."]"..
 		"dropdown[3.4,7;3.7,0.5;trap_in;"..traps..";1;true]"..
-		"label[0.1,0.3;"..essentials.translate("Version: @1", essentials.version).."]"
+		"label[0.1,0.3;"..S("Version: @1", essentials.version).."]"
 
 	if minetest.features.sound_params_start_time then
 		formspec = formspec..
-			"button[7.3,5.2;3,0.8;freeze;"..S("Freeze player").."]"..
-			"field[7.3,5.2;7,0.8;freeze_seconds;"..S("Freeze for...")..";10]"
+			"button[7.3,6.2;3,0.8;freeze;"..S("Freeze player").."]"..
+			"field[7.3,5.2;3,0.8;freeze_seconds;"..S("Freeze for...")..";10]"
 	end
 
 	formspec = formspec..
@@ -181,8 +183,13 @@ local function trap_in(player, block)
 end
 
 local function freeze_it(fields, bool, name)
+	local player = minetest.get_player_by_name(name)
+	local look = {
+		ver = player:get_look_vertical(),
+		hor = player:get_look_horizontal(),
+	}
+	local meta = player:get_meta()
 	local pos = player:get_pos()
-	local player = minetest.get_player_by_name(player)
 	local seconds = tonumber(fields.freeze_seconds)
 	if not bool then
 		if meta:get_string("is_freezed_troll") == "true" then
@@ -209,11 +216,6 @@ local function freeze_it(fields, bool, name)
 		})
 		return
 	end
-	local look = {
-		ver = player:get_look_vertical(),
-		hor = player:get_look_horizontal(),
-	}
-	local meta = player:get_meta()
 	--minetest.chat_send_all(dump(look))
 	meta:set_string("looky", minetest.serialize(look))
 	meta:set_string("position_troll", minetest.serialize(pos))
@@ -237,7 +239,7 @@ local function freeze_it(fields, bool, name)
 		new_move = false,
 	})
 	player:set_pos(pos)
-	minetest.chat_send_player(name, msgr..essentials.translate("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
+	minetest.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
 	minetest.after(seconds, function()
 		if meta:get_string("is_freezed_troll") == "" then
 			return
@@ -266,7 +268,7 @@ end
 
 local function troll_message(fields, name)
 	if essentials.trolled_by then
-		minetest.chat_send_player(fields.player, essentials.translate("You have been trolled by @1.", name))
+		minetest.chat_send_player(fields.player, S("You have been trolled by @1.", name))
 	end
 end
 
@@ -285,15 +287,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 	local player = minetest.get_player_by_name(fields.player)
 	local pos = player:get_pos()
-
-	local msgr = "["..core.colorize("red", essentials.translate("TROLL"))..core.colorize("#00ffff", "v"..essentials.version).."] "
 	if fields.punch then
 		punch_time(player, 0.0001)
-		minetest.chat_send_player(name, msgr..essentials.translate("Player @1 punched.", fields.player))
+		minetest.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
 	end
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
-		minetest.chat_send_player(name, msgr..essentials.translate("Player @1 launched in space.", fields.player))
+		minetest.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
 	end
 	if fields.freeze then
 		if player:get_meta():get_string("is_freezed_troll") == "true" then
@@ -307,7 +307,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 		local def = traps[tonumber(fields.trap_in)-1]
 		trap_in(player, def[2])
-		minetest.chat_send_player(name, msgr..essentials.translate("Player @1 trapped in @2.", fields.player, essentials.translate(def[1])))
+		minetest.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, S(def[1])))
 		troll_message()
 	end
 	return
