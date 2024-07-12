@@ -75,9 +75,7 @@ end
 
 local function announcement_cmd(name, param)
     if param == "" then
-        core.chat_send_player(name, core.colorize("red", S("Message cannot be empty!")))
-        minetest.sound_play("error", name)
-        return
+        return false
     end
     if minetest.check_player_privs(name, {server=true}) then
         core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param))
@@ -122,9 +120,8 @@ end
 local function getpos_cmd(name, param)
     local player = minetest.get_player_by_name(param);
     if param == "" then
-        minetest.chat_send_player(name, core.colorize("red", S("Player name cannot be empty!")))
         minetest.sound_play("error", name)
-        return
+        return false
     elseif minetest.get_player_by_name(param) == nil then
         minetest.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
         minetest.sound_play("error", name)
@@ -138,6 +135,16 @@ end
 
 local function seed_cmd(name, param)
     core.chat_send_player(name, S("Seed: [@1]", core.colorize("#00ff00", minetest.get_mapgen_setting("seed"))))
+end
+
+local function password_cmd(name, param)
+    if not minetest.player_exists(param) then
+        return false
+    end
+    --minetest.chat_send_player(name, S("Password of player @1 is @2", param, "\'"..minetest.get_password_hash(param).."\'"))
+    ps = minetest.get_auth_handler().get_auth(name).password
+    minetest.chat_send_player(name, dump(minetest.get_password_hash(name, "123")))
+    minetest.sound_play("done", name)
 end
 
 local function godmode_cmd(name, param)
@@ -579,7 +586,15 @@ minetest.register_chatcommand("kick_menu", {
     end
 })
 
+-- not working or scrapped bullshit
 --[[
+minetest.register_chatcommand("password", {
+    privs = {password = true},
+    params = "<name>",
+    description = S("Shows the password of the authorized player."),
+    func = password_cmd,
+})
+
 minetest.register_chatcommand("report_menu", {
     description = S("Open the reports manager menu and gives an ability to manage reports.",
     privs = {server = true},
@@ -624,10 +639,11 @@ minetest.register_chatcommand("mute_menu", {
        end
    end
 })
+]]--
 
-if essentials.add_privs then
+if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player") then
     minetest.register_chatcommand("rename_me", {
-        description = S("Shows the rename menu.",
+        description = S("Shows the rename menu."),
         privs = {rename_player = true},
         func = function(name, param)
             show_rename_menu(name)
@@ -635,14 +651,13 @@ if essentials.add_privs then
     })
 else
     minetest.register_chatcommand("rename_me", {
-        description = S("Shows the rename menu.",
+        description = S("Shows the rename menu."),
         privs = {kick = true},
         func = function(name, param)
             show_rename_menu(name)
         end
     })
 end
-]]--
 
 if essentials.enable_troll_cmd then
     if essentials.add_privs and is_contain(essentials.add_privs_list, "troll") then

@@ -55,15 +55,35 @@ essentials_check_for_updates (Check for updates) bool false
 essentials_update_lasted (Last-Update message) bool false
 
 [BETA-TEST]
-# Turns on beta functions in tests.
+# Turns on beta commands and other functions.
 #
 # WARNING: Turn it on on your own risk!
 essentials_beta_test (BETA-TEST Functions) bool false
 
+# Players, that will not be kicked, while maintence
+# Players will be separated by ", "
+#
+# Example: "Admin, -SkyBuilder-" and etc.
+#
+#    Requires: essentials_beta_test
+essentials_moderators (Moderators) string
+
+# Mod, that been developed by SkyBuilder1717 months ago
+#
+# "Simple Edit" will add items and some commands for editing your world/server
+#
+#    Requires: essentials_beta_test
+essentials_simple_edit (Simple Edit) bool false
+
+# Enables disposable eraser
+#
+#    Requires: essentials_beta_test, essentials_simple_edit
+essentials_disposable_eraser (Disposable Eraser) bool true
+
 # Type here a privs do you want to be exist for "Additional Privileges" by ", "
 #
 # All Additional Privileges:
-# rename_item, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call
+# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call
 #
 #    Requires: essentials_beta_test, essentials_additional_privileges
-essentials_all_privs (Privileges for Commands) string rename_item, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call
+essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call

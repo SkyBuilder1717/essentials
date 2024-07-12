@@ -1,9 +1,10 @@
-local http = minetest.request_http_api()
+local http = minetest.request_http_api and minetest.request_http_api()
 local modpath = minetest.get_modpath(minetest.get_current_modname())
 essentials = {
-    a = "Created by SkyBuilder1717 (ContentDB)",
-    version = "0.8",
+    -- Local Storage
     storage = minetest.get_mod_storage(),
+
+    -- Settings
     seed = minetest.settings:get_bool("essentials_seed"),
     biome = (minetest.settings:get_bool("essentials_biome") ~= false),
     trolled_by = minetest.settings:get_bool("essentials_trolled_by"),
@@ -11,29 +12,38 @@ essentials = {
     admin_ip_check = minetest.settings:get_bool("essentials_ip_verified"),
     last_update_message = minetest.settings:get_bool("essentials_update_lasted"),
     check_for_updates = minetest.settings:get_bool("essentials_check_for_updates"),
-    --admin_block = minetest.settings:get_bool("essentials_admin_block"),
-    --admin_pick = minetest.settings:get_bool("essentials_admin_pickaxe"),
     changed_by = (minetest.settings:get_bool("essentials_changed_by") ~= false),
     watermark = (minetest.settings:get_bool("essentials_watermark") ~= false),
     add_privs = (minetest.settings:get_bool("essentials_additional_privileges") ~= false),
     enable_ip_cmd = minetest.settings:get_bool("essentials_ip"),
     enable_troll_cmd = minetest.settings:get_bool("essentials_trolling"),
     beta_test = minetest.settings:get_bool("essentials_beta_test"),
+    enable_simple_edit = minetest.settings:get_bool("essentials_simple_edit"),
+    disposable_eraser = (minetest.settings:get_bool("essentials_disposable_eraser") ~= false),
+    teleport_request_expire = (minetest.settings:get("essentials_teleport_exporation") or 15.0),
+    teleport_requests = {},
 
+    -- Unified Inventory detection
     have_unified_inventory = minetest.get_modpath("unified_inventory"),
-    add_privs_list = {},
 
+    -- Lists of Settings
+    add_privs_list = {},
+    moderators = {},
+
+    -- Text
+    a = "Created by SkyBuilder1717 (ContentDB)",
+    version = "0.9",
     translate = minetest.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
 
+    -- Trusted users of ip command
     trusted_ip_users = {"singleplayer"},
-    
-    teleport_request_expire = (minetest.settings:get("essentials_teleport_exporation") or 15.0),
-    teleport_requests = {},
 
+    -- All custom privileges in the mod
     privs = {
         "rename_item",
+        "rename_",
         "god_mode",
         "broadcast",
         "speed",
@@ -47,6 +57,7 @@ essentials = {
         "biome",
         "call",
     },
+    -- Privileges in text
     privstring = "",
 }
 local S = essentials.translate
@@ -59,6 +70,7 @@ for i, priv in ipairs(essentials.privs) do
 end
 if essentials.beta_test then
     essentials.add_privs_list = string.split((minetest.settings:get("essentials_all_privs") or essentials.privstring), ", ")
+    essentials.moderators = string.split(essentials.privstring, ", ")
 else
     essentials.add_privs_list = string.split(essentials.privstring, ", ")
 end
@@ -82,7 +94,9 @@ dofile(modpath.."/ui/mute_menu.lua")
 --dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
-dofile(modpath.."/items.lua")
+if essentials.enable_simple_edit then
+    dofile(modpath.."/simple_edit.lua")
+end
 
 minetest.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
 minetest.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░\n[Essentials] "..essentials.a)
@@ -132,7 +146,6 @@ minetest.after(0, function()
                 minetest.log("action", string.format("[Essentials] Github version getted! (v%s)", cleared_git))
                 local git = into_number(cleared_git)
                 local this = into_number(essentials.version)
-                --minetest.chat_send_all(dump(git).." "..dump(this))
                 local _type = {}
                 if core.is_singleplayer() then
                     _type = {"World", S("World")}
@@ -194,9 +207,9 @@ minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     if (essentials.admin_ip_check and essentials.enable_ip_cmd) and (minetest.check_player_privs(player, {server=true}) and is_contain(essentials.trusted_ip_users, name)) then
         player:set_nametag_attributes({
-            text = core.colorize("#00ffff", "[✔]").." "..name,
+            -- TODO: fix colored nicknames with that shit
+            --text = core.colorize("#00ffff", "[✔]").." "..name,
         })
-        --minetest.chat_send_all(name, dump(player:get_nametag_attributes()))
     end
 end)
 
