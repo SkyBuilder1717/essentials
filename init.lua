@@ -5,21 +5,21 @@ essentials = {
     storage = minetest.get_mod_storage(),
 
     -- Settings
-    seed = minetest.settings:get_bool("essentials_seed"),
-    biome = (minetest.settings:get_bool("essentials_biome") ~= false),
-    trolled_by = minetest.settings:get_bool("essentials_trolled_by"),
-    killed_by = (minetest.settings:get_bool("essentials_killed_by") ~= false),
-    admin_ip_check = minetest.settings:get_bool("essentials_ip_verified"),
-    last_update_message = minetest.settings:get_bool("essentials_update_lasted"),
-    check_for_updates = minetest.settings:get_bool("essentials_check_for_updates"),
-    changed_by = (minetest.settings:get_bool("essentials_changed_by") ~= false),
-    watermark = (minetest.settings:get_bool("essentials_watermark") ~= false),
-    add_privs = (minetest.settings:get_bool("essentials_additional_privileges") ~= false),
-    enable_ip_cmd = minetest.settings:get_bool("essentials_ip"),
-    enable_troll_cmd = minetest.settings:get_bool("essentials_trolling"),
-    beta_test = minetest.settings:get_bool("essentials_beta_test"),
-    enable_simple_edit = minetest.settings:get_bool("essentials_simple_edit"),
-    disposable_eraser = (minetest.settings:get_bool("essentials_disposable_eraser") ~= false),
+    seed = minetest.settings:get_bool("essentials_seed", false),
+    biome = minetest.settings:get_bool("essentials_biome", true),
+    trolled_by = minetest.settings:get_bool("essentials_trolled_by", false),
+    killed_by = minetest.settings:get_bool("essentials_killed_by", false),
+    admin_ip_check = minetest.settings:get_bool("essentials_ip_verified", false),
+    last_update_message = minetest.settings:get_bool("essentials_update_lasted", false),
+    check_for_updates = minetest.settings:get_bool("essentials_check_for_updates", false),
+    changed_by = minetest.settings:get_bool("essentials_changed_by", true),
+    watermark = minetest.settings:get_bool("essentials_watermark", true),
+    add_privs = minetest.settings:get_bool("essentials_additional_privileges", true),
+    enable_ip_cmd = minetest.settings:get_bool("essentials_ip", false),
+    enable_troll_cmd = minetest.settings:get_bool("essentials_trolling", false),
+    beta_test = minetest.settings:get_bool("essentials_beta_test", false),
+    enable_simple_edit = minetest.settings:get_bool("essentials_simple_edit", false),
+    disposable_eraser = minetest.settings:get_bool("essentials_disposable_eraser", true),
     teleport_request_expire = (minetest.settings:get("essentials_teleport_exporation") or 15.0),
     teleport_requests = {},
 
@@ -32,7 +32,7 @@ essentials = {
 
     -- Text
     a = "Created by SkyBuilder1717 (ContentDB)",
-    version = "0.9",
+    version = "0.9.1",
     translate = minetest.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -91,7 +91,7 @@ dofile(modpath.."/ui/ban_menu.lua")
 dofile(modpath.."/ui/kick_menu.lua")
 dofile(modpath.."/ui/mute_menu.lua")
 --dofile(modpath.."/ui/color_menu.lua")
---dofile(modpath.."/ui/rename_me.lua")
+dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
 if essentials.enable_simple_edit then
@@ -101,29 +101,29 @@ end
 minetest.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
 minetest.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░\n[Essentials] "..essentials.a)
 
-local function into_number(stringy)
-    local count = 0
-    local result = ""
-    for i = 1, #stringy do
-        local char = string.sub(stringy, i, i)
-        if char == "." then
-            count = count + 1
-            if count < 2 then
-                result = result .. char
+local function into_number(s)
+    local c=0
+    local o=""
+    for i=1, #s do
+        local ch=string.sub(s,i,i)
+        if ch=="." then
+            c=c+1
+            if c<2 then
+                o=o..ch
             end
         else
-            result = result .. char
+            o=o..ch
         end
     end
-    return tonumber(result)
+    return tonumber(o)
 end
 
-local function add_zeros(stringy, length)
-    if string.len(tonumber(stringy)) < length then
-        local seros = length - #stringy
-        return string.rep("0", seros) .. stringy
+local function add_zeros(s, l)
+    if string.len(tonumber(s))<l then
+        local z=l-#s
+        return string.rep("0",z)..s
     else
-        return stringy
+        return s
     end
 end
 
@@ -193,81 +193,3 @@ minetest.after(0, function()
         end
     end
 end)
-
-local function is_contain(table, value)
-    for _, v in ipairs(table) do
-        if v == value then
-            return true
-        end
-    end
-    return false
-end
-
-minetest.register_on_joinplayer(function(player)
-    local name = player:get_player_name()
-    if (essentials.admin_ip_check and essentials.enable_ip_cmd) and (minetest.check_player_privs(player, {server=true}) and is_contain(essentials.trusted_ip_users, name)) then
-        player:set_nametag_attributes({
-            -- TODO: fix colored nicknames with that shit
-            --text = core.colorize("#00ffff", "[✔]").." "..name,
-        })
-    end
-end)
-
--- TODO: Fix report system
---[[
-essentials_reports = {
-    log = {},
-}
-
-local storage = essentials.storage
-local function save_reports()
-    storage:set_string("essentials_reports", minetest.serialize(essentials_reports))
-end
-local function get_reports()
-    essentials_reports = minetest.deserialize(storage:get_string("essentials_reports"))
-end
-
-function essentials.add_report(broked_rule, name, reported, description)
-    local newid = tostring(add_zeros(math.random(1, 9999), 4))
-    essentials_reports.newid = {broken_rule = broked_rule, by_name = name, reported_name = reported, about = description}
-    table.insert(essentials_reports.log, os.date("%Y.%m.%d %H:%M:%S", os.time()).." : "..name.." created a report \""..newid.."\"")
-    save_reports()
-end
-
-function essentials.appdec_report(id, approve_or_decline, admin)
-    if not essentials_reports == {} then
-        for i, def in ipairs(essentials_reports) do
-            if def.id == id then
-                essentials_reports[i] = nil
-                save_reports()
-                if not (minetest.get_player_by_name(def.by_name) == nil) then
-                    if approve_or_decline == "decline" then
-                        minetest.chat_send_player(def.by_name, string.format("Your report %s is %s.", "\""..core.colorize("gray", def.broken_rule).."\" to player "..core.colorize("lightgray", def.reported_name), core.colorize("red", "Declined")))
-                        table.insert(essentials_reports.log, os.date("%Y.%m.%d %H:%M:%S", os.time()).." : "..admin.." has declined a report \""..def.broken_rule.."\" by player "..def.by_name.." reported to "..def.reported_name)
-                    elseif  approve_or_decline == "approve" then
-                        minetest.chat_send_player(def.by_name, string.format("Your report %s is %s and coming soon that player will get punishment.", "\""..core.colorize("gray", def.broken_rule).."\" to player "..core.colorize("lightgray", def.reported_name), core.colorize("red", "Approved")))
-                        table.insert(essentials_reports.log, os.date("%Y.%m.%d %H:%M:%S", os.time()).." : "..admin.." was approved a report \""..def.broken_rule.."\" by player "..def.by_name.." reported to "..def.reported_name)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function remove_report(id)
-    for i, def in ipairs(essentials_reports) do
-        if def.id == id then
-            essentials_reports[i] = {}
-        end 
-    end
-    save_reports()
-end
-
-minetest.register_on_mods_loaded(function()
-    get_reports() 
-end)
-
-dofile(modpath.."/ui/report.lua")
-dofile(modpath.."/ui/reports.lua")
-dofile(modpath.."/ui/reports_log.lua")
-]]--
