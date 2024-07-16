@@ -1,6 +1,8 @@
 minetest-mod-essentials
 =========================
 
+[Author profile](https://content.minetest.net/users/SkyBuilder1717/)
+
 Mod with many-many useful console commands and api functions!
 
 Information
