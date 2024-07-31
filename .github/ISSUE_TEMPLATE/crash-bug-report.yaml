@@ -21,10 +21,9 @@ body:
         - 5.6.0
         - 5.5.0
         - 5.4.0
-        - Other
   - type: textarea
     id: lua-error
     attributes:
       label: Lua error
-      description: If you get an error, paste here your lua error / crash screen
+      description: If you get an error, paste here your lua error / crash screen.
       render: shell
