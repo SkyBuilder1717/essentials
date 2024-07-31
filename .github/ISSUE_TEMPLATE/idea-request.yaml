@@ -1,5 +1,5 @@
 name: Feature Request
-title: /mycmd
+title: "/mycmd"
 description: Here you can request an new feature/idea to the mod!
 labels: ["idea"]
 body:
