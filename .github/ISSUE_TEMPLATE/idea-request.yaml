@@ -1,0 +1,17 @@
+name: Feature Request
+description: Here you can request an new feature/idea to the mod!
+labels: ["idea"]
+body:
+  - type: textarea
+    id: describe-idea
+    attributes:
+      label: Describe your idea
+      description: What do you want new in mod? Maybe new command?
+      placeholder: New command called /mycmd! It can ___!
+    validations:
+      required: true
+  - type: textarea
+    id: screens
+    attributes:
+      label: Screenshots
+      description: If you has an screenshots of your idea / feature, you can paste them here!
