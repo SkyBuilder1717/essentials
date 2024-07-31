@@ -1,4 +1,5 @@
 name: Feature Request
+title: /mycmd
 description: Here you can request an new feature/idea to the mod!
 labels: ["idea"]
 body:
@@ -7,7 +8,8 @@ body:
     attributes:
       label: Describe your idea
       description: What do you want new in mod? Maybe new command?
-      placeholder: New command called /mycmd! It can ___!
+      placeholder: Your new feature or command description here!
+      value: New command called '/mycmd'! It can summon "dirt_with_grass" node!
     validations:
       required: true
   - type: textarea
