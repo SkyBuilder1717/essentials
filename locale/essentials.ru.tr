@@ -93,9 +93,6 @@ Menu=Меню
 Player not found!=Игрок не найден!
 (by @1)=(от @1) 
 
-# IP Menu (Doesnt work for some reason)
-If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@yandex.ru@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command=Если вы хотите использоать команду /ip, ввы должны отправить письмо на почту на следующий адрес:@1SkyBuilderOFFICAL@yandex.ru@2И сообщение должно содержать такой текст:@3@4@5Если вас примят, создатель мода вставит вас в доверенных пользователей ip и вы сможете использовать команду /ip
-
 # Ban Menu
 Reason of ban=Причина блокировки
 Ban the player=Заблокировать игрока
