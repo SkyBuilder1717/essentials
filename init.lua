@@ -135,7 +135,7 @@ local function add_zeros(s, l)
     end
 end
 
-minetest.after(0, function()
+minetest.after(1, function()
     if essentials.check_for_updates then
         minetest.log("action", "[Essentials] Checking for updates...")
         if http then
@@ -166,7 +166,7 @@ minetest.after(0, function()
                 end
                 if git > this then
                     minetest.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    core.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
+                    minetest.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
                 else
                     if essentials.last_update_message then
                         minetest.chat_send_all(essentials.main.." "..S("All ok! @1 using lastest version of mod.", _type[2]))
@@ -175,7 +175,7 @@ minetest.after(0, function()
                 end
             end)
         else
-            core.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
+            minetest.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
         end
     end
 end)
