@@ -13,12 +13,12 @@ essentials = {
     last_update_message = minetest.settings:get_bool("essentials_update_lasted", false),
     check_for_updates = minetest.settings:get_bool("essentials_check_for_updates", false),
     changed_by = minetest.settings:get_bool("essentials_changed_by", true),
-    watermark = minetest.settings:get_bool("essentials_watermark", true),
     add_privs = minetest.settings:get_bool("essentials_additional_privileges", true),
     enable_ip_cmd = minetest.settings:get_bool("essentials_ip", false),
     enable_troll_cmd = minetest.settings:get_bool("essentials_trolling", false),
     beta_test = minetest.settings:get_bool("essentials_beta_test", false),
     enable_simple_edit = minetest.settings:get_bool("essentials_simple_edit", false),
+    reports_system = minetest.settings:get_bool("essentials_report_system", false),
     disposable_eraser = minetest.settings:get_bool("essentials_disposable_eraser", true),
     teleport_request_expire = (minetest.settings:get("essentials_teleport_exporation") or 15.0),
     teleport_requests = {},
@@ -32,10 +32,14 @@ essentials = {
 
     -- Text
     a = "Created by SkyBuilder1717 (ContentDB)",
-    version = "0.9.1",
+    version = "1.0.0",
     translate = minetest.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
+
+    -- Maintenance mode
+    maintenance = false,
+    maintenance_msg = "",
 
     -- Trusted users of ip command
     trusted_ip_users = {"singleplayer"},
@@ -70,20 +74,22 @@ for i, priv in ipairs(essentials.privs) do
 end
 if essentials.beta_test then
     essentials.add_privs_list = string.split((minetest.settings:get("essentials_all_privs") or essentials.privstring), ", ")
-    essentials.moderators = string.split(essentials.privstring, ", ")
+    if minetest.settings:get("essentials_moderators") then
+        essentials.moderators = string.split(minetest.settings:get("essentials_moderators"), ", ")
+    end
 else
     essentials.add_privs_list = string.split(essentials.privstring, ", ")
 end
 essentials.main_tr = "["..S("Essentials").."]"
+essentials.maintenance_msg = S("@1@2@3@4@5Sorry, but server is in maintenance mode right now!@6Come back later!", "\n", essentials.main_tr, "\n", "\n", "\n", "\n")
 
 --==[[ Connections ]]==--
 loadfile(modpath.."/commands.lua")(http)
+-- TODO: Fix error
 if http and essentials.enable_ip_cmd then
-    -- TODO: Fix that stupid error
     --loadfile(modpath.."/ui/ip.lua")(http)
 end
 dofile(modpath.."/priveleges.lua")
-dofile(modpath.."/ui/watermark.lua")
 if essentials.have_unified_inventory then
     dofile(modpath.."/unified_inventory.lua")
 end
@@ -94,6 +100,8 @@ dofile(modpath.."/ui/mute_menu.lua")
 dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
+dofile(modpath.."/ui/make_textbox.lua")
+dofile(modpath.."/ui/textbox.lua")
 if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end
@@ -138,13 +146,17 @@ minetest.after(0, function()
                 method = "GET",
         
             },  function(result)
-                if timeout == true then
+                if timeout then
                     minetest.log("warning", "[Essentials] Time out. Cant check updates")
                     return
                 end
                 local cleared_git = result.data:gsub("[\n\\]", "")
                 minetest.log("action", string.format("[Essentials] Github version getted! (v%s)", cleared_git))
                 local git = into_number(cleared_git)
+                if not git then
+                    minetest.log("error", "[Essentials] nil value of Github version.")
+                    return
+                end
                 local this = into_number(essentials.version)
                 local _type = {}
                 if core.is_singleplayer() then
@@ -193,3 +205,63 @@ minetest.after(0, function()
         end
     end
 end)
+
+local function is_contain(table, value)
+    for _, v in ipairs(table) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
+essentials_reports = {}
+
+local storage = essentials.storage
+local function save_reports()
+    storage:set_string("essentials_reports", minetest.serialize(essentials_reports))
+end
+function essentials.load_reports()
+    essentials_reports = minetest.deserialize(storage:get_string("essentials_reports")) or {}
+end
+
+function essentials.add_report(broked_rule, name, reported, description)
+    local newid = tostring(math.random(1000, 9999), 4)
+    essentials_reports[newid] = {
+        broken_rule = broked_rule,
+        by_name = name,
+        reported_name = reported,
+        about = description
+    }
+
+    save_reports()
+end
+
+function essentials.appdec_report(id, state)
+    local def = essentials_reports[id] -- Read only
+    if def then
+        if state == "decline" then
+            minetest.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
+        elseif state == "approve" then
+            minetest.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Approved"))))
+        end
+    end
+    essentials_reports[id] = nil
+    save_reports()
+end
+
+local function remove_report(id)
+    for aid, def in ipairs(essentials_reports) do
+        if def.id == id then
+            essentials_reports[aid] = nil
+        end 
+    end
+    save_reports()
+end
+
+minetest.register_on_mods_loaded(function()
+    essentials.load_reports() 
+end)
+
+dofile(modpath.."/ui/report.lua")
+dofile(modpath.."/ui/reports.lua")

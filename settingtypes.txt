@@ -37,10 +37,6 @@ essentials_trolled_by ("You has been trolled by" message) bool false
 #    Requires: essentials_ip
 essentials_ip_verified (Administrator verified check) bool false
 
-[UI]
-# Enables watermark on the screen
-essentials_watermark (Watermark) bool true
-
 [Privileges]
 # Enables an additional privileges for commands
 essentials_additional_privileges (Additional Privileges) bool true
@@ -60,7 +56,7 @@ essentials_update_lasted (Last-Update message) bool false
 # WARNING: Turn it on on your own risk!
 essentials_beta_test (BETA-TEST Functions) bool false
 
-# Players, that will not be kicked, while maintence
+# Players, that will not be kicked, while maintenance
 # Players will be separated by ", "
 #
 # Example: "Admin, -SkyBuilder-" and etc.
@@ -75,10 +71,16 @@ essentials_moderators (Moderators) string
 #    Requires: essentials_beta_test
 essentials_simple_edit (Simple Edit) bool false
 
-# Enables disposable eraser
+# Adds an eraser, which can be used only one times!
 #
 #    Requires: essentials_beta_test, essentials_simple_edit
 essentials_disposable_eraser (Disposable Eraser) bool true
+
+# Adds an in-game reports system
+# (Its really buggy)
+#
+#    Requires: essentials_beta_test
+essentials_report_system (Reports) bool false
 
 # Type here a privs do you want to be exist for "Additional Privileges" by ", "
 #

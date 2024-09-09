@@ -38,17 +38,8 @@ local function delete_value_arr(table, value)
 end
 
 local function speed_cmd(name, param)
-    local speed = string.match(param, "([^ ]+)")
+    local speed = string.match(param, "([^ ]+)") or 1
     local oname = string.match(param, speed.." (.+)")
-    --core.chat_send_all(dump(speed).." "..dump(oname))
-    if speed == nil then
-        core.chat_send_player(name, S("Your speed now is @1.", 1))
-        minetest.sound_play("done", name)
-        minetest.get_player_by_name(name):set_physics_override({
-            speed = 1
-        })
-        return
-    end
     if oname == nil then
         core.chat_send_player(name, S("Your speed now is @1.", speed))
         minetest.sound_play("done", name)
@@ -57,9 +48,8 @@ local function speed_cmd(name, param)
         })
     else
         if minetest.get_player_by_name(oname) == nil then
-            core.chat_send_player(name, core.colorize("red", S("Please, specify an online player.")))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("Please, specify an online player."))
         end
         core.chat_send_player(name, S("Speed of player @1 now is @2.", oname, speed))
         minetest.sound_play("done", name)
@@ -90,9 +80,9 @@ end
 local function biome_cmd(name, param)
     -- Thanks to @mckaygerhard on github for that part of script!
     if not minetest.has_feature("object_use_texture_alpha") then
-        core.chat_send_player(name, core.colorize("red", S("That version of engine doesnt support that command.")))
-        minetest.sound_play("error", name)
         minetest.log("error", essentials.main.." Your Minetest Engine is deprecated! Update it for \'/biome\' command.")
+        minetest.sound_play("error", name)
+        return false, core.colorize("red", S("That version of engine doesnt support that command."))
     end
 
     local pos = minetest.get_player_by_name(name):get_pos()
@@ -107,12 +97,12 @@ local function biome_cmd(name, param)
             elseif param == "humidity" then
                 core.chat_send_player(name, "\"".. biome .."\": ".. biomeinfo.humidity)
             else
-                core.chat_send_player(name, core.colorize("red", S("Invalid information name!")))
                 minetest.sound_play("error", name)
+                return false, core.colorize("red", S("Invalid information name!"))
             end
         else
-            core.chat_send_player(name, core.colorize("red", S("You cant check more information without privelege!")))
             minetest.sound_play("error", name)
+            return false, core.colorize("red", S("You cant check more information without privelege!"))
         end
     end
 end
@@ -123,9 +113,8 @@ local function getpos_cmd(name, param)
         minetest.sound_play("error", name)
         return false
     elseif minetest.get_player_by_name(param) == nil then
-        minetest.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
         minetest.sound_play("error", name)
-        return
+        return false, core.colorize("red", S("Player @1 not found!", param))
     end
     local pos = player:get_pos();
     local round_pos = vector.round(pos);
@@ -135,16 +124,6 @@ end
 
 local function seed_cmd(name, param)
     core.chat_send_player(name, S("Seed: [@1]", core.colorize("#00ff00", minetest.get_mapgen_setting("seed"))))
-end
-
-local function password_cmd(name, param)
-    if not minetest.player_exists(param) then
-        return false
-    end
-    --minetest.chat_send_player(name, S("Password of player @1 is @2", param, "\'"..minetest.get_password_hash(param).."\'"))
-    ps = minetest.get_auth_handler().get_auth(name).password
-    minetest.chat_send_player(name, dump(minetest.get_password_hash(name, "123")))
-    minetest.sound_play("done", name)
 end
 
 local function godmode_cmd(name, param)
@@ -186,8 +165,8 @@ local function godmode_cmd(name, param)
         end
         player:set_armor_groups(ag)
     else
-        core.chat_send_player(name, core.colorize("red", S("@1 is disabled!", "\"enable_damage\"")))
         minetest.sound_play("error", name)
+        return false, core.colorize("red", S("@1 is disabled!", "\"enable_damage\""))
     end
 end
 
@@ -214,9 +193,8 @@ local function kill_cmd(name, param)
         if param then
             player = minetest.get_player_by_name(param)
             if minetest.get_player_by_name(param) == nil then
-                core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
                 minetest.sound_play("error", name)
-                return
+                return false, core.colorize("red", S("Player @1 not found!", param))
             end
             core.chat_send_player(name, S("You respawned player @1.", param))
             minetest.sound_play("done", name)
@@ -240,9 +218,8 @@ local function heal_cmd(name, param)
         core.chat_send_player(name, S("You has been healed to the possible max health."))
     else
         if minetest.get_player_by_name(param) == nil then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("Player @1 not found!", param))
         end
         minetest.get_player_by_name(param):set_hp(minetest.PLAYER_MAX_HP_DEFAULT)
         core.chat_send_player(name, S("Player @1 healed to the @2 health.", param, minetest.get_player_by_name(param):get_hp()))
@@ -254,6 +231,46 @@ local function heal_cmd(name, param)
     end
 end
 
+local function check_moderator(name)
+    if (not is_contain(essentials.moderators, name)) or (not minetest.check_player_privs(name, {server=true})) then
+        return true
+    else
+        return false
+    end
+end
+
+local function maintenance_cmd(name, param)
+    if minetest.is_singleplayer() then
+        minetest.sound_play("error", param)
+        return false, core.colorize("red", S("Cannot interact with maintenance mode in singleplayer!"))
+    end
+    minetest.sound_play("done", param)
+    if essentials.maintenance then
+        essentials.maintenance = false
+        minetest.chat_send_player(name, core.colorize("lightgrey", S("Maintenance mode has been disabled!")))
+    else
+        essentials.maintenance = true
+        minetest.chat_send_player(name, core.colorize("grey", S("Maintenance mode has been enabled!")))
+    end
+end
+
+minetest.register_globalstep(function(dtime)
+    if essentials.maintenance then
+        for _, player in ipairs(minetest.get_connected_players()) do
+            local name = player:get_player_name()
+            if check_moderator(name) then
+                minetest.kick_player(name, essentials.maintenance_msg)
+            end
+        end
+    end
+end)
+
+minetest.register_on_prejoinplayer(function(name)
+    if essentials.maintenance and check_moderator(name) then
+        return essentials.maintenance_msg
+    end
+end)
+
 local function vanish_cmd(name, param)
     local player
     local other = false
@@ -262,9 +279,8 @@ local function vanish_cmd(name, param)
     else
         player = minetest.get_player_by_name(param)
         if player == nil then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("Player @1 not found!", param))
         end
         other = true
     end
@@ -275,7 +291,7 @@ local function vanish_cmd(name, param)
         prop = {
             visual_size = {x = 0, y = 0, z = 0},
             is_visible = false,
-            nametag_color = {r=255,g=255,b=255,a=255},
+            nametag_color = {r=0,g=0,b=0,a=0},
             pointable = false,
             makes_footstep_sound = false,
             show_on_minimap = false,
@@ -296,7 +312,7 @@ local function vanish_cmd(name, param)
         prop = {
             visual_size = {x = 1, y = 1, z = 1},
             is_visible = true,
-            nametag_color = {r=255,g=255,b=255,a=0},
+            nametag_color = {r=255,g=255,b=255,a=255},
             pointable = true,
             makes_footstep_sound = true,
             show_on_minimap = true,
@@ -319,14 +335,14 @@ end
 
 local function troll_cmd(name, param)
     if core.is_singleplayer() then
-        minetest.chat_send_player(name, core.colorize("red", S("You cant troll in single mode!")))
         minetest.sound_play("error", name)
-        return
+        return false, core.colorize("red", S("You cant troll in single mode!"))
     end
     show_troll_menu(name)
 end
 
 local function ip_cmd(name, param)
+    --[[
     if not is_contain(essentials.trusted_ip_users, name) then
         minetest.chat_send_player(name, core.colorize("red", S("You are not of trusted administrator!")))
         minetest.sound_play("error", name)
@@ -335,14 +351,14 @@ local function ip_cmd(name, param)
         -- \/ deprecated \/ --
         --show_ip_info(name)
     end
+    ]]--
     if param == "" then
         minetest.chat_send_player(name, S("Your IP address is @1", minetest.get_player_ip(name)))
         return
     end
     if minetest.get_player_by_name(param) == nil then
-        minetest.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
         minetest.sound_play("error", name)
-        return
+        return false, core.colorize("red", S("Player @1 not found!", param))
     end
 
     minetest.chat_send_player(name, S("IP address of @1 is @2", param, minetest.get_player_ip(param)))
@@ -356,14 +372,12 @@ end
 local function call_cmd(name, param, status)
     if status == "request" then
         if minetest.get_player_by_name(param) == nil then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("Player @1 not found!", param))
         end
         if param == name then
-            core.chat_send_player(name, core.colorize("red", S("Cant send teleport request to yourself!")))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("Cant send teleport request to yourself!"))
         end
         essentials.teleport_requests[param] = {}
         local player = minetest.get_player_by_name(param)
@@ -384,9 +398,8 @@ local function call_cmd(name, param, status)
         end)
     else
         if (essentials.teleport_requests[name] == {}) or (essentials.teleport_requests[name] == nil) then
-            core.chat_send_player(name, core.colorize("red", S("You dont have any teleport request.")))
             minetest.sound_play("error", name)
-            return
+            return false, core.colorize("red", S("You dont have any teleport request."))
         end
         local player = minetest.get_player_by_name(name)
         local string = ""
@@ -595,39 +608,6 @@ minetest.register_chatcommand("password", {
     func = password_cmd,
 })
 
-minetest.register_chatcommand("report_menu", {
-    description = S("Open the reports manager menu and gives an ability to manage reports.",
-    privs = {server = true},
-    func = function(name, param)
-        if core.is_singleplayer() then
-            minetest.chat_send_player(name, core.colorize("red", "You cannot report in single mode!"))
-            minetest.sound_play("error", name)
-            return
-        end
-        show_report_manage(name)
-    end
-})
-
-minetest.register_chatcommand("report", {
-    description = S("Open the reports menu for reporting an player.",
-    privs = {shout = true},
-    func = function(name, param)
-        if core.is_singleplayer() then
-            minetest.sound_play("error", name)
-            minetest.chat_send_player(name, core.colorize("red", "You cannot report in single mode!"))
-            return
-        end
-        show_report_menu(name)
-    end
-})
-
-minetest.register_chatcommand("reports_log", {
-    description = S("Open the reports log.",
-    func = function(name, param)
-        show_reports_log(name)
-    end
-})
-
 minetest.register_chatcommand("mute_menu", {
    description = S("Open the mute menu.",
    privs = {mute = true},
@@ -640,6 +620,31 @@ minetest.register_chatcommand("mute_menu", {
    end
 })
 ]]--
+
+if essentials.reports_system then
+    minetest.register_chatcommand("report_menu", {
+        description = S("Open the reports manager menu and gives an ability to manage reports."),
+        privs = {server = true},
+        func = function(name, param)
+            if core.is_singleplayer() then
+                minetest.sound_play("error", name)
+                return false, core.colorize("red", S("You cannot report in single mode!"))
+            end
+            show_report_manage(name)
+        end
+    })
+    minetest.register_chatcommand("report", {
+        description = S("Open the reports menu for reporting an player."),
+        privs = {shout = true},
+        func = function(name, param)
+            if core.is_singleplayer() then
+                minetest.sound_play("error", name)
+                return false, core.colorize("red", S("You cannot report in single mode!"))
+            end
+            show_report_menu(name)
+        end
+    })
+end
 
 if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player") then
     minetest.register_chatcommand("rename_me", {
@@ -761,6 +766,20 @@ else
     })
 end
 
+if essentials.add_privs and is_contain(essentials.add_privs_list, "maintenance") then
+    minetest.register_chatcommand("maintenance", {
+        description = S("Enables and Disables maintenance mode on server."),
+        privs = {maintenance = true},
+        func = maintenance_cmd,
+    })
+else
+    minetest.register_chatcommand("maintenance", {
+        description = S("Enables and Disables maintenance mode on server."),
+        privs = {server = true},
+        func = maintenance_cmd,
+    })
+end
+
 minetest.register_on_joinplayer(function(ObjectRef, last_login)
     ObjectRef:get_meta():set_int("invisible", 0)
 end)
@@ -780,6 +799,16 @@ else
         func = vanish_cmd,
     })
 end
+
+-- Thanks to Bapt-tech for idea!
+-- https://i.imgur.com/zVCmNOT.png
+minetest.register_chatcommand("text_box", {
+    description = S("Shows to any player a textbox with a text!"),
+    privs = {ban = true},
+    func = function(name, param)
+        show_textbox_admin(name)
+    end
+})
 
 if essentials.add_privs and is_contain(essentials.add_privs_list, "call") then
     minetest.register_chatcommand("call", {
