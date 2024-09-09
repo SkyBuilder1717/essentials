@@ -1,3 +1,4 @@
+local S = essentials.translate
 local FORMNAME = "essentials:report_admin"
 
 function show_report_menu(name)
@@ -12,11 +13,10 @@ function show_report_menu(name)
 			end
 		--end
 	end
-	minetest.chat_send_player(name, ids)
 
 	local formspec = "formspec_version[6]"..
 	"size[10.5,10.2]"..
-	"dropdown[3.1,2.4;6.4,0.6;report;"..ids..";1;false]"..
+	"dropdown[3.1,2.4;6.4,0.6;reporting;"..ids..";1;false]"..
 	"label[3.9,0.4;Report the player]"..
 	"label[0.8,2.7;Report player:]"..
 	"textarea[0.8,3.7;8.7,5.3;description;Description to report;]"..
@@ -31,22 +31,27 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 	minetest.sound_play("clicked", {to_player = name})
-    
-	minetest.chat_send_player(name, dump(fields))
 
 	if fields.send then
-		if fields.broked_rule == "" or fields.description == "" then
+		local reporting = fields.reporting
+		local broked_rule = fields.broked_rule
+		local description = fields.description
+
+		if broked_rule == "" or description == "" then
 			minetest.sound_play("error", name)
 			return
 		end
 
-		if fields.report == name then
-			minetest.chat_send_player(name, core.colorize("red", "Cant report yourself."))
+		if reporting == name then
 			minetest.sound_play("error", name)
+			minetest.chat_send_player(name, core.colorize("red", S("Cant report yourself.")))
 			return
 		end
-		
-		essentials.add_report(broked_rule, name, report, description)
+
+		essentials.add_report(broked_rule, name, reporting, description)
+		minetest.chat_send_player(name, S("@1 has been reported!", reporting))
+		minetest.sound_play("done", name)
+		minetest.close_formspec(name, FORMNAME)
 	end
 	return
 end)

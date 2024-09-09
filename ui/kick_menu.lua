@@ -4,7 +4,7 @@ local S = essentials.translate
 function show_kick_menu(name)
 	local formspec = "formspec_version[6]"
 	local ids = ""
-	for i, player in ipairs(minetest.get_connected_players()) do
+	for _, player in ipairs(minetest.get_connected_players()) do
 		ids = ids..","..player:get_player_name()
 	end
 
@@ -46,13 +46,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         elseif reason_kick == "" then
             core.kick_player(fields.player)
             core.chat_send_all(S("Kicked @1.", player_banned))
-            for i, player in ipairs(minetest.get_connected_players()) do
+            for _, player in ipairs(minetest.get_connected_players()) do
                 minetest.sound_play("kicked", player:get_player_name())
             end
         else
             core.kick_player(fields.player, fields.reason)
             core.chat_send_all(S("Kicked @1 for '@2'.", player_banned, reason_kick))
-            for i, player in ipairs(minetest.get_connected_players()) do
+            for _, player in ipairs(minetest.get_connected_players()) do
                 minetest.sound_play("kicked", player:get_player_name())
             end
         end

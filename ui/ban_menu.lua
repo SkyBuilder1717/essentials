@@ -4,7 +4,7 @@ local FORMNAME = "essentials:ban_menu"
 function show_ban_menu(name)
 	local formspec = "formspec_version[6]"
 	local ids = ""
-	for i, player in ipairs(minetest.get_connected_players()) do
+	for _, player in ipairs(minetest.get_connected_players()) do
 		ids = ids..","..player:get_player_name()
 	end
 
@@ -46,13 +46,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         elseif reason_ban == "" then
             core.ban_player(fields.player)
             core.chat_send_all("Banned "..player_banned..".")
-            for i, player in ipairs(minetest.get_connected_players()) do
+            for _, player in ipairs(minetest.get_connected_players()) do
                 minetest.sound_play("error", player:get_player_name())
             end
         else
             core.ban_player(fields.player)
             core.chat_send_all("Banned "..player_banned.." for "..reason_ban..".")
-            for i, player in ipairs(minetest.get_connected_players()) do
+            for _, player in ipairs(minetest.get_connected_players()) do
                 minetest.sound_play("error", player:get_player_name())
             end
         end
