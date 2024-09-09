@@ -25,14 +25,18 @@ Makes player invisible.=Делает игрока невидимым.
 Sends request to teleportation for player.=Отправляет запрос на телепортацию игроку.
 Accepting teleportation requests from players.=Принимает запросы на телепортацию от игроков.
 Declining teleportation requests from players.=Отклоняет запросы на телепортацию от игроков.
+Enables and Disables maintenance mode on server.=Включает и Выключает технические работы на сервере.
+Shows the rename menu.=Показывает меню переименовывания.
+Open the reports menu for reporting an player.=Открывает меню репортов для репорта игрока.
+Open the reports manager menu and gives an ability to manage reports.=Открывает меню управления репортами и даёт возможность ими управлять.
 
 # Commands Messages
 Player name cannot be empty!=Имя игрока не может быть пустым!
 Player @1 not found!=Игрок @1 не найден!
 @1 is disabled!=@1 выключено!
-Your speed now is @1.=Теперь ваша скорость это @1.
+Your speed now is @1.=Теперь ваша скорость равняется @1.
 Please, specify an online player.=Пожалуйста, укажите онлайн игрока.
-Speed of player @1 now is @2.=Скорость игрока @1 теперь @2.
+Speed of player @1 now is @2.=Скорость игрока @1 теперь равняется @2.
 Now your speed is @1 from player @2.=Теперь ваша скорость @1 от игрока @2.
 Message cannot be empty!=Сообщение не может быть пустым.
 [Announcement]=[Объявление]
@@ -79,10 +83,18 @@ Requests from player(-s) @1 has been accepted.=Запросы на телепо�
 Your teleport request to player @1 has been declined!=Ваш запрос на телепортацию игроку @1 был отклонён!
 Requests from player(-s) @1 has been declined.=Запрос(-ы) на телепортацию от игрока(-ов) @1 был(-и) отклонены.
 Password of player @1 is @2=Пароль игрока @1 это @2
+Maintenance mode has been disabled!=Технические работы были выключены!
+Maintenance mode has been enabled!=Технические работы были включены!
+@1@2@3@4@5Sorry, but server is in maintenance mode right now!@6Come back later!=@1@2@3@4Извините, но сервер проводит технические работы прямо сейчас!@6Возвращайтесь позже!
+Cannot interact with maintenance mode in singleplayer!=Нельзя взаймодействовать с техническим перерывом в одиночной игре!
 
 # Menu's stuff
 Menu=Меню
 Player not found!=Игрок не найден!
+(by @1)=(от @1) 
+
+# IP Menu (Doesnt work for some reason)
+If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@yandex.ru@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command=Если вы хотите использоать команду /ip, ввы должны отправить письмо на почту на следующий адрес:@1SkyBuilderOFFICAL@yandex.ru@2И сообщение должно содержать такой текст:@3@4@5Если вас примят, создатель мода вставит вас в доверенных пользователей ip и вы сможете использовать команду /ip
 
 # Ban Menu
 Reason of ban=Причина блокировки
@@ -135,8 +147,14 @@ Obsidian=Обсидиан
 Bedrock=Коренную породу
 (Custom)=(Пользовательский)
 
-# Watermark
-Powered and created by=Поддержано и создано:
+# Reports Messages
+Approved=Одобрен
+Declined=Отклонён
+Your report @1 to player @2 is @3.=Ваш репорт @1 на игрока @2 был @3.
+Your report @1 to player @2 has been @3 and coming soon that player will get punishment!=Ваш репорт @1 на игрока @2 был @3 и скоро этот игрок получит наказание!
+@1 has been reported!=@1 был зарепорчен!
+Cant report yourself.=Нельзя репортить самого себя.
+You cannot report in single mode!=Вы не можете репортить в одиночном режиме!
 
 # Privileges Description
 Can rename items=Может переименовать предметы
