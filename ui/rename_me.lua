@@ -1,23 +1,31 @@
+local S = essentials.translate
 local FORMNAME = "essentials:rename_me"
 hide_names = {}
 
 core.register_on_chat_message(function(name, message)
 	local new_name = hide_names[name]
 	if new_name then
+        local player = core.get_player_by_name(name)
+        local color = player:get_meta():get_string("_essentials_nametag_color")
 		core.chat_send_all(core.format_chat_message(core.colorize(color, new_name), message))
 		return true
 	end
 end)
 
 function essentials.show_rename_menu(name)
+    local ids = ""
+	for _, p in ipairs(core.get_connected_players()) do
+		ids = ids..","..p:get_player_name()
+	end
+
 	local formspec = "formspec_version[6]"..
         "size[4.5,11]"..
         "field[0.1,5.3;4.3,1.1;new_name;"..S("New name")..";]"..
         "button[0.1,9.7;4.3,1.2;rename;"..S("Rename").."]"..
         "image_button_exit[3.4,0.1;1,1;essentials_close_btn.png;close_btn;]"..
-        "field[0.1,8.5;4.3,1.1;color;"..S("Color")..";]"..
+        "dropdown[0.1,8.5;4.3,1.1;color;,red,orange,yellow,green,lime,blue,cyan,pink,purple,white,black;1;false]"..
         "image[0.4,1.2;3.7,3.7;essentials_sussy_amogus_name.png]"..
-        "field[0.1,6.9;4.3,1.1;name;"..core.formspec_escape(S("Player (Empty for yourself)"))..";]"
+        "dropdown[0.1,6.9;4.3,1.1;name;"..ids..";1;false]"
 
 	core.show_formspec(name, FORMNAME, formspec)
 end
@@ -38,20 +46,20 @@ core.register_on_player_receive_fields(function(player, formname, field)
             essentials.player_sound("error", name)
             return
         end
-        if core.get_player_by_name(othername) == nil then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 doesnt exist or offline!", othername)))
+        if not core.get_player_by_name(othername) then
+            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", othername)))
             return
         end
+        local otherp = core.get_player_by_name(othername)
         if new_name == "" then
             core.chat_send_player(name, core.colorize("red", S("Name cannot be empty!")))
             essentials.player_sound("error", name)
             return
         end
 
-        core.get_player_by_name(othername):set_properties({
-            nametag_color = "",
-        })
+        otherp:set_properties({nametag_color = ""})
         
+        local meta = player:get_meta()
         if color == "" then
             hide_names[name] = new_name
             core.chat_send_player(name, core.colorize("green", S("Name of @1 changed to @2", othername, new_name)))
@@ -60,9 +68,10 @@ core.register_on_player_receive_fields(function(player, formname, field)
             end
             essentials.player_sound("done", name)
             
-            core.get_player_by_name(othername):set_properties({
-                nametag = core.colorize("#AAAAAA", "*"..new_name),
+            otherp:set_properties({
+                nametag = core.colorize("#AAAAAA", "*"..new_name)
             })
+            meta:set_string("_essentials_nametag_color", "")
             core.close_formspec(name, formname)
         else
             hide_names[name] = new_name
@@ -71,9 +80,10 @@ core.register_on_player_receive_fields(function(player, formname, field)
                 core.chat_send_player(othername, core.colorize("green", S("Your name changed to @1 with @2 by @3", new_name, core.colorize(color, S("color @1", color)), name)))
             end
             essentials.player_sound("done", name)
-            core.get_player_by_name(othername):set_properties({
+            otherp:set_properties({
                 nametag = core.colorize("#AAAAAA", "*").. core.colorize(color, new_name)
             })
+            meta:set_string("_essentials_nametag_color", color)
             core.close_formspec(name, formname)
         end
     end

@@ -4,8 +4,8 @@ local FORMNAME = "essentials:ban_menu"
 function essentials.show_ban_menu(name)
 	local formspec = "formspec_version[6]"
 	local ids = ""
-	for _, player in ipairs(core.get_connected_players()) do
-		ids = ids..","..player:get_player_name()
+	for _, p in ipairs(core.get_connected_players()) do
+		ids = ids..","..p:get_player_name()
 	end
 
 	formspec = formspec..
