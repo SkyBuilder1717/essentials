@@ -70,6 +70,12 @@ if essentials.add_privs then
             give_to_singleplayer = false,
         })
     end
+    if is_contain(essentials.add_privs_list, "mute") then
+        core.register_privilege("mute", {
+            description = S("Can mute players"),
+            give_to_singleplayer = false,
+        })
+    end
     if is_contain(essentials.add_privs_list, "call") then
         core.register_privilege("call", {
             description = S("Can request to players a teleportation"),

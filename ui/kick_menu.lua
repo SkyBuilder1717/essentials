@@ -1,10 +1,10 @@
 local FORMNAME = "essentials:kick_menu"
 local S = essentials.translate
 
-function show_kick_menu(name)
+function essentials.show_kick_menu(name)
 	local formspec = "formspec_version[6]"
 	local ids = ""
-	for _, player in ipairs(minetest.get_connected_players()) do
+	for _, player in ipairs(core.get_connected_players()) do
 		ids = ids..","..player:get_player_name()
 	end
 
@@ -16,46 +16,53 @@ function show_kick_menu(name)
         "image[0.2,0.2;4.2,4.2;essentials_kick_user.png]"..
         "image_button_exit[11.4,0.1;1,1;essentials_close_btn.png;close_btn;]"
 
-	minetest.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, formspec)
 end
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
     local name = player:get_player_name()
-    minetest.sound_play("clicked", name)
-
-    if (fields.player == nil) or (fields.player == "") then
-        return
-    end
-    if minetest.get_player_by_name(fields.player) == nil then
-        return
-    end
-    local player_ban = minetest.get_player_by_name(fields.player)
+    essentials.player_sound("clicked", name)
 
     if fields.kick_btn then
-        local player_banned = fields.player
-        local reason_kick = fields.reason
         if core.is_singleplayer() then
-            minetest.chat_send_player(name, core.colorize("red", S("You cannot kick in single mode!")))
-            minetest.sound_play("error", name)
-        elseif not player_ban then
-            minetest.chat_send_player(name, core.colorize("red", S("Player not found!")))
-            minetest.sound_play("error", name)
-        elseif reason_kick == "" then
+            core.chat_send_player(name, core.colorize("red", S("You cannot kick in single mode!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        local target = fields.player
+        if not core.get_player_by_name(target) then
+            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", mp)))
+            essentials.player_sound("error", name)
+            return
+        end
+        if target == name then
+            core.chat_send_player(name, core.colorize("red", S("You cannot kick yourself!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        if core.check_player_privs(target, {server = true}) then
+            core.chat_send_player(name, core.colorize("red", S("You cannot kick administrator!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        local reason = fields.reason
+        if target == core.settings:get("name") then
+            core.chat_send_player(name, core.colorize("red", S("You cannot kick server owner!")))
+            essentials.player_sound("error", name)
+            return
+        end
+
+        if reason == "" then
             core.kick_player(fields.player)
-            core.chat_send_all(S("Kicked @1.", player_banned))
-            for _, player in ipairs(minetest.get_connected_players()) do
-                minetest.sound_play("kicked", player:get_player_name())
-            end
+            core.chat_send_all(S("Kicked @1.", target))
+            essentials.play_sound("kicked")
         else
             core.kick_player(fields.player, fields.reason)
-            core.chat_send_all(S("Kicked @1 for '@2'.", player_banned, reason_kick))
-            for _, player in ipairs(minetest.get_connected_players()) do
-                minetest.sound_play("kicked", player:get_player_name())
-            end
+            core.chat_send_all(S("Kicked @1 for @2.", target, reason))
+            essentials.play_sound("kicked")
         end
     end
-	return
 end)

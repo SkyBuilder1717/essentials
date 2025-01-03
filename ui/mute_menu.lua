@@ -1,74 +1,66 @@
+local S = essentials.translate
 local FORMNAME = "essentials:mute_menu"
 
--- ban menu
-function show_mute_menu(name)
-	local formspec = [[
-        formspec_version[6]
-        size[4.5,9.6]
-        field[0.1,4.9;4.3,1.1;player;Player for mute;]
-        button[0.1,6.1;4.3,1.1;mute_btn;Mute the player]
-        image[0.1,0.1;4.3,4.3;essentials_mute_user.png]
-        image_button_exit[3.4,8.5;1,1;essentials_close_btn.png;close_btn;]
-        button[0.1,7.3;4.3,1.1;unmute_btn;Unmute the player]
-    ]]
+function essentials.show_mute_menu(name)
+	local formspec = "formspec_version[6]"
+    local ids = ""
+	for _, player in ipairs(core.get_connected_players()) do
+		ids = ids..","..player:get_player_name()
+	end
 
-	minetest.show_formspec(name, FORMNAME, formspec)
+    formspec = formspec..
+        "size[12.5,4.5]"..
+		"dropdown[4.5,0.3;6.8,1.1;player;"..ids..";1;false]"..
+        "button[4.5,2;6.8,1.1;mute;"..S("Un/Mute the player").."]"..
+        "image[0.2,0.2;4.2,4.2;essentials_mute_user.png]"..
+        "image_button_exit[11.4,0.1;1,1;essentials_close_btn.png;close;]"
+
+	core.show_formspec(name, FORMNAME, formspec)
 end
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
-	minetest.sound_play("clicked", {to_player = name})
+    local name = player:get_player_name()
+    essentials.player_sound("clicked", name)
 
-    if fields.unmute_btn then
-        local admin = player:get_player_name()
-        local player_mutted = fields.player
-        local player = minetest.get_player_by_name(fields.player)
+    local mp = fields.player
 
+    if fields.mute then
         if core.is_singleplayer() then
-            minetest.chat_send_player(admin, core.colorize("red", "You cannot mute in single mode!"))
-            minetest.sound_play("error", name)
-        elseif player_mutted == "" then
-            minetest.chat_send_player(admin, core.colorize("red", "Player name cannot be empty!"))
-            minetest.sound_play("error", name)
-        elseif not player then
-            minetest.chat_send_player(admin, core.colorize("red", "Player not found!"))
-            minetest.sound_play("error", name)
-        elseif privs.shout == true then
-            minetest.chat_send_player(admin, core.colorize("red", "Player already unmuted!"))
-            minetest.sound_play("error", name)
+            core.chat_send_player(name, core.colorize("red", S("You cannot mute in single mode!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        if not core.get_player_by_name(mp) then
+            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", mp)))
+            essentials.player_sound("error", name)
+            return
+        end
+        if mp == name then
+            core.chat_send_player(name, core.colorize("red", S("You cannot mute yourself!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        if core.check_player_privs(mp, {server = true}) then
+            core.chat_send_player(name, core.colorize("red", S("You cannot mute administrator!")))
+            essentials.player_sound("error", name)
+            return
+        end
+        if mp == core.settings:get("name") then
+            core.chat_send_player(name, core.colorize("red", S("You cannot mute server owner!")))
+            essentials.player_sound("error", name)
+            return
+        end
+
+        local shout = core.check_player_privs(mp, {shout = true})
+        if shout then
+            core.chat_send_all(S("Player @1 has been muted.", mp))
+            core.change_player_privs(mp, {shout = false})
         else
-            local privs = minetest.get_player_privs(fields.player)
-            minetest.chat_send_all(player_mutted .. " has been unmuted.")
-            privs = {shout = true}
-            minetest.set_player_privs(player, privs)
+            core.chat_send_all(S("Player @1 have been unmuted.", mp))
+            core.change_player_privs(mp, {shout = true})
         end
     end
-
-    if fields.mute_btn then
-        local admin = player:get_player_name()
-        local player_mutted = fields.player
-        local player = minetest.get_player_by_name(fields.player)
-
-        if core.is_singleplayer() then
-            minetest.chat_send_player(admin, core.colorize("red", "You cannot mute in single mode!"))
-            minetest.sound_play("error", name)
-        elseif player_mutted == "" then
-            minetest.chat_send_player(admin, core.colorize("red", "Player name cannot be empty!"))
-            minetest.sound_play("error", name)
-        elseif not player then
-            minetest.chat_send_player(admin, core.colorize("red", "Player not found!"))
-            minetest.sound_play("error", name)
-        elseif privs.shout == true then
-            minetest.chat_send_player(admin, core.colorize("red", "Player already muted!"))
-            minetest.sound_play("error", name)
-        else
-            local privs = minetest.get_player_privs(fields.player)
-            minetest.chat_send_all(player_mutted .. " has been muted.")
-            privs = {shout = true}
-            minetest.set_player_privs(player, privs)
-        end
-    end
-	return
 end)

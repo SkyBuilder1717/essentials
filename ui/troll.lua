@@ -25,15 +25,15 @@ local function into_number(stringy)
     return tonumber(result)
 end
 
-function show_troll_menu(name, custom)
+function essentials.show_troll_menu(name, custom)
 	local formspec = "formspec_version[6]"
 	local ids = ""
-	for i, player in ipairs(minetest.get_connected_players()) do
+	for i, player in ipairs(core.get_connected_players()) do
 		ids = ids..","..player:get_player_name()
 	end
 
 	local traps = ","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")..""
-	if minetest.get_modpath("nextgen_bedrock") then
+	if core.get_modpath("nextgen_bedrock") then
 		traps = traps..","..S("In").." "..S("Bedrock")
 	end
 
@@ -49,7 +49,7 @@ function show_troll_menu(name, custom)
 		"dropdown[3.4,7;3.7,0.5;trap_in;"..traps..";1;true]"..
 		"label[0.1,0.3;"..S("Version: @1", essentials.version).."]"
 
-	if minetest.features.sound_params_start_time then
+	if core.features.sound_params_start_time then
 		formspec = formspec..
 			"button[7.3,6.2;3,0.8;freeze;"..S("Freeze player").."]"..
 			"field[7.3,5.2;3,0.8;freeze_seconds;"..S("Freeze for...")..";10]"
@@ -64,79 +64,79 @@ function show_troll_menu(name, custom)
 		"tooltip[launch;"..S("Launch player in space").."]"..
 		"tooltip[player;"..S("Selected player for trolling").."]"
 
-	minetest.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, formspec)
 end
 
 local function punch_player(player)
 	local pos = player:get_pos()
 	local dir = player:get_look_dir()
 	local new_pos = vector.add(pos, vector.multiply(dir, -1))
-	if minetest.get_node(new_pos).name == "air" then
+	if core.get_node(new_pos).name == "air" then
 		player:set_pos(new_pos)
 	end
 end
 
 local function punch_time(player, puch)
-	-- lol, too many afters :-)
-	minetest.after(puch, function()
+	-- lmfao too many afters!!11! XD
+	core.after(puch, function()
 		punch_player(player)
-		minetest.after(puch, function()
+		core.after(puch, function()
 			punch_player(player)
-			minetest.after(puch, function()
+			core.after(puch, function()
 				punch_player(player)
-				minetest.after(puch, function()
+				core.after(puch, function()
 					punch_player(player)
-					minetest.after(puch, function()
+					core.after(puch, function()
 						punch_player(player)
-						minetest.after(puch, function()
+						core.after(puch, function()
 							punch_player(player)
-							minetest.after(puch, function()
+							core.after(puch, function()
 								punch_player(player)
-								minetest.after(puch, function()
+								core.after(puch, function()
 									punch_player(player)
-									minetest.after(puch, function()
+									core.after(puch, function()
 										punch_player(player)
-										minetest.after(puch, function()
+										core.after(puch, function()
 											punch_player(player)
-											minetest.after(puch, function()
+											core.after(puch, function()
 												punch_player(player)
-												minetest.after(puch, function()
+												core.after(puch, function()
 													punch_player(player)
-													minetest.after(puch, function()
+													core.after(puch, function()
 														punch_player(player)
-														minetest.after(puch, function()
+														core.after(puch, function()
 															punch_player(player)
-															minetest.after(puch, function()
+															core.after(puch, function()
 																punch_player(player)
-																minetest.after(puch, function()
+																core.after(puch, function()
 																	punch_player(player)
-																	minetest.after(puch, function()
+																	core.after(puch, function()
 																		punch_player(player)
-																		minetest.after(puch, function()
+																		core.after(puch, function()
 																			punch_player(player)
-																			minetest.after(puch, function()
+																			core.after(puch, function()
 																				punch_player(player)
-																				minetest.after(puch, function()
+																				core.after(puch, function()
 																					punch_player(player)
-																					minetest.after(puch, function()
+																					core.after(puch, function()
 																						punch_player(player)
-																						minetest.after(puch, function()
+																						core.after(puch, function()
 																							punch_player(player)
-																							minetest.after(puch, function()
+																							core.after(puch, function()
 																								punch_player(player)
-																								minetest.after(puch, function()
+																								core.after(puch, function()
 																									punch_player(player)
-																									minetest.after(puch, function()
+																									core.after(puch, function()
 																										punch_player(player)
-																										minetest.after(puch, function()
+																										core.after(puch, function()
 																											punch_player(player)
-																											minetest.after(puch, function()
+																											core.after(puch, function()
 																												punch_player(player)
-																												minetest.after(puch, function()
+																												core.after(puch, function()
 																													punch_player(player)
-																													minetest.after(puch, function()
+																													core.after(puch, function()
 																														punch_player(player)
-																														minetest.after(puch, function()
+																														core.after(puch, function()
 																															punch_player(player)
 																														end)
 																													end)
@@ -174,16 +174,16 @@ local function trap_in(player, block)
 	local pos = player:get_pos()
 	pos = {x = math.round(pos.x), y = math.round(pos.y), z = math.round(pos.z)}
 	player:set_pos(pos)
-	minetest.set_node({x = pos.x+1, y = pos.y, z = pos.z}, {name=block})
-	minetest.set_node({x = pos.x-1, y = pos.y, z = pos.z}, {name=block})
-	minetest.set_node({x = pos.x, y = pos.y, z = pos.z+1}, {name=block})
-	minetest.set_node({x = pos.x, y = pos.y, z = pos.z-1}, {name=block})
-	minetest.set_node({x = pos.x, y = pos.y-1, z = pos.z}, {name=block})
-	minetest.set_node({x = pos.x, y = pos.y+2, z = pos.z}, {name=block})
+	core.set_node({x = pos.x+1, y = pos.y, z = pos.z}, {name=block})
+	core.set_node({x = pos.x-1, y = pos.y, z = pos.z}, {name=block})
+	core.set_node({x = pos.x, y = pos.y, z = pos.z+1}, {name=block})
+	core.set_node({x = pos.x, y = pos.y, z = pos.z-1}, {name=block})
+	core.set_node({x = pos.x, y = pos.y-1, z = pos.z}, {name=block})
+	core.set_node({x = pos.x, y = pos.y+2, z = pos.z}, {name=block})
 end
 
 local function freeze_it(fields, bool, name)
-	local player = minetest.get_player_by_name(name)
+	local player = core.get_player_by_name(name)
 	local look = {
 		ver = player:get_look_vertical(),
 		hor = player:get_look_horizontal(),
@@ -216,9 +216,9 @@ local function freeze_it(fields, bool, name)
 		})
 		return
 	end
-	--minetest.chat_send_all(dump(look))
-	meta:set_string("looky", minetest.serialize(look))
-	meta:set_string("position_troll", minetest.serialize(pos))
+	--core.chat_send_all(dump(look))
+	meta:set_string("looky", core.serialize(look))
+	meta:set_string("position_troll", core.serialize(pos))
 	meta:set_string("is_freezed_troll", "true")
 	player:set_physics_override({
 		speed = 0,
@@ -239,8 +239,8 @@ local function freeze_it(fields, bool, name)
 		new_move = false,
 	})
 	player:set_pos(pos)
-	minetest.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
-	minetest.after(seconds, function()
+	core.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
+	core.after(seconds, function()
 		if meta:get_string("is_freezed_troll") == "" then
 			return
 		end
@@ -268,32 +268,32 @@ end
 
 local function troll_message(fields, name)
 	if essentials.trolled_by then
-		minetest.chat_send_player(fields.player, S("You have been trolled by @1.", name))
+		core.chat_send_player(fields.player, S("You have been trolled by @1.", name))
 	end
 end
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
 	local name = player:get_player_name()
-	minetest.sound_play("clicked", {to_player = name})
+	essentials.player_sound("clicked", name)
 
     if (fields.player == nil) or (fields.player == "") then
         return
     end
-    if minetest.get_player_by_name(fields.player) == nil then
+    if core.get_player_by_name(fields.player) == nil then
         return
     end
-	local player = minetest.get_player_by_name(fields.player)
+	local player = core.get_player_by_name(fields.player)
 	local pos = player:get_pos()
 	if fields.punch then
 		punch_time(player, 0.0001)
-		minetest.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
+		core.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
 	end
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
-		minetest.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
+		core.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
 	end
 	if fields.freeze then
 		if player:get_meta():get_string("is_freezed_troll") == "true" then
@@ -307,17 +307,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 		local def = traps[tonumber(fields.trap_in)-1]
 		trap_in(player, def[2])
-		minetest.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, S(def[1])))
+		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, S(def[1])))
 		troll_message()
 	end
-	return
 end)
 
-minetest.register_globalstep(function(dtime)
-	for _, player in ipairs(minetest.get_connected_players()) do
+core.register_globalstep(function(dtime)
+	for _, player in ipairs(core.get_connected_players()) do
 		local meta = player:get_meta()
-		local look = minetest.deserialize(meta:get_string("looky"))
-		local ppos = minetest.deserialize(meta:get_string("position_troll"))
+		local look = core.deserialize(meta:get_string("looky"))
+		local ppos = core.deserialize(meta:get_string("position_troll"))
 		if meta:get_string("is_freezed_troll") == "true" then
 			player:set_look_vertical(look.ver)
 			player:set_look_horizontal(look.hor)

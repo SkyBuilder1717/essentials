@@ -42,18 +42,18 @@ local function speed_cmd(name, param)
     local oname = string.match(param, speed.." (.+)")
     if oname == nil then
         core.chat_send_player(name, S("Your speed now is @1.", speed))
-        core.sound_play("done", name)
+        essentials.player_sound("done", name)
         core.get_player_by_name(name):set_physics_override({
             speed = tonumber(speed)
         })
     else
         if core.get_player_by_name(oname) == nil then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("Please, specify an online player."))
         end
         core.chat_send_player(name, S("Speed of player @1 now is @2.", oname, speed))
-        core.sound_play("done", name)
-        core.sound_play("done", oname)
+        essentials.player_sound("done", name)
+        essentials.player_sound("done", oname)
         if essentials.changed_by then
             core.chat_send_player(oname, S("Now your speed is @1 from player @2.", speed, name))
         end
@@ -72,16 +72,14 @@ local function announcement_cmd(name, param)
     else
         core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param).." "..core.colorize("#82909D", S("(Announced by %s)", name)))
     end
-    for _, player in ipairs(core.get_connected_players()) do
-        core.sound_play("broadcast", player:get_player_name())
-    end
+    essentials.play_sound("broadcast")
 end
 
 local function biome_cmd(name, param)
     -- Thanks to @mckaygerhard on github for that part of script!
     if not core.has_feature("object_use_texture_alpha") then
-        core.log("error", essentials.main.." Your core Engine is deprecated! Update it for \'/biome\' command.")
-        core.sound_play("error", name)
+        core.log("error", essentials.main.." "..S("Your Luanti Engine is deprecated! Update it for \'/biome\' command."))
+        essentials.player_sound("error", name)
         return false, core.colorize("red", S("That version of engine doesnt support that command."))
     end
 
@@ -97,11 +95,11 @@ local function biome_cmd(name, param)
             elseif param == "humidity" then
                 core.chat_send_player(name, "\"".. biome .."\": ".. biomeinfo.humidity)
             else
-                core.sound_play("error", name)
+                essentials.player_sound("error", name)
                 return false, core.colorize("red", S("Invalid information name!"))
             end
         else
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("You cant check more information without privelege!"))
         end
     end
@@ -110,16 +108,16 @@ end
 local function getpos_cmd(name, param)
     local player = core.get_player_by_name(param);
     if param == "" then
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         return false
     elseif core.get_player_by_name(param) == nil then
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         return false, core.colorize("red", S("Player @1 not found!", param))
     end
     local pos = player:get_pos();
     local round_pos = vector.round(pos);
     core.chat_send_player(name, S("Position of player @1 is @2 @3 @4.", param, core.colorize("#ff0000", " X:"..round_pos.x), core.colorize("#00ff00", " Y:"..round_pos.y), core.colorize("#0000ff", " Z:"..round_pos.z)))
-    core.sound_play("done", name)
+    essentials.player_sound("done", name)
 end
 
 local function seed_cmd(name, param)
@@ -136,7 +134,7 @@ local function godmode_cmd(name, param)
         end
         if player == nil then
             core.chat_send_player(name, core.colorize("red", S("Player @1 not found.", param)))
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return
         end
         local ag = player:get_armor_groups()
@@ -144,28 +142,28 @@ local function godmode_cmd(name, param)
             ag["immortal"] = 1
             if param == "" then
                 core.chat_send_player(name, core.colorize("yellow", S("God mode enabled.")))
-                core.sound_play("request", name)
+                essentials.player_sound("request", name)
             else
                 core.chat_send_player(name, S("God mode enabled for @1.", param))
                 core.chat_send_player(param, S("For you enabled god mode from @1.", name))
-                core.sound_play("request", param)
-                core.sound_play("done", name)
+                essentials.player_sound("request", param)
+                essentials.player_sound("done", name)
             end
         else
             ag["immortal"] = nil
             if param == "" then
                 core.chat_send_player(name, core.colorize("yellow", S("God mode disabled.")))
-                core.sound_play("disabled", name)
+                essentials.player_sound("disabled", name)
             else
                 core.chat_send_player(name, S("God mode disabled for @1.", param))
                 core.chat_send_player(param, S("For you god mode has been disabled by @1.", name))
-                core.sound_play("disabled", param)
-                core.sound_play("done", name)
+                essentials.player_sound("disabled", param)
+                essentials.player_sound("done", name)
             end
         end
         player:set_armor_groups(ag)
     else
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         return false, core.colorize("red", S("@1 is disabled!", "\"enable_damage\""))
     end
 end
@@ -177,15 +175,15 @@ local function kill_cmd(name, param)
         else
             if core.get_player_by_name(param) == nil then
                 core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", param)))
-                core.sound_play("error", name)
+                essentials.player_sound("error", name)
                 return
             end
             core.get_player_by_name(param):set_hp(0)
             core.chat_send_player(name, S("You killed player @1.", param))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
             if essentials.killed_by then
                 core.chat_send_player(param, S("You has been killed by player @1.", name))
-                core.sound_play("error", param)
+                essentials.player_sound("error", param)
             end
         end
     else
@@ -193,14 +191,14 @@ local function kill_cmd(name, param)
         if param then
             player = core.get_player_by_name(param)
             if core.get_player_by_name(param) == nil then
-                core.sound_play("error", name)
+                essentials.player_sound("error", name)
                 return false, core.colorize("red", S("Player @1 not found!", param))
             end
             core.chat_send_player(name, S("You respawned player @1.", param))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
             if essentials.killed_by then
                 core.chat_send_player(param, S("You has been respawned by player @1.", name))
-                core.sound_play("error", param)
+                essentials.player_sound("error", param)
             end
         end
         for _, callback in pairs(core.registered_on_respawnplayers) do
@@ -218,15 +216,15 @@ local function heal_cmd(name, param)
         core.chat_send_player(name, S("You has been healed to the possible max health."))
     else
         if core.get_player_by_name(param) == nil then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("Player @1 not found!", param))
         end
         core.get_player_by_name(param):set_hp(core.PLAYER_MAX_HP_DEFAULT)
         core.chat_send_player(name, S("Player @1 healed to the @2 health.", param, core.get_player_by_name(param):get_hp()))
-        core.sound_play("done", name)
+        essentials.player_sound("done", name)
         if essentials.changed_by then
             core.chat_send_player(param, S("You has been fully healed by @1.", name))
-            core.sound_play("done", param)
+            essentials.player_sound("done", param)
         end
     end
 end
@@ -241,10 +239,10 @@ end
 
 local function maintenance_cmd(name, param)
     if core.is_singleplayer() then
-        core.sound_play("error", param)
+        essentials.player_sound("error", param)
         return false, core.colorize("red", S("Cannot interact with maintenance mode in singleplayer!"))
     end
-    core.sound_play("done", param)
+    essentials.player_sound("done", param)
     if essentials.maintenance then
         essentials.maintenance = false
         core.chat_send_player(name, core.colorize("lightgrey", S("Maintenance mode has been disabled!")))
@@ -279,7 +277,7 @@ local function vanish_cmd(name, param)
     else
         player = core.get_player_by_name(param)
         if player == nil then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("Player @1 not found!", param))
         end
         other = true
@@ -298,14 +296,14 @@ local function vanish_cmd(name, param)
         }
         if other then
             core.chat_send_player(name, core.colorize("#00ff00", S("Player @1 now is invisible.", param)))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
             if essentials.changed_by then
                 core.chat_send_player(param, core.colorize("#E6E6E6", S("Now you are invisible from player @1.", name)))
-                core.sound_play("done", param)
+                essentials.player_sound("done", param)
             end
         else
             core.chat_send_player(name, core.colorize("#E6E6E6", S("Now you are invisible.")))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
         end
     else
         player:get_meta():set_int("invisible", 0)
@@ -319,14 +317,14 @@ local function vanish_cmd(name, param)
         }
         if other then
             core.chat_send_player(name, core.colorize("#00ff00s", S("Now player @1 is visible again.", param)))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
             if essentials.changed_by then
                 core.chat_send_player(param, S("Now you visible again from player @1.", name))
-                core.sound_play("done", param)
+                essentials.player_sound("done", param)
             end
         else
             core.chat_send_player(name, S("Now you are visible again."))
-            core.sound_play("done", name)
+            essentials.player_sound("done", name)
         end
     end
     player:set_properties(prop)
@@ -335,17 +333,17 @@ end
 
 local function troll_cmd(name, param)
     if core.is_singleplayer() then
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         return false, core.colorize("red", S("You cant troll in single mode!"))
     end
-    show_troll_menu(name)
+    essentials.show_troll_menu(name)
 end
 
 local function ip_cmd(name, param)
     --[[
     if not is_contain(essentials.trusted_ip_users, name) then
         core.chat_send_player(name, core.colorize("red", S("You are not of trusted administrator!")))
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         show_ip_error(name)
         return
         -- \/ deprecated \/ --
@@ -357,7 +355,7 @@ local function ip_cmd(name, param)
         return
     end
     if core.get_player_by_name(param) == nil then
-        core.sound_play("error", name)
+        essentials.player_sound("error", name)
         return false, core.colorize("red", S("Player @1 not found!", param))
     end
 
@@ -372,11 +370,11 @@ end
 local function call_cmd(name, param, status)
     if status == "request" then
         if core.get_player_by_name(param) == nil then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("Player @1 not found!", param))
         end
         if param == name then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("Cant send teleport request to yourself!"))
         end
         essentials.teleport_requests[param] = {}
@@ -385,20 +383,20 @@ local function call_cmd(name, param, status)
         core.chat_send_player(name, core.colorize("#dbdbdb", S("Calls teleport request to player @1.", param)).." "..core.colorize("red", S("In @1 seconds it will expire.", essentials.teleport_request_expire)))
         core.chat_send_player(param, core.colorize("#C2c2c2", S("Player @1 calls to you a teleportation. Request will expire in @2 seconds.", name, essentials.teleport_request_expire)))
         core.chat_send_player(param, core.colorize("#C2c2c2", S("@1 to accept request. @2 to decline request.", core.colorize("#00ff00", "/tpaccept"), core.colorize("#ff0000", "/tpdecline"))))
-        core.sound_play("done", name)
-        core.sound_play("request", param)
+        essentials.player_sound("done", name)
+        essentials.player_sound("request", param)
         core.after(essentials.teleport_request_expire, function()
             if is_contain(essentials.teleport_requests[param], name) then
                 core.chat_send_player(param, core.colorize("#c2c2c2", S("Teleportation request from @1 has been expired.", name)))
                 core.chat_send_player(name, core.colorize("#ff0000", S("Teleportation request to player @1 has been expired.", param)))
-                core.sound_play("disable", param)
-                core.sound_play("error", name)
+                essentials.player_sound("disable", param)
+                essentials.player_sound("error", name)
                 delete_value_arr(essentials.teleport_requests[param], name)
             end
         end)
     else
         if (essentials.teleport_requests[name] == {}) or (essentials.teleport_requests[name] == nil) then
-            core.sound_play("error", name)
+            essentials.player_sound("error", name)
             return false, core.colorize("red", S("You dont have any teleport request."))
         end
         local player = core.get_player_by_name(name)
@@ -417,7 +415,7 @@ local function call_cmd(name, param, status)
                 else
                     string = string..", "..plname
                 end
-                core.sound_play("done", plname)
+                essentials.player_sound("done", plname)
             end
             core.chat_send_player(name, core.colorize("#dbdbdb", S("Requests from player(-s) @1 has been accepted.", string)))
         elseif status == "decline" then
@@ -433,11 +431,11 @@ local function call_cmd(name, param, status)
                 else
                     string = string..", "..plname
                 end
-                core.sound_play("done", plname)
+                essentials.player_sound("done", plname)
             end
             core.chat_send_player(name, core.colorize("#ff0000", S("Requests from player(-s) @1 has been declined.", string)))
         end
-        core.sound_play("done", name)
+        essentials.player_sound("done", name)
         essentials.teleport_requests[name] = {}
     end
 end
@@ -579,10 +577,10 @@ core.register_chatcommand("ban_menu", {
     func = function(name, param)
         if core.is_singleplayer() then
             core.chat_send_player(name, core.colorize("red", S("You cannot ban in single mode!")))
-            core.sound_play("error", name)
+            essentials.player_sound("essentials_error", name)
             return
         end
-        show_ban_menu(name)
+        essentials.show_ban_menu(name)
     end
 })
 
@@ -592,11 +590,24 @@ core.register_chatcommand("kick_menu", {
     func = function(name, param)
         if core.is_singleplayer() then
             core.chat_send_player(name, core.colorize("red", S("You cannot kick in single mode!")))
-            core.sound_play("error", name)
+            essentials.player_sound("essentials_error", name)
             return
         end
-        show_kick_menu(name)
+        essentials.show_kick_menu(name)
     end
+})
+
+core.register_chatcommand("mute_menu", {
+   description = S("Open the mute menu."),
+   privs = {mute = true},
+   func = function(name, param)
+        if core.is_singleplayer() then
+            core.chat_send_player(name, core.colorize("red", S("You cannot mute in single mode!")))
+            essentials.player_sound("essentials_error", name)
+            return
+        end
+        essentials.show_mute_menu(name)
+   end
 })
 
 -- not working or scrapped bullshit
@@ -607,18 +618,6 @@ core.register_chatcommand("password", {
     description = S("Shows the password of the authorized player."),
     func = password_cmd,
 })
-
-core.register_chatcommand("mute_menu", {
-   description = S("Open the mute menu.",
-   privs = {mute = true},
-   func = function(name, param)
-       if core.is_singleplayer() then
-           core.chat_send_player(name, core.colorize("red", "You cannot mute in single mode!"))
-       else
-           show_mute_menu(name)
-       end
-   end
-})
 ]]--
 
 if essentials.reports_system then
@@ -627,10 +626,10 @@ if essentials.reports_system then
         privs = {server = true},
         func = function(name, param)
             if core.is_singleplayer() then
-                core.sound_play("error", name)
+                essentials.player_sound("error", name)
                 return false, core.colorize("red", S("You cannot report in single mode!"))
             end
-            show_report_manage(name)
+            essentials.show_report_manage(name)
         end
     })
     core.register_chatcommand("report", {
@@ -638,10 +637,10 @@ if essentials.reports_system then
         privs = {shout = true},
         func = function(name, param)
             if core.is_singleplayer() then
-                core.sound_play("error", name)
+                essentials.player_sound("error", name)
                 return false, core.colorize("red", S("You cannot report in single mode!"))
             end
-            show_report_menu(name)
+            essentials.show_report_menu(name)
         end
     })
 end
@@ -651,7 +650,7 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player
         description = S("Shows the rename menu."),
         privs = {rename_player = true},
         func = function(name, param)
-            show_rename_menu(name)
+            essentials.show_rename_menu(name)
         end
     })
 else
@@ -659,7 +658,7 @@ else
         description = S("Shows the rename menu."),
         privs = {kick = true},
         func = function(name, param)
-            show_rename_menu(name)
+            essentials.show_rename_menu(name)
         end
     })
 end
@@ -701,7 +700,7 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_item")
         description = S("Hold item in hand and open this menu for renaming it."),
         privs = {rename_item = true},
         func = function(name, param)
-            show_renameitem_menu(name)
+            essentials.show_renameitem_menu(name)
         end
     })
 else
@@ -709,7 +708,7 @@ else
         description = S("Hold item in hand and open this menu for renaming it."),
         privs = {basic_privs = true},
         func = function(name, param)
-            show_renameitem_menu(name)
+            essentials.show_renameitem_menu(name)
         end
     })
 end
@@ -806,7 +805,7 @@ core.register_chatcommand("text_box", {
     description = S("Shows to any player a textbox with a text!"),
     privs = {ban = true},
     func = function(name, param)
-        show_textbox_admin(name)
+        essentials.show_make_textbox(name)
     end
 })
 

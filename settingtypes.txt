@@ -85,7 +85,7 @@ essentials_report_system (Reports) bool false
 # Type here a privs do you want to be exist for "Additional Privileges" by ", "
 #
 # All Additional Privileges:
-# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call
+# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
 #
 #    Requires: essentials_beta_test, essentials_additional_privileges
-essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call
+essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute

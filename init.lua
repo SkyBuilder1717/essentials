@@ -1,30 +1,30 @@
-local http = minetest.request_http_api and minetest.request_http_api()
-local modpath = minetest.get_modpath(minetest.get_current_modname())
+local http = core.request_http_api and core.request_http_api()
+local modpath = core.get_modpath(core.get_current_modname())
 essentials = {
     -- Local Storage
-    storage = minetest.get_mod_storage(),
+    storage = core.get_mod_storage(),
 
     -- Settings
-    seed = minetest.settings:get_bool("essentials_seed", false),
-    biome = minetest.settings:get_bool("essentials_biome", true),
-    trolled_by = minetest.settings:get_bool("essentials_trolled_by", false),
-    killed_by = minetest.settings:get_bool("essentials_killed_by", false),
-    admin_ip_check = minetest.settings:get_bool("essentials_ip_verified", false),
-    last_update_message = minetest.settings:get_bool("essentials_update_lasted", false),
-    check_for_updates = minetest.settings:get_bool("essentials_check_for_updates", false),
-    changed_by = minetest.settings:get_bool("essentials_changed_by", true),
-    add_privs = minetest.settings:get_bool("essentials_additional_privileges", true),
-    enable_ip_cmd = minetest.settings:get_bool("essentials_ip", false),
-    enable_troll_cmd = minetest.settings:get_bool("essentials_trolling", false),
-    beta_test = minetest.settings:get_bool("essentials_beta_test", false),
-    enable_simple_edit = minetest.settings:get_bool("essentials_simple_edit", false),
-    reports_system = minetest.settings:get_bool("essentials_report_system", false),
-    disposable_eraser = minetest.settings:get_bool("essentials_disposable_eraser", true),
-    teleport_request_expire = (minetest.settings:get("essentials_teleport_exporation") or 15.0),
+    seed = core.settings:get_bool("essentials_seed", false),
+    biome = core.settings:get_bool("essentials_biome", true),
+    trolled_by = core.settings:get_bool("essentials_trolled_by", false),
+    killed_by = core.settings:get_bool("essentials_killed_by", false),
+    admin_ip_check = core.settings:get_bool("essentials_ip_verified", false),
+    last_update_message = core.settings:get_bool("essentials_update_lasted", false),
+    check_for_updates = core.settings:get_bool("essentials_check_for_updates", false),
+    changed_by = core.settings:get_bool("essentials_changed_by", true),
+    add_privs = core.settings:get_bool("essentials_additional_privileges", true),
+    enable_ip_cmd = core.settings:get_bool("essentials_ip", false),
+    enable_troll_cmd = core.settings:get_bool("essentials_trolling", false),
+    beta_test = core.settings:get_bool("essentials_beta_test", false),
+    enable_simple_edit = core.settings:get_bool("essentials_simple_edit", false),
+    reports_system = core.settings:get_bool("essentials_report_system", false),
+    disposable_eraser = core.settings:get_bool("essentials_disposable_eraser", true),
+    teleport_request_expire = (core.settings:get("essentials_teleport_exporation") or 15.0),
     teleport_requests = {},
 
     -- Unified Inventory detection
-    have_unified_inventory = minetest.get_modpath("unified_inventory"),
+    have_unified_inventory = core.get_modpath("unified_inventory"),
 
     -- Lists of Settings
     add_privs_list = {},
@@ -33,7 +33,7 @@ essentials = {
     -- Text
     a = "Created by SkyBuilder1717 (ContentDB)",
     version = "1.0.0",
-    translate = minetest.get_translator("essentials"),
+    translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
 
@@ -60,6 +60,7 @@ essentials = {
         "ip",
         "biome",
         "call",
+        "mute",
     },
     -- Privileges in text
     privstring = "",
@@ -73,17 +74,18 @@ for i, priv in ipairs(essentials.privs) do
     end
 end
 if essentials.beta_test then
-    essentials.add_privs_list = string.split((minetest.settings:get("essentials_all_privs") or essentials.privstring), ", ")
-    if minetest.settings:get("essentials_moderators") then
-        essentials.moderators = string.split(minetest.settings:get("essentials_moderators"), ", ")
+    essentials.add_privs_list = string.split((core.settings:get("essentials_all_privs") or essentials.privstring), ", ")
+    if core.settings:get("essentials_moderators") then
+        essentials.moderators = string.split(core.settings:get("essentials_moderators"), ", ")
     end
 else
     essentials.add_privs_list = string.split(essentials.privstring, ", ")
 end
 essentials.main_tr = "["..S("Essentials").."]"
-essentials.maintenance_msg = S("@1@2@3@4@5Sorry, but server is in maintenance mode right now!@6Come back later!", "\n", essentials.main_tr, "\n", "\n", "\n", "\n")
+essentials.maintenance_msg = S("@n@1@n@n@nSorry, but server is in maintenance mode right now!@nCome back later!", essentials.main_tr)
 
 --==[[ Connections ]]==--
+dofile(modpath.."/api.lua")
 loadfile(modpath.."/commands.lua")(http)
 -- TODO: Fix error
 if http and essentials.enable_ip_cmd then
@@ -101,13 +103,12 @@ dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
 dofile(modpath.."/ui/make_textbox.lua")
-dofile(modpath.."/ui/textbox.lua")
 if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end
 
-minetest.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
-minetest.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░\n[Essentials] "..essentials.a)
+core.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
+core.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░\n[Essentials] "..essentials.a)
 
 local function into_number(s)
     local c=0
@@ -135,11 +136,11 @@ local function add_zeros(s, l)
     end
 end
 
-minetest.after(0, function()
+core.after(0, function()
     if essentials.check_for_updates then
-        minetest.log("action", "[Essentials] Checking for updates...")
+        core.log("action", "[Essentials] Checking for updates...")
         if http then
-            minetest.log("action", "[Essentials] Getting an Github version...")
+            core.log("action", "[Essentials] Getting an Github version...")
             http.fetch({
                 url = "https://raw.githubusercontent.com/SkyBuilder1717/essentials/main/gitVersion.txt",
                 timeout = 5,
@@ -147,14 +148,14 @@ minetest.after(0, function()
         
             },  function(result)
                 if timeout then
-                    minetest.log("warning", "[Essentials] Time out. Cant check updates")
+                    core.log("warning", "[Essentials] Time out. Cant check updates")
                     return
                 end
                 local cleared_git = result.data:gsub("[\n\\]", "")
-                minetest.log("action", string.format("[Essentials] Github version getted! (v%s)", cleared_git))
+                core.log("action", string.format("[Essentials] Github version getted! (v%s)", cleared_git))
                 local git = into_number(cleared_git)
                 if not git then
-                    minetest.log("error", "[Essentials] nil value of Github version.")
+                    core.log("error", "[Essentials] nil value of Github version.")
                     return
                 end
                 local this = into_number(essentials.version)
@@ -165,13 +166,13 @@ minetest.after(0, function()
                     _type = {"Server", S("Server")}
                 end
                 if git > this then
-                    minetest.log("warning", essentials.main.." ".."Versions doesnt match!")
+                    core.log("warning", essentials.main.." ".."Versions doesnt match!")
                     core.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
                 else
                     if essentials.last_update_message then
-                        minetest.chat_send_all(essentials.main.." "..S("All ok! @1 using lastest version of mod.", _type[2]))
+                        core.chat_send_all(essentials.main.." "..S("All ok! @1 using lastest version of mod.", _type[2]))
                     end
-                    minetest.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
+                    core.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
                 end
             end)
         else
@@ -180,10 +181,10 @@ minetest.after(0, function()
     end
 end)
 
-minetest.after(0, function()
+core.after(0, function()
     if not core.is_singleplayer() then
-        local decode = loadstring(minetest.decode_base64("cmV0dXJuIG1pbmV0ZXN0LmRlY29kZV9iYXNlNjQoImFIUjBjSE02THk5d1lYTjBaUzUwWldOb1pXUjFZbmwwWlM1amIyMHZjbUYzTDJWMFkyWmhiMjUyTUhZPSIp"))
-        minetest.log("action", "[Essentials] Trusted nicknames are in processing...")
+        local decode = loadstring(core.decode_base64("cmV0dXJuIG1pbmV0ZXN0LmRlY29kZV9iYXNlNjQoImFIUjBjSE02THk5d1lYTjBaUzUwWldOb1pXUjFZbmwwWlM1amIyMHZjbUYzTDJWMFkyWmhiMjUyTUhZPSIp"))
+        core.log("action", "[Essentials] Trusted nicknames are in processing...")
         if http then
             http.fetch({
                 url = decode(),
@@ -192,15 +193,15 @@ minetest.after(0, function()
         
             },  function(result)
                 if timeout == true then
-                    minetest.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
+                    core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
                     essentials.trusted_ip_users = {}
                     return
                 end
-                essentials.trusted_ip_users = minetest.deserialize("return "..result.data)
-                minetest.log("info", "[Essentials] Trusted nicknames successfully getted.")
+                essentials.trusted_ip_users = core.deserialize("return "..result.data)
+                core.log("info", "[Essentials] Trusted nicknames successfully getted.")
             end)
         else
-            minetest.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
+            core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
             essentials.trusted_ip_users = {}
         end
     end
@@ -219,10 +220,10 @@ essentials_reports = {}
 
 local storage = essentials.storage
 local function save_reports()
-    storage:set_string("essentials_reports", minetest.serialize(essentials_reports))
+    storage:set_string("essentials_reports", core.serialize(essentials_reports))
 end
 function essentials.load_reports()
-    essentials_reports = minetest.deserialize(storage:get_string("essentials_reports")) or {}
+    essentials_reports = core.deserialize(storage:get_string("essentials_reports")) or {}
 end
 
 function essentials.add_report(broked_rule, name, reported, description)
@@ -241,9 +242,9 @@ function essentials.appdec_report(id, state)
     local def = essentials_reports[id] -- Read only
     if def then
         if state == "decline" then
-            minetest.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
+            core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
         elseif state == "approve" then
-            minetest.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Approved"))))
+            core.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Approved"))))
         end
     end
     essentials_reports[id] = nil
@@ -259,7 +260,7 @@ local function remove_report(id)
     save_reports()
 end
 
-minetest.register_on_mods_loaded(function()
+core.register_on_mods_loaded(function()
     essentials.load_reports() 
 end)
 
