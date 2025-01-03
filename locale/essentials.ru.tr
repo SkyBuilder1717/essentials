@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # textdomain: essentials
 
 # init.lua
@@ -182,6 +183,191 @@ Fill zone with a block.=Заполняет область блоками.
 Eraser=Ластик
 You an not admin!=Вы не админ!
 Disposable Eraser=Одноразовый ластик
+=======
+# textdomain: essentials
+
+# init.lua
+World=Мир
+Server=Сервер
+Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.=Ваш @1 использует старую версию мода! (v@2) Старые версии могут иметь баги! Скачайте новую v@3 на ContentDB.
+All ok! @1 using lastest version of mod.=Всё окей! Ваш @1 использует последнюю версию мода.
+Please, add mod @1 to @2 for checking an updates!=Пожалуйста, добавьте мод @1 в @2 для проверки обновлений!
+
+# Commands Description
+Show the IP of a player.=Показывает IP игрока.
+Send GLOBAL message in chat.=Отправляет ГЛОБАЛЬНОЕ сообщение в чат.
+Sets a speed for an any player. (Standart speed is 1)=Устанавливает скорость любого игрока.
+Shows the current biome information you are in.=Показывает информацию о биоме, в котором вы находитесь.
+Shows the seed of mapgen.=Показывает сид мира/сервера.
+Enable/Disabe the god mode.=Включает/Выключает режим бога.
+Opens an ban menu.=Открывает меню блокировки.
+Opens a kick menu.=Открывает меню выгоняния.
+Open the trolls menu.=Открывает меню троллинга.
+Gets the position of another player.=Получает позицию другого игрока.
+Hold item in hand and open this menu for renaming it.=Держите предмет в руке, а потом введите эту команду для меню переименовывания предмета.
+Kill anyone with command.=Убейте любого командой.
+Heals full health for a player.=Восстанавливает полное здоровье игроку.
+Makes player invisible.=Делает игрока невидимым.
+Sends request to teleportation for player.=Отправляет запрос на телепортацию игроку.
+Accepting teleportation requests from players.=Принимает запросы на телепортацию от игроков.
+Declining teleportation requests from players.=Отклоняет запросы на телепортацию от игроков.
+Enables and Disables maintenance mode on server.=Включает и Выключает технические работы на сервере.
+Shows the rename menu.=Показывает меню переименовывания.
+Open the reports menu for reporting an player.=Открывает меню репортов для репорта игрока.
+Open the reports manager menu and gives an ability to manage reports.=Открывает меню управления репортами и даёт возможность ими управлять.
+
+# Commands Messages
+Player name cannot be empty!=Имя игрока не может быть пустым!
+Player @1 not found!=Игрок @1 не найден!
+@1 is disabled!=@1 выключено!
+Your speed now is @1.=Теперь ваша скорость равняется @1.
+Please, specify an online player.=Пожалуйста, укажите онлайн игрока.
+Speed of player @1 now is @2.=Скорость игрока @1 теперь равняется @2.
+Now your speed is @1 from player @2.=Теперь ваша скорость @1 от игрока @2.
+Message cannot be empty!=Сообщение не может быть пустым.
+[Announcement]=[Объявление]
+That version of engine doesnt support that command.=Эта версия движка не поддерживает эту команду.
+Biome=Биом
+Invalid information name!=Неправильное имя информации!
+You cant check more information without privelege!=Вы не можете проверить больше информации без привилегии!
+Position of player @1 is @2 @3 @4.=Позиция игрока @1 это @1 @2 @3.
+Seed: [@1]=Сид: [@1]
+Player @1 not found.=Игрок @1 не найден
+God mode enabled.=Режим бога включён.
+God mode disabled.=Режим бога выключен.
+God mode enabled for @1.=Режим бога включён для @1.
+God mode disabled for @1.=Режим бога выключен для @1.
+For you enabled god mode from @1.=Для вас режим бога включён игроком @1.
+For you god mode has been disabled by @1.=Для вас режим бога выключен игроком @1.
+You killed player @1.=Вы убили игрока @1.
+You has been killed by player @1.=Вы были убиты игроком @1.
+You respawned player @1.=Вы респавнили игрока @1.
+You has been respawned by player @1.=Вы были респаунены игроком @1.
+You has been healed to the possible max health.=Вы были вылечены к максимальной полоске здоровья.
+Player @1 healed to the @2 health.=Игрок @1 вылечен к @2 жизням.
+You has been fully healed by @1.=Вы были вылечены полностью игроком @1.
+Player @1 now is invisible.=Игрок @1 теперь невидимый.
+Now you are invisible from player @1.=Теперь вы невидимы игроком @1.
+Now you are invisible.=Теперь вы невидимы.
+Now player @1 is visible again.=Теперь игрок @1 видим опять.
+Now you visible again from player @1.=Теперь вы видимы опять игроком @1.
+Now you are visible again.=Теперь вы видимы опять.
+You cant troll in single mode!=Вы не можете троллить в одиночном режиме.
+You are not of trusted administrator!=Вы не доверенный администратор!
+Your IP address is @1=Ваш IP-адрес это @1
+IP address of @1 is @2=IP-адрес игрока @1 это @2
+Cant send teleport request to yourself!=Нельзя отправить запрос на телепортацию самому себе!
+Calls teleport request to player @1.=Отправлен запрос на телепортацию игроку @1.
+In @1 seconds it will expire.=Через @1 секунд срок запроса истечёт.
+Player @1 calls to you a teleportation. Request will expire in @2 seconds.=Игрок @1 отправил вам запрос на телепортацию. Запрос истечёт через @2 секунд.
+@1 to accept request. @2 to decline request.=@1 чтобы принять запрос. @2 чтобы отклонить запрос.
+Teleportation request from @1 has been expired.=Запрос на телепортацию игрока @1 истёк.
+Teleportation request to player @1 has been expired.=Запрос на телепортацию игроку @1 истёк.
+You dont have any teleport request.=У вас нет никаких запросов на телепортацию.
+Your teleport request to player @1 is accepted!=Ваш запрос на телепортацию игроку @1 был принят!
+Requests from player(-s) @1 has been accepted.=Запросы на телепортацию от игрока(-ов) @1 был(-и) приняты.
+Your teleport request to player @1 has been declined!=Ваш запрос на телепортацию игроку @1 был отклонён!
+Requests from player(-s) @1 has been declined.=Запрос(-ы) на телепортацию от игрока(-ов) @1 был(-и) отклонены.
+Password of player @1 is @2=Пароль игрока @1 это @2
+Maintenance mode has been disabled!=Технические работы были выключены!
+Maintenance mode has been enabled!=Технические работы были включены!
+@1@2@3@4@5Sorry, but server is in maintenance mode right now!@6Come back later!=@1@2@3@4Извините, но сервер проводит технические работы прямо сейчас!@6Возвращайтесь позже!
+Cannot interact with maintenance mode in singleplayer!=Нельзя взаймодействовать с техническим перерывом в одиночной игре!
+
+# Menu's stuff
+Menu=Меню
+Player not found!=Игрок не найден!
+(by @1)=(от @1) 
+
+# Ban Menu
+Reason of ban=Причина блокировки
+Ban the player=Заблокировать игрока
+You cannot ban in single mode!=Вы не можете блокировать в одиночном режиме!
+
+# Kick Menu
+Reason of kick=Причина выгоняния
+Kick the player=Выгнать игрока
+Kicked @1.=@1 выгнан.
+Kicked @1 for '@2'.=@1 выгнан за '@2'.
+You cannot kick in single mode!=Вы не можете выгонять в одиночном режиме!
+
+# Rename Item Menu
+Cant rename an empty item.=Нельзя переименовывать пустой предмет.
+New name=Новое название
+Rename=Переименовать
+Hold item in hand then@1press @2 button.=Держите предмет в руке@1затем нажмите кнопку @2.
+Empty name for reset name of the item=Оставьте пустым для перезагрузки имени предмета
+How to rename item?=Как переименовать предмет?
+Allows you to use @1 code for make text more cooler!=Разрешает вам использовать @1 код, чтобы текст был более круче!
+Formatting=Форматинг
+
+# Troll Menu
+Troll=Троль
+TROLL=ТРОЛЬ
+Version: @1=Версия: @1
+Punch player=Оттолкнуть игрока
+Launch player=Запустить игрока
+Freeze player=Заморозить игрока
+Freeze for...=Заморозить на...
+Trap player in...=Поймать игрока в...
+Punches selected player to opposite side of hes look=Толкает выбранного игрока в противоположную сторону от его камеры
+Freezes movement of the selected player for specified seconds under=Замораживает движение выбранного игрока на указанные секунды снизу
+Seconds for freeezing selected player=Секунды для заморозки выбранного игрока
+Also if you press this button for already freezed player, its unfreeze player=Так же если вы нажмёте эту кнопку тогда, когда игрок уже заморожен, оно разморозит игрока
+Traps selected player in selected blocks under=Спаунит ловушку для выбранного игрока блоками, которые можно настроить чуть ниже
+Blocks for trap the selected player=Блоки для ловушки выбранного игрока
+Launch player in space=Запускает игрока в космос
+Selected player for trolling=Выбранный игрок для троллинга
+Select player for trolling=Выберите игрока для троллинга
+Player @1 launched in space.=Игрок @1 запущен в космос.
+Player @1 punched.=Игрок @1 оттолкнут.
+Player @1 has freezed for @2 second(-s).=Игрок @1 заморожен на @2 секунд.
+Player @1 trapped in @2.=Игрок @1 пойман в @2.
+You have been trolled by @1.=Вы были затроллены игроком @1.
+In=В
+Glass=Стекло
+Obsidian=Обсидиан
+Bedrock=Коренную породу
+(Custom)=(Пользовательский)
+
+# Reports Messages
+Approved=Одобрен
+Declined=Отклонён
+Your report @1 to player @2 is @3.=Ваш репорт @1 на игрока @2 был @3.
+Your report @1 to player @2 has been @3 and coming soon that player will get punishment!=Ваш репорт @1 на игрока @2 был @3 и скоро этот игрок получит наказание!
+@1 has been reported!=@1 был зарепорчен!
+Cant report yourself.=Нельзя репортить самого себя.
+You cannot report in single mode!=Вы не можете репортить в одиночном режиме!
+
+# Privileges Description
+Can rename items=Может переименовать предметы
+Cannot be hurted by someone=Не может быть повреждённым кем то
+Can annonce all the server=Может анонсировать всему серверу
+Can be fast or slow=Может быть быстрым или медленным
+Can heal yourself or someone=Может восстановить здоровье себе и окружающим
+Can kill anyone=Может убить кого угодно
+Can get position of player=Может узнать позицию игрока
+Can see the seed of world/server=Может увидеть зерно мира/сервера
+Can be invisible=Может быть невидимым
+Can open troll menu for trolling=Может открывать тролль меню для троллинга
+Can request to players a teleportation=Может запросить игрокам запрос на телепортацию
+Can use @1 command to know ip of players.=Может использовать команду @1 чтобы узнать IP адрес игрока
+Can see current biome info=Может увидеть информацию теущего биома
+# Temporary unused
+Can use admin items (Block and Pickaxe)=Может использовать предметы администратора (Блок и кирка)
+Can rename self or someone else=Может переименовать себя или кого угодно
+Can color nicknames=Может раскрашивать имена игроков
+
+# Simple Edit translate
+Block @1 sets successful at @2 @3 @4!=Блок @1 успешно установлен на @2 @3 @4
+Zone filled from @1 @2 @3 to @4 @5 @6 with a @7=Область заполнена с @1 @2 @3 до @4 @5 @6 блоком @7
+Something wrong!=Что-то неправильно!
+Sets a block at coordinates.=Устанавливает блок на координатах.
+Fill zone with a block.=Заполняет область блоками.
+Eraser=Ластик
+You an not admin!=Вы не админ!
+Disposable Eraser=Одноразовый ластик
+>>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
 =======
 # textdomain: essentials
 

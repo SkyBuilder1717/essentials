@@ -136,7 +136,11 @@ local function add_zeros(s, l)
 end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 minetest.after(0, function()
+=======
+minetest.after(1, function()
+>>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
 =======
 minetest.after(1, function()
 >>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
@@ -171,7 +175,11 @@ minetest.after(1, function()
                 if git > this then
                     minetest.log("warning", essentials.main.." ".."Versions doesnt match!")
 <<<<<<< HEAD
+<<<<<<< HEAD
                     core.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
+=======
+                    minetest.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
+>>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
 =======
                     minetest.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", git)))
 >>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
@@ -184,7 +192,11 @@ minetest.after(1, function()
             end)
         else
 <<<<<<< HEAD
+<<<<<<< HEAD
             core.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
+=======
+            minetest.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
+>>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
 =======
             minetest.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
 >>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
@@ -277,7 +289,11 @@ end)
 
 dofile(modpath.."/ui/report.lua")
 <<<<<<< HEAD
+<<<<<<< HEAD
 dofile(modpath.."/ui/reports.lua")
+=======
+dofile(modpath.."/ui/reports.lua")
+>>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
 =======
 dofile(modpath.."/ui/reports.lua")
 >>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
