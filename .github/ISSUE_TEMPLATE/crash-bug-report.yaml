@@ -1,0 +1,29 @@
+name: Crash or Bug Report
+description: Report a bug or crash in mod while your game session in your server or world.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: describe-bug
+    attributes:
+      label: Describe your bug
+      description: What happened, and what did you expexted?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: dropdown
+    id: mt-ver
+    attributes:
+      label: On which minetest version is this happening?
+      multiple: false
+      options:
+        - 5.8.0
+        - 5.7.0
+        - 5.6.0
+        - 5.5.0
+        - 5.4.0
+  - type: textarea
+    id: lua-error
+    attributes:
+      label: Lua error
+      description: If you get an error, paste here your lua error / crash screen.
+      render: shell
