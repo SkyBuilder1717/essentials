@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 unified_inventory?
 nextgen_bedrock?
 sfinv?
-=======
-unified_inventory?
-nextgen_bedrock?
-sfinv?
->>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
-=======
-unified_inventory?
-nextgen_bedrock?
-sfinv?
->>>>>>> 46b4032d79edf22a60b1f30c2835b9369e30fba1
-sethome?
