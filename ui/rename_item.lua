@@ -5,7 +5,7 @@ function essentials.show_renameitem_menu(name)
     local player = core.get_player_by_name(name)
     local formspec = "formspec_version[6]"
     if player:get_wielded_item():get_name() == "" then
-        core.chat_send_player(name, core.colorize("red", S("Cant rename an empty item.")))
+        core.chat_send_player(name, core.colorize("red", S("Cannot rename an empty item.")))
         core.sound_play("error")
         return
     end

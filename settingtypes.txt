@@ -12,6 +12,8 @@ essentials_biome (Biome command) bool true
 essentials_trolling (Trolling) bool false
 
 # Adds an ip discover command
+#
+#    Requires: !essentials_offline_mode
 essentials_ip (IP address command) bool false
 
 # The time after which the teleportation request will expire
@@ -31,12 +33,6 @@ essentials_changed_by ("Your name changed by" message) bool true
 #    Requires: essentials_trolling
 essentials_trolled_by ("You has been trolled by" message) bool false
 
-# On every join, if administrator verified ip user,
-# near with nickname ill be small check.
-#
-#    Requires: essentials_ip
-essentials_ip_verified (Administrator verified check) bool false
-
 [Privileges]
 # Enables an additional privileges for commands
 essentials_additional_privileges (Additional Privileges) bool true
@@ -49,6 +45,9 @@ essentials_check_for_updates (Check for updates) bool false
 
 # If enabled, then if version is new, it will send a message in chat.
 essentials_update_lasted (Last-Update message) bool false
+
+# If you are doesn't have internet connection, this option will help you with playing in the singleplayer.
+essentials_offline_mode (Offline Mode) bool false
 
 [BETA-TEST]
 # Turns on beta commands and other functions.
@@ -79,7 +78,7 @@ essentials_disposable_eraser (Disposable Eraser) bool true
 # Adds an in-game reports system
 # (Its really buggy)
 #
-#    Requires: essentials_beta_test
+#    Requires: essentials_beta_test, !essentials_offline_mode
 essentials_report_system (Reports) bool false
 
 # Type here a privs do you want to be exist for "Additional Privileges" by ", "

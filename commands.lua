@@ -1,4 +1,3 @@
-local http = ...
 local enable_damage = core.settings:get_bool("enable_damage")
 local speeds = {}
 local S = essentials.translate
@@ -67,10 +66,11 @@ local function announcement_cmd(name, param)
     if param == "" then
         return false
     end
-    if core.check_player_privs(name, {server=true}) then
+    local admin = essentials.get_admin_name()
+    if name == admin then
         core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param))
     else
-        core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param).." "..core.colorize("#82909D", S("(Announced by %s)", name)))
+        core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param).." "..core.colorize("#82909D", S("(Announced by @1)", name)))
     end
     essentials.play_sound("broadcast")
 end
@@ -121,7 +121,7 @@ local function getpos_cmd(name, param)
 end
 
 local function seed_cmd(name, param)
-    core.chat_send_player(name, S("Seed: [@1]", core.colorize("#00ff00", core.get_mapgen_setting("seed"))))
+    core.chat_send_player(name, S("Seed is @1", core.colorize("#00ff00", core.get_mapgen_setting("seed"))))
 end
 
 local function godmode_cmd(name, param)
@@ -230,7 +230,7 @@ local function heal_cmd(name, param)
 end
 
 local function check_moderator(name)
-    if (not is_contain(essentials.moderators, name)) or (not core.check_player_privs(name, {server=true})) then
+    if (not is_contain(essentials.moderators, name)) or (not (name == essentials.get_admin_name())) then
         return true
     else
         return false
@@ -441,24 +441,20 @@ local function call_cmd(name, param, status)
 end
 
 if essentials.enable_ip_cmd then
-    if http then
-        if essentials.add_privs and is_contain(essentials.add_privs_list, "ip") then
-            core.register_chatcommand("ip", {
-                params = "[<name>]",
-                description = S("Show the IP of a player."),
-                privs = {server = true},
-                func = ip_cmd,
-            })
-        else
-            core.register_chatcommand("ip", {
-                params = "[<name>]",
-                description = S("Show the IP of a player."),
-                privs = {ip = true},
-                func = ip_cmd,
-            })
-        end
+    if essentials.add_privs and is_contain(essentials.add_privs_list, "ip") then
+        core.register_chatcommand("ip", {
+            params = "[<name>]",
+            description = S("Show the IP of a player."),
+            privs = {server = true},
+            func = ip_cmd,
+        })
     else
-        core.log("error", "Cant register \'ip\' command because of http is empty.")
+        core.register_chatcommand("ip", {
+            params = "[<name>]",
+            description = S("Show the IP of a player."),
+            privs = {ip = true},
+            func = ip_cmd,
+        })
     end
 end
 

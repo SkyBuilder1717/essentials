@@ -1,15 +1,11 @@
 local S = essentials.translate
-local FORMNAME = "essentials:report_admin"
+local FORMNAME = "essentials:report"
 
 function essentials.show_report_menu(name)
 	local ids = ""
 	for i, player in ipairs(core.get_connected_players()) do
 		local n = player:get_player_name()
-		if i == 1 then
-			ids = ids..n
-		else
-			ids = ids..","..n
-		end
+		ids = ids..","..n
 	end
 
 		local formspec = "formspec_version[6]"..
@@ -36,7 +32,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		local broked_rule = fields.broked_rule
 		local description = fields.description
 
-		if broked_rule == "" or description == "" then
+		if reporting == "" or (broked_rule == "" or description == "") then
 			essentials.player_sound("error", name)
 			return
 		end
