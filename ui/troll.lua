@@ -1,5 +1,5 @@
 local FORMNAME = "essentials:troll_menu"
-local traps = {
+local nodes = {
 	{"Glass", "default:glass"},
 	{"Obsidian", "default:obsidian"},
 	{"Bedrock", "nextgen_bedrock:bedrock"},
@@ -8,21 +8,21 @@ local S = essentials.translate
 
 local msgr = "["..core.colorize("red", S("TROLL"))..core.colorize("#00ffff", "v"..essentials.version).."] "
 
-local function into_number(stringy)
-    local count = 0
-    local result = ""
-    for i = 1, #stringy do
-        local char = string.sub(stringy, i, i)
-        if char == "." then
-            count = count + 1
-            if count < 2 then
-                result = result .. char
+local function to_number(s)
+    local c = 0
+    local r = ""
+    for i = 1, #s do
+        local ch = string.sub(s, i, i)
+        if ch == "." then
+            c = c + 1
+            if c < 2 then
+                r = r..ch
             end
         else
-            result = result .. char
+            r = r..ch
         end
     end
-    return tonumber(result)
+    return tonumber(r)
 end
 
 function essentials.show_troll_menu(name, custom)
@@ -32,9 +32,19 @@ function essentials.show_troll_menu(name, custom)
 		ids = ids..","..player:get_player_name()
 	end
 
-	local traps = ","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")..""
-	if core.get_modpath("nextgen_bedrock") then
-		traps = traps..","..S("In").." "..S("Bedrock")
+	local traps = ""
+	if core.get_modpath("default") then
+		traps = traps..","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")
+		if core.get_modpath("nextgen_bedrock") then
+			traps = traps..","..S("In").." "..S("Bedrock")
+		end
+	elseif core.get_modpath("mcl_core") then
+		traps = traps..","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")..","..S("In").." "..S("Bedrock")
+		nodes = {
+			{"Glass", "mcl_core:glass"},
+			{"Obsidian", "mcl_core:obsidian"},
+			{"Bedrock", "mcl_core:bedrock"},
+		}
 	end
 
 	formspec = formspec..
@@ -67,107 +77,17 @@ function essentials.show_troll_menu(name, custom)
 	core.show_formspec(name, FORMNAME, formspec)
 end
 
-local function punch_player(player)
-	local pos = player:get_pos()
-	local dir = player:get_look_dir()
-	local new_pos = vector.add(pos, vector.multiply(dir, -1))
-	if core.get_node(new_pos).name == "air" then
-		player:set_pos(new_pos)
-	end
-end
-
 local function punch_time(player, puch)
-	-- lmfao too many afters!!11! XD
-	core.after(puch, function()
-		punch_player(player)
-		core.after(puch, function()
-			punch_player(player)
-			core.after(puch, function()
-				punch_player(player)
-				core.after(puch, function()
-					punch_player(player)
-					core.after(puch, function()
-						punch_player(player)
-						core.after(puch, function()
-							punch_player(player)
-							core.after(puch, function()
-								punch_player(player)
-								core.after(puch, function()
-									punch_player(player)
-									core.after(puch, function()
-										punch_player(player)
-										core.after(puch, function()
-											punch_player(player)
-											core.after(puch, function()
-												punch_player(player)
-												core.after(puch, function()
-													punch_player(player)
-													core.after(puch, function()
-														punch_player(player)
-														core.after(puch, function()
-															punch_player(player)
-															core.after(puch, function()
-																punch_player(player)
-																core.after(puch, function()
-																	punch_player(player)
-																	core.after(puch, function()
-																		punch_player(player)
-																		core.after(puch, function()
-																			punch_player(player)
-																			core.after(puch, function()
-																				punch_player(player)
-																				core.after(puch, function()
-																					punch_player(player)
-																					core.after(puch, function()
-																						punch_player(player)
-																						core.after(puch, function()
-																							punch_player(player)
-																							core.after(puch, function()
-																								punch_player(player)
-																								core.after(puch, function()
-																									punch_player(player)
-																									core.after(puch, function()
-																										punch_player(player)
-																										core.after(puch, function()
-																											punch_player(player)
-																											core.after(puch, function()
-																												punch_player(player)
-																												core.after(puch, function()
-																													punch_player(player)
-																													core.after(puch, function()
-																														punch_player(player)
-																														core.after(puch, function()
-																															punch_player(player)
-																														end)
-																													end)
-																												end)
-																											end)
-																										end)
-																									end)
-																								end)
-																							end)
-																						end)
-																					end)
-																				end)
-																			end)
-																		end)
-																	end)
-																end)
-															end)
-														end)
-													end)
-												end)
-											end)
-										end)
-									end)
-								end)
-							end)
-						end)
-					end)
-				end)
-			end)
+	for i = 1, 30 do
+		local dir = player:get_look_dir()
+		local vel = {}
+		for name, value in pairs(dir) do
+			vel[name] = (-value) * 2
+		end
+		core.after(puch * i, function()
+			player:add_velocity(vel)
 		end)
-	end)
+	end
 end
 
 local function trap_in(player, block)
@@ -192,10 +112,6 @@ local function freeze_it(fields, bool, name)
 	local pos = player:get_pos()
 	local seconds = tonumber(fields.freeze_seconds)
 	if not bool then
-		if meta:get_string("is_freezed_troll") == "true" then
-			return
-		end
-		meta:set_string("is_freezed_troll", "")
 		player:set_physics_override({
 			speed = 1,
 			speed_walk = 1,
@@ -214,12 +130,14 @@ local function freeze_it(fields, bool, name)
 			sneak_glitch = false,
 			new_move = true,
 		})
+		meta:set_string("_essentials__troll__is_freezed_troll", "")
+		core.chat_send_player(name, msgr..S("Player @1 has been unfreezed.", fields.player))
 		return
 	end
 	--core.chat_send_all(dump(look))
-	meta:set_string("looky", core.serialize(look))
-	meta:set_string("position_troll", core.serialize(pos))
-	meta:set_string("is_freezed_troll", "true")
+	meta:set_string("_essentials__troll__looky", core.serialize(look))
+	meta:set_string("_essentials__troll__position_troll", core.serialize(pos))
+	meta:set_string("_essentials__troll__is_freezed_troll", "true")
 	player:set_physics_override({
 		speed = 0,
 		speed_walk = 0,
@@ -241,10 +159,9 @@ local function freeze_it(fields, bool, name)
 	player:set_pos(pos)
 	core.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
 	core.after(seconds, function()
-		if meta:get_string("is_freezed_troll") == "" then
+		if meta:get_string("_essentials__troll__is_freezed_troll") == "" then
 			return
 		end
-		meta:set_string("is_freezed_troll", "")
 		player:set_physics_override({
 			speed = 1,
 			speed_walk = 1,
@@ -263,6 +180,7 @@ local function freeze_it(fields, bool, name)
 			sneak_glitch = false,
 			new_move = true,
 		})
+		meta:set_string("_essentials__troll__is_freezed_troll", "")
 	end)
 end
 
@@ -288,7 +206,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	local player = core.get_player_by_name(fields.player)
 	local pos = player:get_pos()
 	if fields.punch then
-		punch_time(player, 0.0001)
+		punch_time(player, 0.01)
 		core.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
 	end
 	if fields.launch then
@@ -296,16 +214,17 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		core.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
 	end
 	if fields.freeze then
-		if player:get_meta():get_string("is_freezed_troll") == "true" then
-			freeze_it(fields, false, name)
+		if player:get_meta():get_string("_essentials__troll__is_freezed_troll") ~= "" then
+			freeze_it(fields, nil, name)
+			return
 		end
 		freeze_it(fields, true, name)
 	end
 	if fields.trap then
-		if fields.trap_in == "1" then
+		if tonumber(fields.trap_in) == 1 then
 			return
 		end
-		local def = traps[tonumber(fields.trap_in)-1]
+		local def = nodes[tonumber(fields.trap_in)-1]
 		trap_in(player, def[2])
 		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, S(def[1])))
 		troll_message()
@@ -315,9 +234,9 @@ end)
 core.register_globalstep(function(dtime)
 	for _, player in ipairs(core.get_connected_players()) do
 		local meta = player:get_meta()
-		local look = core.deserialize(meta:get_string("looky"))
-		local ppos = core.deserialize(meta:get_string("position_troll"))
-		if meta:get_string("is_freezed_troll") == "true" then
+		local look = core.deserialize(meta:get_string("_essentials__troll__looky"))
+		local ppos = core.deserialize(meta:get_string("_essentials__troll__position_troll"))
+		if meta:get_string("_essentials__troll__is_freezed_troll") ~= "" then
 			player:set_look_vertical(look.ver)
 			player:set_look_horizontal(look.hor)
 			player:set_pos(ppos)
