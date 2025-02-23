@@ -2,8 +2,6 @@ local enable_damage = core.settings:get_bool("enable_damage")
 local speeds = {}
 local S = essentials.translate
 
-local FORMNAME = "essentials:ip_command"
-
 local function is_contain(table, value)
 	for _, v in ipairs(table) do
 		if v == value then
