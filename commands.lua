@@ -24,7 +24,7 @@ local function show_ip_error(name)
 	core.show_formspec(name, "essentials:ip_command", formspec)
 end
 
-local function delete_value_arr(table, value)
+local function remove_val(table, value)
     local tbl = {}
     local j = 1
     for i = 1, #table do
@@ -391,7 +391,7 @@ local function call_cmd(name, param, status)
                 core.chat_send_player(name, core.colorize("#ff0000", S("Teleportation request to player @1 has been expired.", param)))
                 essentials.player_sound("disable", param)
                 essentials.player_sound("error", name)
-                delete_value_arr(essentials.teleport_requests[param], name)
+                remove_val(essentials.teleport_requests[param], name)
             end
         end)
     else
@@ -425,7 +425,7 @@ local function call_cmd(name, param, status)
                 end
                 local oplayer = core.get_player_by_name(plname)
                 core.chat_send_player(plname, core.colorize("00ff00", S("Your teleport request to player @1 has been declined!", name)))
-                delete_value_arr(essentials.teleport_requests[name], plname)
+                remove_val(essentials.teleport_requests[name], plname)
                 if i == 1 then
                     string = string..plname
                 else
@@ -572,9 +572,8 @@ core.register_chatcommand("ban_menu", {
     privs = {ban = true},
     func = function(name, param)
         if core.is_singleplayer() then
-            core.chat_send_player(name, core.colorize("red", S("You cannot ban in single mode!")))
             essentials.player_sound("essentials_error", name)
-            return
+            return false, core.colorize("red", S("You cannot ban in single mode!"))
         end
         essentials.show_ban_menu(name)
     end
@@ -585,9 +584,8 @@ core.register_chatcommand("kick_menu", {
     privs = {kick = true},
     func = function(name, param)
         if core.is_singleplayer() then
-            core.chat_send_player(name, core.colorize("red", S("You cannot kick in single mode!")))
             essentials.player_sound("essentials_error", name)
-            return
+            return false, core.colorize("red", S("You cannot kick in single mode!"))
         end
         essentials.show_kick_menu(name)
     end
@@ -598,9 +596,8 @@ core.register_chatcommand("mute_menu", {
    privs = {mute = true},
    func = function(name, param)
         if core.is_singleplayer() then
-            core.chat_send_player(name, core.colorize("red", S("You cannot mute in single mode!")))
             essentials.player_sound("essentials_error", name)
-            return
+            return false, core.colorize("red", S("You cannot mute in single mode!"))
         end
         essentials.show_mute_menu(name)
    end
@@ -645,17 +642,13 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {rename_player = true},
-        func = function(name, param)
-            essentials.show_rename_menu(name)
-        end
+        func = essentials.show_rename_menu
     })
 else
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {kick = true},
-        func = function(name, param)
-            essentials.show_rename_menu(name)
-        end
+        func = essentials.show_renameitem_menu
     })
 end
 
@@ -695,17 +688,13 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_item")
     core.register_chatcommand("rename_item", {
         description = S("Hold item in hand and open this menu for renaming it."),
         privs = {rename_item = true},
-        func = function(name, param)
-            essentials.show_renameitem_menu(name)
-        end
+        func = essentials.show_renameitem_menu
     })
 else
     core.register_chatcommand("rename_item", {
         description = S("Hold item in hand and open this menu for renaming it."),
         privs = {basic_privs = true},
-        func = function(name, param)
-            essentials.show_renameitem_menu(name)
-        end
+        func = essentials.show_renameitem_menu
     })
 end
 
@@ -800,9 +789,7 @@ end
 core.register_chatcommand("text_box", {
     description = S("Shows to any player a textbox with a text!"),
     privs = {ban = true},
-    func = function(name, param)
-        essentials.show_make_textbox(name)
-    end
+    func = essentials.show_make_textbox
 })
 
 if essentials.add_privs and is_contain(essentials.add_privs_list, "call") then

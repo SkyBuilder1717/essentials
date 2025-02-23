@@ -13,21 +13,18 @@ core.register_on_chat_message(function(name, message)
 end)
 
 function essentials.show_rename_menu(name)
-    local ids = ""
-	for _, p in ipairs(core.get_connected_players()) do
-		ids = ids..","..p:get_player_name()
-	end
+    local formspec = {
+        "formspec_version[6]",
+        "size[4.5,11]",
+        "field[0.1,5.3;4.3,1.1;new_name;", S("New name"), ";]",
+        "button[0.1,9.7;4.3,1.2;rename;", S("Rename"), "]",
+        "image_button_exit[3.4,0.1;1,1;essentials_close_btn.png;close_btn;]",
+        "dropdown[0.1,8.5;4.3,1.1;color;,red,orange,yellow,green,lime,blue,cyan,pink,purple,white,black;1;false]",
+        "image[0.4,1.2;3.7,3.7;essentials_sussy_amogus_name.png]",
+        "dropdown[0.1,6.9;4.3,1.1;name;", essentials.get_players(), ";1;false]"
+    }
 
-	local formspec = "formspec_version[6]"..
-        "size[4.5,11]"..
-        "field[0.1,5.3;4.3,1.1;new_name;"..S("New name")..";]"..
-        "button[0.1,9.7;4.3,1.2;rename;"..S("Rename").."]"..
-        "image_button_exit[3.4,0.1;1,1;essentials_close_btn.png;close_btn;]"..
-        "dropdown[0.1,8.5;4.3,1.1;color;,red,orange,yellow,green,lime,blue,cyan,pink,purple,white,black;1;false]"..
-        "image[0.4,1.2;3.7,3.7;essentials_sussy_amogus_name.png]"..
-        "dropdown[0.1,6.9;4.3,1.1;name;"..ids..";1;false]"
-
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 core.register_on_player_receive_fields(function(player, formname, field)

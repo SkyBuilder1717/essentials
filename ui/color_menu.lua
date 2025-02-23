@@ -13,15 +13,17 @@ core.register_on_chat_message(function(name, message)
 end)
 
 function essentials.show_color_menu(name)
-	local formspec = "formspec_version[6]"..
-        "size[10,8]"..
-        "button[2.9,6.5;4.4,1.2;done;"..S("Accept").."]"..
-        "image_button_exit[8.8,0.2;1,1;essentials_close_btn.png;close;]"..
-        "field[1.5,4.4;7.2,1.1;color;"..S("Color")..";]"..
-        "label[1.7,5.9;"..core.formspec_escape(S("Or hex color or common color (red, blue, etc.)")).."]"..
-        "label[2.7,1.6;"..core.formspec_escape(S("Select color for your nickname")).."]"
+	local formspec = {
+        "formspec_version[6]",
+        "size[10,8]",
+        "button[2.9,6.5;4.4,1.2;done;", S("Accept"), "]",
+        "image_button_exit[8.8,0.2;1,1;essentials_close_btn.png;close;]",
+        "field[1.5,4.4;7.2,1.1;color;", S("Color"), ";]",
+        "label[1.7,5.9;", core.formspec_escape(S("Or hex color or common color (red, blue, etc.)")), "]",
+        "label[2.7,1.6;", core.formspec_escape(S("Select color for your nickname")), "]"
+    }
 
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 core.register_on_player_receive_fields(function(player, formname, fields)
@@ -29,19 +31,19 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
     local name = player:get_player_name()
-	core.sound_play("clicked", {to_player = name})
+    essentials.player_sound("clicked", name)
     
     if fields.done then
         if core.is_singleplayer() then
             core.chat_send_player(name, core.colorize("red", S("Cannot coloring nickname in single mode!")))
-            core.sound_play("error")
+            essentials.player_sound("error", name)
             return
         end
         player:set_properties({
             nametag_color = fields.color
         })
         player:get_meta():set_string("essentials_color", fields.color)
-        core.sound_play("clicked", name)
+        essentials.player_sound("clicked", name)
         core.close_formspec(name, formname)
     end
 end)

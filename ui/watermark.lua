@@ -45,11 +45,3 @@ if essentials.watermark then
         end
     end)
 end
-
---[[
-minetest.register_on_leaveplayer(function(player)
-    for i, def in pairs(defs) do
-        player:hud_remove(def)
-    end
-end)
-]]--

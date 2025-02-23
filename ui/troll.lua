@@ -1,12 +1,39 @@
 local FORMNAME = "essentials:troll_menu"
-local nodes = {
-	{"Glass", "default:glass"},
-	{"Obsidian", "default:obsidian"},
-	{"Bedrock", "nextgen_bedrock:bedrock"},
-}
 local S = essentials.translate
+local Sdef = core.get_translator("default")
+local Smcl = core.get_translator("mcl_core")
+local Snxb = core.get_translator("nextgen_bedrock")
+local nodes = {
+	{Sdef("Glass"), "default:glass"},
+	{Sdef("Obsidian"), "default:obsidian"},
+	{Snxb("Bedrock"), "nextgen_bedrock:bedrock"},
+}
 
-local msgr = "["..core.colorize("red", S("TROLL"))..core.colorize("#00ffff", "v"..essentials.version).."] "
+function floating(v)
+    return type(v) == "number" and v % 1 ~= 0
+end
+
+local traps = {}
+core.register_on_mods_loaded(function()
+	if core.get_modpath("default") then
+		table.insert(traps, S("In @1", Sdef("Glass")))
+		table.insert(traps, S("In @1", Sdef("Obsidian")))
+		if core.get_modpath("nextgen_bedrock") then
+			table.insert(traps, S("In @1", Snxb("Bedrock")))
+		end
+	elseif core.get_modpath("mcl_core") then
+		table.insert(traps, S("In @1", Smcl("Glass")))
+		table.insert(traps, S("In @1", Smcl("Obsidian")))
+		table.insert(traps, S("In @1", Smcl("Bedrock")))
+		nodes = {
+			{Smcl("Glass"), "mcl_core:glass"},
+			{Smcl("Obsidian"), "mcl_core:obsidian"},
+			{Smcl("Bedrock"), "mcl_core:bedrock"},
+		}
+	end
+end)
+
+local msgr = table.concat({"[", core.colorize("red", S("TROLL")), core.colorize("#00ffff", "v"..essentials.version), "]", " "})
 
 local function to_number(s)
     local c = 0
@@ -26,59 +53,58 @@ local function to_number(s)
 end
 
 function essentials.show_troll_menu(name, custom)
-	local formspec = "formspec_version[6]"
-	local ids = ""
-	for i, player in ipairs(core.get_connected_players()) do
-		ids = ids..","..player:get_player_name()
-	end
-
-	local traps = ""
-	if core.get_modpath("default") then
-		traps = traps..","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")
-		if core.get_modpath("nextgen_bedrock") then
-			traps = traps..","..S("In").." "..S("Bedrock")
-		end
-	elseif core.get_modpath("mcl_core") then
-		traps = traps..","..S("In").." "..S("Glass")..","..S("In").." "..S("Obsidian")..","..S("In").." "..S("Bedrock")
-		nodes = {
-			{"Glass", "mcl_core:glass"},
-			{"Obsidian", "mcl_core:obsidian"},
-			{"Bedrock", "mcl_core:bedrock"},
-		}
-	end
-
-	formspec = formspec..
-		"size[10.5,7.7]"..
-		"image[4.1,0.5;2.2,2.2;essentials_troll.png]"..
-		"label[4.4,0.3;"..S("Troll").." "..S("Menu").."]"..
-		"button[0.2,5.2;3,0.8;punch;"..S("Punch player").."]"..
-		"button[3.4,5.2;3.7,0.8;launch;"..S("Launch player").."]"..
-		"button[3.4,6.2;3.7,0.8;trap;"..S("Trap player in...").."]"..
-		"dropdown[3.4,3.6;3.7,0.7;player;"..ids..";1;false]"..
-		"label[3.5,3.4;"..S("Select player for trolling").."]"..
-		"dropdown[3.4,7;3.7,0.5;trap_in;"..traps..";1;true]"..
-		"label[0.1,0.3;"..S("Version: @1", essentials.version).."]"
+	local formspec = {
+		"formspec_version[6]",
+		"size[10.5,7.7]",
+		"image[4.1,0.5;2.2,2.2;essentials_troll.png]",
+		"label[4.4,0.3;", S("Troll"), " ", S("Menu"), "]",
+		"button[0.2,5.2;3,0.8;punch;", S("Punch player"), "]",
+		"button[3.4,5.2;3.7,0.8;launch;", S("Launch player"), "]",
+		"button[3.4,6.2;3.7,0.8;trap;", S("Trap player in..."), "]",
+		"dropdown[3.4,3.6;3.7,0.7;player;", essentials.get_players(), ";1;false]",
+		"label[3.5,3.4;", S("Select player for trolling"), "]",
+		"dropdown[3.4,7;3.7,0.5;trap_in;,", table.concat(traps, ","), ";1;true]",
+		"label[0.1,0.3;", S("Version: @1", essentials.version), "]"
+	}
 
 	if core.features.sound_params_start_time then
-		formspec = formspec..
-			"button[7.3,6.2;3,0.8;freeze;"..S("Freeze player").."]"..
-			"field[7.3,5.2;3,0.8;freeze_seconds;"..S("Freeze for...")..";10]"
+		table.insert(formspec, "button[7.3,6.2;3,0.8;freeze;")
+		table.insert(formspec, S("Freeze player"))
+		table.insert(formspec, "]")
+		table.insert(formspec, "field[7.3,5.2;3,0.8;freeze_seconds;") -- Freezing seconds element
+		table.insert(formspec, S("Freeze for..."))
+		table.insert(formspec, ";10]")
 	end
 
-	formspec = formspec..
-		"tooltip[punch;"..S("Punches selected player to opposite side of hes look").."]"..
-		"tooltip[freeze;"..S("Freezes movement of the selected player for specified seconds under").."\n("..S("Also if you press this button for already freezed player, its unfreeze player")..")]"..
-		"tooltip[freeze_seconds;"..S("Seconds for freeezing selected player").."]"..
-		"tooltip[trap;"..S("Traps selected player in selected blocks under").."]"..
-		"tooltip[trap_in;"..S("Blocks for trap the selected player").."]"..
-		"tooltip[launch;"..S("Launch player in space").."]"..
-		"tooltip[player;"..S("Selected player for trolling").."]"
+	table.insert(formspec, "tooltip[punch;")
+	table.insert(formspec, S("Punches selected player to opposite side of hes look"))
+	table.insert(formspec, "]")
+	table.insert(formspec, "tooltip[freeze;")
+	table.insert(formspec, S("Freezes movement of the selected player for specified seconds under"))
+	table.insert(formspec, "\n(")
+	table.insert(formspec, S("Also if you press this button for already freezed player, its unfreeze player"))
+	table.insert(formspec, ")]")
+	table.insert(formspec, "tooltip[freeze_seconds;")
+	table.insert(formspec, S("Seconds for freeezing selected player"))
+	table.insert(formspec, "]")
+	table.insert(formspec, "tooltip[trap;")
+	table.insert(formspec, S("Traps selected player in selected blocks under"))
+	table.insert(formspec, "]")
+	table.insert(formspec, "tooltip[trap_in;")
+	table.insert(formspec, S("Blocks for trap the selected player"))
+	table.insert(formspec, "]")
+	table.insert(formspec, "tooltip[launch;")
+	table.insert(formspec, S("Launch player in space"))
+	table.insert(formspec, "]")
+	table.insert(formspec, "tooltip[player;")
+	table.insert(formspec, S("Selected player for trolling"))
+	table.insert(formspec, "]")
 
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 local function punch_time(player, puch)
-	for i = 1, 30 do
+	for i = 1, 30 do -- No big minetest.afters!
 		local dir = player:get_look_dir()
 		local vel = {}
 		for name, value in pairs(dir) do
@@ -111,6 +137,16 @@ local function freeze_it(fields, bool, name)
 	local meta = player:get_meta()
 	local pos = player:get_pos()
 	local seconds = tonumber(fields.freeze_seconds)
+	if seconds > 60 then
+		core.chat_send_player(name, S("Too many duration for freezing! (@1 sec)", seconds))
+		essentials.player_sound("error", name)
+		return
+	elseif seconds < 1 or floating(seconds) then
+		core.chat_send_player(name, S("Invalid duration!"))
+		essentials.player_sound("error", name)
+		return
+	end
+
 	if not bool then
 		player:set_physics_override({
 			speed = 1,
@@ -134,7 +170,6 @@ local function freeze_it(fields, bool, name)
 		core.chat_send_player(name, msgr..S("Player @1 has been unfreezed.", fields.player))
 		return
 	end
-	--core.chat_send_all(dump(look))
 	meta:set_string("_essentials__troll__looky", core.serialize(look))
 	meta:set_string("_essentials__troll__position_troll", core.serialize(pos))
 	meta:set_string("_essentials__troll__is_freezed_troll", "true")
@@ -208,10 +243,12 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.punch then
 		punch_time(player, 0.01)
 		core.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
+		troll_message(fields, name)
 	end
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
 		core.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
+		troll_message(fields, name)
 	end
 	if fields.freeze then
 		if player:get_meta():get_string("_essentials__troll__is_freezed_troll") ~= "" then
@@ -219,24 +256,25 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 			return
 		end
 		freeze_it(fields, true, name)
+		troll_message(fields, name)
 	end
 	if fields.trap then
 		if tonumber(fields.trap_in) == 1 then
 			return
 		end
-		local def = nodes[tonumber(fields.trap_in)-1]
+		local def = nodes[tonumber(fields.trap_in) - 1]
 		trap_in(player, def[2])
-		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, S(def[1])))
-		troll_message()
+		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, def[1]))
+		troll_message(fields, name)
 	end
 end)
 
 core.register_globalstep(function(dtime)
 	for _, player in ipairs(core.get_connected_players()) do
 		local meta = player:get_meta()
-		local look = core.deserialize(meta:get_string("_essentials__troll__looky"))
-		local ppos = core.deserialize(meta:get_string("_essentials__troll__position_troll"))
 		if meta:get_string("_essentials__troll__is_freezed_troll") ~= "" then
+			local look = core.deserialize(meta:get_string("_essentials__troll__looky"))
+			local ppos = core.deserialize(meta:get_string("_essentials__troll__position_troll"))
 			player:set_look_vertical(look.ver)
 			player:set_look_horizontal(look.hor)
 			player:set_pos(ppos)

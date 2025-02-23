@@ -20,8 +20,14 @@ essentials_ip (IP address command) bool false
 essentials_teleport_exporation (Teleportation Exporation Time) float 15
 
 [Messages and Players]
+# Players, that will not be kicked, while maintenance
+# Players will be separated by ", "
+#
+# Example: "Admin, -SkyBuilder-" and etc.
+essentials_moderators (Moderators) string
+
 # Enables sending a message to the killed player with content of who killed him with command "/kill"
-essentials_killed_by ("You has been killed by" message) bool true
+essentials_killed_by ("You have been killed by" message) bool true
 
 # Enables sending a message to those who have changed any attributes
 # (like speed or nickname)
@@ -31,7 +37,7 @@ essentials_changed_by ("Your name changed by" message) bool true
 # it will send message to trolled player
 #
 #    Requires: essentials_trolling
-essentials_trolled_by ("You has been trolled by" message) bool false
+essentials_trolled_by ("You have been trolled by" message) bool false
 
 [Privileges]
 # Enables an additional privileges for commands
@@ -54,14 +60,6 @@ essentials_offline_mode (Offline Mode) bool false
 #
 # WARNING: Turn it on on your own risk!
 essentials_beta_test (BETA-TEST Functions) bool false
-
-# Players, that will not be kicked, while maintenance
-# Players will be separated by ", "
-#
-# Example: "Admin, -SkyBuilder-" and etc.
-#
-#    Requires: essentials_beta_test
-essentials_moderators (Moderators) string
 
 # Mod, that been developed by SkyBuilder1717 months ago
 #

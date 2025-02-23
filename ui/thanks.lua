@@ -46,15 +46,17 @@ local function get_hypertext()
 end
 
 function essentials.show_thanks_screen(name)
-	local formspec = "formspec_version[6]"..
-        "size[13,7]"..
-        "image[0.2,0.8;5,5;essentials_skybuilder_thanks.png]"..
-        "label[0.4,0.4;Developer's Message!]"..
-        "hypertext[5.5,0.8;7.3,5;message;"..core.hypertext_escape(get_hypertext()).."]"..
-        "button_exit[0.2,6;6.2,0.8;no_show;"..core.formspec_escape("OK, don't show it again.").."]"..
-        "button_exit[6.6,6;6.2,0.8;show;"..core.formspec_escape("Thanks!").."]"
+	local formspec = {
+        "formspec_version[6]",
+        "size[13,7]",
+        "image[0.2,0.8;5,5;essentials_skybuilder_thanks.png]",
+        "label[0.4,0.4;Developer's Message!]",
+        "hypertext[5.5,0.8;7.3,5;message;", core.hypertext_escape(get_hypertext()), "]",
+        "button_exit[0.2,6;6.2,0.8;no_show;", core.formspec_escape("OK, don't show it again."), "]",
+        "button_exit[6.6,6;6.2,0.8;show;", core.formspec_escape("Thanks!"), "]"
+    }
 
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 core.register_on_player_receive_fields(function(player, formname, fields)

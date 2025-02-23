@@ -296,13 +296,20 @@ function essentials.add_report(broked_rule, name, reported, description)
     essentials.save_reports()
 end
 
-function essentials.appdec_report(id, state)
+function essentials.appdec_report(id, state, admin)
     local def = essentials_reports[id]
+    local player = core.get_player_by_name(def.by_name)
     if def then
         if state == "decline" then
-            core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
+            if player then
+                core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
+            end
+            core.log("action", admin.." declined report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
         elseif state == "approve" then
-            core.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Approved"))))
+            if player then
+                core.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("lime", S("Approved"))))
+            end
+            core.log("action", admin.." approved report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
         end
     end
     essentials_reports[id] = nil

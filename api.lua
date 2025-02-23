@@ -42,3 +42,12 @@ function essentials.set_thanks(player)
     local meta = player:get_meta()
     meta:set_string(thanks_ok_meta, "yes")
 end
+
+-- Util function for formspec
+function essentials.get_players()
+    local pls = ""
+    for _, p in ipairs(core.get_connected_players()) do
+		pls = pls..","..p:get_player_name()
+	end
+    return pls
+end

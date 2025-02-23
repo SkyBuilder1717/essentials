@@ -13,12 +13,14 @@ function essentials.show_reports_log(name)
 	end
 	core.chat_send_player(name, ids)
 
-	local formspec = "formspec_version[6]"..
-		"size[10.5,11]"..
-		"label[1.2,0.5;"..S("Reports log").."]"..
-		"textlist[0.7,1;9.1,9.3;report_logger;"..ids..";1;false]"
+	local formspec = {
+		"formspec_version[6]",
+		"size[10.5,11]",
+		"label[1.2,0.5;", S("Reports log"), "]",
+		"textlist[0.7,1;9.1,9.3;report_logger;", ids, ";1;false]"
+	}
 
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 core.register_on_player_receive_fields(function(player, formname, fields)
@@ -26,7 +28,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 	local name = player:get_player_name()
-	essentials.player_sound("essentials_clicked", name)
+	essentials.player_sound("clicked", name)
     
 	--core.chat_send_player(name, dump(fields))
 	return

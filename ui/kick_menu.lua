@@ -2,21 +2,17 @@ local FORMNAME = "essentials:kick_menu"
 local S = essentials.translate
 
 function essentials.show_kick_menu(name)
-	local formspec = "formspec_version[6]"
-	local ids = ""
-	for _, player in ipairs(core.get_connected_players()) do
-		ids = ids..","..player:get_player_name()
-	end
-
-	formspec = formspec..
-        "size[12.5,4.5]"..
-		"dropdown[4.5,0.3;6.8,1.1;player;"..ids..";1;false]"..
-        "field[4.5,2;6.8,1.1;reason;"..S("Reason of kick")..";]"..
-        "button[4.5,3.3;6.8,1.1;kick_btn;"..S("Kick the player").."]"..
-        "image[0.2,0.2;4.2,4.2;essentials_kick_user.png]"..
+    local formspec = {
+        "formspec_version[6]",
+        "size[12.5,4.5]",
+		"dropdown[4.5,0.3;6.8,1.1;player;", essentials.get_players(), ";1;false]",
+        "field[4.5,2;6.8,1.1;reason;", S("Reason of kick"), ";]",
+        "button[4.5,3.3;6.8,1.1;kick_btn;", S("Kick the player"), "]",
+        "image[0.2,0.2;4.2,4.2;essentials_kick_user.png]",
         "image_button_exit[11.4,0.1;1,1;essentials_close_btn.png;close_btn;]"
+    }
 
-	core.show_formspec(name, FORMNAME, formspec)
+	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
 
 core.register_on_player_receive_fields(function(player, formname, fields)
