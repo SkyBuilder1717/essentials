@@ -786,7 +786,7 @@ end
 
 -- Thanks to Bapt-tech for idea!
 -- https://i.imgur.com/zVCmNOT.png
-core.register_chatcommand("text_box", {
+core.register_chatcommand("textbox", {
     description = S("Shows to any player a textbox with a text!"),
     privs = {ban = true},
     func = essentials.show_make_textbox
