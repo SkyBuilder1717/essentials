@@ -14,7 +14,7 @@ local function is_contain(table, value)
 end
 
 local function show_ip_error(name)
-    local text = S("If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@yandex.ru@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command", "\n\n", "\n\n", "\n\n", "\"I want to use a /ip command for Essentials mod in core.\"\n\"Add a nickname \'Player\' in trusted ip users\"", "\n\n")
+    local text = S("If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@gmail.com@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command", "\n\n", "\n\n", "\n\n", "\"I want to use a /ip command for Essentials mod in core.\"\n\"Add a nickname \'Player\' in trusted ip users\"", "\n\n")
 	--core.chat_send_player(name, text)
     local formspec = "formspec_version[6]"
     formspec = formspec..
