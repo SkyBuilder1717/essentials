@@ -2,9 +2,6 @@ local http = core.request_http_api and core.request_http_api()
 local modpath = core.get_modpath(core.get_current_modname())
 local st = core.settings
 essentials = {
-    -- Local Storage
-    storage = core.get_mod_storage(),
-
     -- Settings
     seed = st:get_bool("essentials_seed", false),
     biome = st:get_bool("essentials_biome", true),

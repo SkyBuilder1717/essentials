@@ -29,7 +29,5 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	local name = player:get_player_name()
 	essentials.player_sound("clicked", name)
-    
-	--core.chat_send_player(name, dump(fields))
 	return
 end)

@@ -33,7 +33,6 @@ core.register_on_player_receive_fields(function(player, formname, field)
 	end
     local itemstack = player:get_wielded_item()
 	local meta = itemstack:get_meta()
-    --local color = field.color
     essentials.player_sound("clicked", name)
 
     if field.format ~= nil then

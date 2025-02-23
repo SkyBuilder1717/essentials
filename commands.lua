@@ -13,7 +13,6 @@ end
 
 local function show_ip_error(name)
     local text = S("If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@gmail.com@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command", "\n\n", "\n\n", "\n\n", "\"I want to use a /ip command for Essentials mod in core.\"\n\"Add a nickname \'Player\' in trusted ip users\"", "\n\n")
-	--core.chat_send_player(name, text)
     local formspec = "formspec_version[6]"
     formspec = formspec..
         "size[10.5,4.5]"..
@@ -78,7 +77,7 @@ local function biome_cmd(name, param)
     if not core.has_feature("object_use_texture_alpha") then
         core.log("error", essentials.main.." "..S("Your Luanti Engine is deprecated! Update it for \'/biome\' command."))
         essentials.player_sound("error", name)
-        return false, core.colorize("red", S("That version of engine doesnt support that command."))
+        return false, core.colorize("red", S("That version of engine doesn't support that command."))
     end
 
     local pos = core.get_player_by_name(name):get_pos()

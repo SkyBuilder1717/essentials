@@ -71,7 +71,7 @@ function essentials.show_troll_menu(name, custom)
 		table.insert(formspec, "button[7.3,6.2;3,0.8;freeze;")
 		table.insert(formspec, S("Freeze player"))
 		table.insert(formspec, "]")
-		table.insert(formspec, "field[7.3,5.2;3,0.8;freeze_seconds;") -- Freezing seconds element
+		table.insert(formspec, "field[7.3,5.2;3,0.8;freeze_seconds;")
 		table.insert(formspec, S("Freeze for..."))
 		table.insert(formspec, ";10]")
 	end
