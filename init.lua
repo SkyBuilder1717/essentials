@@ -31,7 +31,7 @@ essentials = {
 
     -- Text
     a = "Created by SkyBuilder1717 (ContentDB)",
-    version = "1.1.0",
+    version = "1.1.1",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
