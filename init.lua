@@ -8,7 +8,6 @@ essentials = {
     trolled_by = st:get_bool("essentials_trolled_by", false),
     killed_by = st:get_bool("essentials_killed_by", false),
     admin_ip_check = st:get_bool("essentials_ip_verified", false),
-    last_update_message = st:get_bool("essentials_update_lasted", false),
     check_for_updates = st:get_bool("essentials_check_for_updates", false),
     changed_by = st:get_bool("essentials_changed_by", true),
     add_privs = st:get_bool("essentials_additional_privileges", true),
@@ -43,7 +42,7 @@ essentials = {
     -- Trusted users of ip command
     trusted_ip_users = {"singleplayer"},
 
-    -- Cool servers with mod
+    -- Cool servers with this mod
     cool_servers = {},
 
     -- All custom privileges in the mod
@@ -102,10 +101,6 @@ essentials.maintenance_msg = S("@n@1@n@n@nSorry, but server is in maintenance mo
 --==[[ Connections ]]==--
 dofile(modpath.."/api.lua")
 dofile(modpath.."/commands.lua")
--- TODO: Fix error
-if http and essentials.enable_ip_cmd then
-    --loadfile(modpath.."/ui/ip.lua")(http)
-end
 dofile(modpath.."/priveleges.lua")
 if essentials.have_unified_inventory then
     dofile(modpath.."/unified_inventory.lua")
@@ -149,8 +144,9 @@ local function add_zeros(s, l)
     end
 end
 
-core.after(0, function()
-    if essentials.check_for_updates then
+core.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
+    if essentials.check_for_pdates then
         core.log("action", "[Essentials] Checking for updates...")
         if http then
             core.log("action", "[Essentials] Getting an Github version...")
@@ -172,7 +168,7 @@ core.after(0, function()
                     return
                 end
                 local this = into_number(essentials.version)
-                local _type = {}
+                local _type
                 if core.is_singleplayer() then
                     _type = {"World", S("World")}
                 else
@@ -180,12 +176,7 @@ core.after(0, function()
                 end
                 if git > this then
                     core.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    core.chat_send_all(essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git)))
-                else
-                    if essentials.last_update_message then
-                        core.chat_send_all(essentials.main.." "..S("All ok! @1 using lastest version of mod.", _type[2]))
-                    end
-                    core.log("action", essentials.main.." "..string.format("All ok! %s using lastest version of mod.", _type[1]))
+                    core.chat_send_player(name, essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git)))
                 end
             end)
         end
@@ -204,7 +195,7 @@ core.after(0, function()
         
             },  function(result)
                 if result.timeout then
-                    core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
+                    core.log("warning", "[Essentials] Time out. Cant get trusted nicknames.")
                     essentials.trusted_ip_users = {}
                     return
                 end
@@ -230,7 +221,7 @@ core.after(0, function()
         
             },  function(result)
                 if result.timeout then
-                    core.log("warning", "[Essentials] Cant get cool servers, table will be nil.")
+                    core.log("warning", "[Essentials] Time out. Cant get cool servers.")
                     essentials.cool_servers = {}
                     return
                 end

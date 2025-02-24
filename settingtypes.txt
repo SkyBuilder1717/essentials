@@ -43,17 +43,22 @@ essentials_trolled_by ("You have been trolled by" message) bool false
 # Enables an additional privileges for commands
 essentials_additional_privileges (Additional Privileges) bool true
 
-[Other]
+# Type here a privs do you want to be exist for "Additional Privileges" by ", "
+#
+# All Additional Privileges:
+# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
+#
+#    Requires: essentials_additional_privileges
+essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
+
+[Internet]
+# If you are doesn't have internet connection, this option will help you with playing in the singleplayer.
+essentials_offline_mode (Offline Mode) bool false
+
 # Every session/launch of world/server, mod will be checking for updates
 #
 # NOTE: Sometimes check for updates feature doesnt work for unknown reasons.
 essentials_check_for_updates (Check for updates) bool false
-
-# If enabled, then if version is new, it will send a message in chat.
-essentials_update_lasted (Last-Update message) bool false
-
-# If you are doesn't have internet connection, this option will help you with playing in the singleplayer.
-essentials_offline_mode (Offline Mode) bool false
 
 [BETA-TEST]
 # Turns on beta commands and other functions.
@@ -78,11 +83,3 @@ essentials_disposable_eraser (Disposable Eraser) bool true
 #
 #    Requires: essentials_beta_test, !essentials_offline_mode
 essentials_report_system (Reports) bool false
-
-# Type here a privs do you want to be exist for "Additional Privileges" by ", "
-#
-# All Additional Privileges:
-# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
-#
-#    Requires: essentials_beta_test, essentials_additional_privileges
-essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
