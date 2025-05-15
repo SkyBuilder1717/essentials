@@ -3,6 +3,7 @@ local S = essentials.translate
 local FORMNAME = "essentials:thanks"
 
 local function c(t, r)
+    if not t then return false end
     for _, v in ipairs(t) do
         if v == r then return true end
     end
