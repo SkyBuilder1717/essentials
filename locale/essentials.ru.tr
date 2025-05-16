@@ -1,5 +1,8 @@
 # textdomain: essentials
 
+# ContentDB
+Adds a lot of helpful commands for your server=Добавляет множество полезных команд для вашего сервера
+
 # init.lua
 World=Мир
 Server=Сервер
