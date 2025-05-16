@@ -652,13 +652,17 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {rename_player = true},
-        func = essentials.show_rename_menu
+        func = function(name)
+            essentials.show_rename_menu(name)
+        end
     })
 else
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {kick = true},
-        func = essentials.show_renameitem_menu
+        func = function(name)
+            essentials.show_rename_menu(name)
+        end
     })
 end
 
