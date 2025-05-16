@@ -9,6 +9,7 @@ Please, add mod @1 to @2 for checking an updates!=Пожалуйста, доба
 
 # Commands Description
 Show the IP of a player.=Показывает IP игрока.
+Opens player's inventory=Открывает инвентари игроков.
 Send GLOBAL message in chat.=Отправляет ГЛОБАЛЬНОЕ сообщение в чат.
 Sets a speed for an any player. (Standart speed is 1)=Устанавливает скорость любого игрока.
 Shows the current biome information you are in.=Показывает информацию о биоме, в котором вы находитесь.
@@ -33,6 +34,7 @@ Open the reports manager menu and gives an ability to manage reports.=Откры
 # Commands Messages
 Player name cannot be empty!=Имя игрока не может быть пустым!
 Player @1 not found!=Игрок @1 не найден!
+Opening @1's inventory...=Открываем инвентарь игрока @1...
 @1 is disabled!=@1 выключено!
 Your speed now is @1.=Теперь ваша скорость равняется @1.
 Please, specify an online player.=Пожалуйста, укажите онлайн игрока.
@@ -46,7 +48,7 @@ Invalid information name!=Неправильное имя информации!
 You cant check more information without privelege!=Вы не можете проверить больше информации без привилегии!
 Position of player @1 is @2 @3 @4.=Позиция игрока @1 это @1 @2 @3.
 Seed: [@1]=Сид: [@1]
-Player @1 not found.=Игрок @1 не найден
+Player @1 not found.=Игрок @1 не найден.
 God mode enabled.=Режим бога включён.
 God mode disabled.=Режим бога выключен.
 God mode enabled for @1.=Режим бога включён для @1.
@@ -87,8 +89,11 @@ Maintenance mode has been enabled!=Технические работы были 
 @n@1@n@n@nSorry, but server is in maintenance mode right now!@nCome back later!=@n@1@n@n@nИзвините, но сервер проводит технические работы прямо сейчас!@nВозвращайтесь позже!
 Cannot interact with maintenance mode in singleplayer!=Нельзя взаймодействовать с техническим перерывом в одиночной игре!
 Invalid duration!=Неправильная длительность!
+Cannot open inventory of yourself!=Нельзя открыть инвентарь самого себя!
 
 # Menu's stuff
+Inventory=Инвентарь
+@1's inventory=Инвентарь @1
 Menu=Меню
 Player not found!=Игрок не найден!
 (by @1)=(от @1) 

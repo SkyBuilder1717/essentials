@@ -62,6 +62,7 @@ essentials = {
         "biome",
         "call",
         "mute",
+        "inv"
     },
     -- Privileges in text
     privstring = "",
@@ -113,6 +114,7 @@ dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
 dofile(modpath.."/ui/textbox.lua")
+dofile(modpath.."/ui/inventory.lua")
 if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end

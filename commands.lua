@@ -364,6 +364,19 @@ local function ip_cmd(name, param)
     ]]--
 end
 
+local function inv_cmd(name, param)
+    if not core.get_player_by_name(param) then
+        essentials.player_sound("error", name)
+        return false, core.colorize("red", S("Player @1 not found!", param))
+    end
+    if param == name then
+        essentials.player_sound("error", name)
+        return false, core.colorize("red", S("Cannot open inventory of yourself!"))
+    end
+    essentials.show_player_inventory(name, param)
+    return true, S("Opening @1's inventory...", param)
+end
+
 local function call_cmd(name, param, status)
     if status == "request" then
         if core.get_player_by_name(param) == nil then
@@ -836,5 +849,21 @@ elseif core.get_modpath("sethome") then
         end
     })
 else
-    core.log("error", "'/call', '/tpaccept', '/tpdecline' commands is didnt be added. Because You dont have 'sethome' mod or 'call' privilege in the game")
+    core.log("error", "'/call', '/tpaccept', '/tpdecline' commands have not to be added. Because You don't have 'sethome' mod or 'call' privilege in settings!")
+end
+
+if essentials.add_privs and is_contain(essentials.add_privs_list, "inv") then
+    core.register_chatcommand("inv", {
+        params = "<name>",
+        description = S("Opens player's inventory"),
+        privs = {server = true},
+        func = inv_cmd,
+    })
+else
+    core.register_chatcommand("inv", {
+        params = "<name>",
+        description = S("Opens player's inventory"),
+        privs = {inv = true},
+        func = inv_cmd,
+    })
 end

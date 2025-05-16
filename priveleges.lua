@@ -64,6 +64,12 @@ if essentials.add_privs then
             give_to_singleplayer = false,
         })
     end
+    if is_contain(essentials.add_privs_list, "inv") then
+        core.register_privilege("inv", {
+            description = S("Can open other player's inventories"),
+            give_to_singleplayer = false,
+        })
+    end
     if is_contain(essentials.add_privs_list, "troll") then
         core.register_privilege("troll", {
             description = S("Can open troll menu for trolling"),

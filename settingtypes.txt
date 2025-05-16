@@ -46,10 +46,10 @@ essentials_additional_privileges (Additional Privileges) bool true
 # Type here a privs do you want to be exist for "Additional Privileges" by ", "
 #
 # All Additional Privileges:
-# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
+# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv
 #
 #    Requires: essentials_additional_privileges
-essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute
+essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv
 
 [Internet]
 # If you are doesn't have internet connection, this option will help you with playing in the singleplayer.
