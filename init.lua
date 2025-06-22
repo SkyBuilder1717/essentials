@@ -157,7 +157,7 @@ core.register_on_joinplayer(function(player)
                 timeout = 5,
                 method = "GET",
         
-            },  function(result)
+            }, function(result)
                 if result.timeout then
                     core.log("warning", "[Essentials] Time out. Cant check updates")
                     return

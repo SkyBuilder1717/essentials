@@ -13,12 +13,11 @@ end
 
 local function show_ip_error(name)
     local text = S("If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@gmail.com@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command", "\n\n", "\n\n", "\n\n", "\"I want to use a /ip command for Essentials mod in core.\"\n\"Add a nickname \'Player\' in trusted ip users\"", "\n\n")
-    local formspec = "formspec_version[6]"
-    formspec = formspec..
-        "size[10.5,4.5]"..
-        "textarea[0.6,0.45;9.2,5.7;;;"..text.."]"
-
-	core.show_formspec(name, "essentials:ip_command", formspec)
+	core.show_formspec(name, "essentials:ip_help", table.concat({
+        "formspec_version[6]",
+        "size[10.5,4.5]",
+        "textarea[0.6,0.45;9.2,5.7;;;", text, "]"
+    }))
 end
 
 local function remove_val(table, value)
@@ -75,22 +74,22 @@ end
 local function biome_cmd(name, param)
     -- Thanks to @mckaygerhard on github for that part of script!
     if not core.has_feature("object_use_texture_alpha") then
-        core.log("error", essentials.main.." "..S("Your Luanti Engine is deprecated! Update it for \'/biome\' command."))
+        core.log("error", essentials.main.." "..S("Your Engine version is deprecated! Update it for \'/biome\' command."))
         essentials.player_sound("error", name)
-        return false, core.colorize("red", S("That version of engine doesn't support that command."))
+        return false, core.colorize("red", S("This version of engine doesn't support that command."))
     end
 
     local pos = core.get_player_by_name(name):get_pos()
     local biomeinfo = core.get_biome_data(pos)
     local biome = core.get_biome_name(biomeinfo.biome)
     if param == "" then
-        core.chat_send_player(name, S("Biome")..": \"".. biome .."\"")
+        core.chat_send_player(name, S("Biome")..": ".. dump(biome))
     else
         if core.check_player_privs(name, {debug=true}) then
             if param == "heat" then
-                core.chat_send_player(name, "\"".. biome .."\": ".. biomeinfo.heat)
+                core.chat_send_player(name, dump(biome) ..": ".. biomeinfo.heat)
             elseif param == "humidity" then
-                core.chat_send_player(name, "\"".. biome .."\": ".. biomeinfo.humidity)
+                core.chat_send_player(name, dump(biome) ..": ".. biomeinfo.humidity)
             else
                 essentials.player_sound("error", name)
                 return false, core.colorize("red", S("Invalid information name!"))
@@ -118,7 +117,7 @@ local function getpos_cmd(name, param)
 end
 
 local function seed_cmd(name, param)
-    core.chat_send_player(name, S("Seed is @1", core.colorize("#00ff00", core.get_mapgen_setting("seed"))))
+    core.chat_send_player(name, S("Seed is @1", core.colorize("lime", core.get_mapgen_setting("seed"))))
 end
 
 local function godmode_cmd(name, param)
