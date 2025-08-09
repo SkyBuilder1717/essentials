@@ -1,4 +1,3 @@
-local http = essentials.is_http
 local S = essentials.translate
 local FORMNAME = "essentials:thanks"
 
@@ -9,7 +8,6 @@ local function c(t, r)
     end
     return false
 end
-
 
 core.after(0, function()
     core.register_on_joinplayer(function(player)

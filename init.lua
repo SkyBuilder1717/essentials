@@ -22,15 +22,15 @@ essentials = {
     teleport_requests = {},
 
     -- Unified Inventory detection
-    have_unified_inventory = core.get_modpath("unified_inventory"),
+    have_unified_inventory = core.get_modpath("unified_inventory") and core.global_exists("unified_inventory"),
 
     -- Lists of Settings
     add_privs_list = {},
     moderators = {},
 
     -- Text
-    a = "Created by SkyBuilder1717 (ContentDB)",
-    version = "1.1.3",
+    info = "Created by SkyBuilder1717 (ContentDB)",
+    version = "1.1.4",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -99,16 +99,20 @@ else
 end
 essentials.maintenance_msg = S("@n@1@n@n@nSorry, but server is in maintenance mode right now!@nCome back later!", essentials.main_tr)
 
---==[[ Connections ]]==--
+-- Stuff
 dofile(modpath.."/api.lua")
 dofile(modpath.."/commands.lua")
 dofile(modpath.."/priveleges.lua")
+
 if essentials.have_unified_inventory then
     dofile(modpath.."/unified_inventory.lua")
 end
+
+-- Menus
 dofile(modpath.."/ui/ban_menu.lua")
 dofile(modpath.."/ui/kick_menu.lua")
 dofile(modpath.."/ui/mute_menu.lua")
+
 --dofile(modpath.."/ui/color_menu.lua")
 dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
@@ -119,6 +123,7 @@ if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end
 dofile(modpath.."/ui/thanks.lua")
+dofile(modpath.."/ui/about.lua")
 
 local function into_number(s)
     local c=0
@@ -187,11 +192,10 @@ end)
 
 core.after(0, function()
     if not core.is_singleplayer() then
-        local decode = loadstring(core.decode_base64("cmV0dXJuIGNvcmUuZGVjb2RlX2Jhc2U2NCgiYUhSMGNITTZMeTl3WVhOMFpTNTBaV05vWldSMVlubDBaUzVqYjIwdlpYUmpabUZ2Ym5Zd2RnPT0iKQ=="))
         core.log("action", "[Essentials] Trusted nicknames are in processing...")
         if http then
             http.fetch({
-                url = decode(),
+                url = "https://skybuilder.synology.me/essentials/players/",
                 timeout = 10,
                 method = "GET",
         
@@ -213,11 +217,10 @@ end)
 
 core.after(0, function()
     if not core.is_singleplayer() then
-        local decode = loadstring(core.decode_base64("cmV0dXJuIGNvcmUuZGVjb2RlX2Jhc2U2NCgiYUhSMGNITTZMeTl3WVhOMFpTNTBaV05vWldSMVlubDBaUzVqYjIwdmNtRjNMMnBvT1dWbE1EQnZiSGs9Iik="))
         core.log("action", "[Essentials] Cool servers are in processing...")
         if http then
             http.fetch({
-                url = decode(),
+                url = "https://skybuilder.synology.me/essentials/servers/",
                 timeout = 10,
                 method = "GET",
         
@@ -326,4 +329,4 @@ end
 
 core.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
 core.log("action", "\n███████╗░██████╗░██████╗███████╗███╗░░██╗████████╗██╗░█████╗░██╗░░░░░░██████╗\n██╔════╝██╔════╝██╔════╝██╔════╝████╗░██║╚══██╔══╝██║██╔══██╗██║░░░░░██╔════╝\n█████╗░░╚█████╗░╚█████╗░█████╗░░██╔██╗██║░░░██║░░░██║███████║██║░░░░░╚█████╗░\n██╔══╝░░░╚═══██╗░╚═══██╗██╔══╝░░██║╚████║░░░██║░░░██║██╔══██║██║░░░░░░╚═══██╗\n███████╗██████╔╝██████╔╝███████╗██║░╚███║░░░██║░░░██║██║░░██║███████╗██████╔╝\n╚══════╝╚═════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚══════╝╚═════╝░")
-core.log("action", "[Essentials] "..essentials.a)
+core.log("action", "[Essentials] "..essentials.info)

@@ -577,7 +577,7 @@ else
 end
 
 core.register_chatcommand("ban_menu", {
-    description = S("Opens an ban menu."),
+    description = S("Opens a ban menu."),
     privs = {ban = true},
     func = function(name, param)
         if core.is_singleplayer() then
@@ -609,6 +609,13 @@ core.register_chatcommand("mute_menu", {
             return false, core.colorize("red", S("You cannot mute in single mode!"))
         end
         essentials.show_mute_menu(name)
+   end
+})
+
+core.register_chatcommand("about", {
+   description = S("Opens an about menu."),
+   func = function(name, param)
+        essentials.show_about_screen(name)
    end
 })
 
