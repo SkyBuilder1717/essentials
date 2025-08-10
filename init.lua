@@ -151,9 +151,10 @@ local function add_zeros(s, l)
     end
 end
 
-core.register_on_joinplayer(function(player)
-    local name = player:get_player_name()
-    if essentials.check_for_pdates then
+local need_update = {value = false, msg = ""}
+
+local function checkforupdates()
+    if essentials.check_for_updates then
         core.log("action", "[Essentials] Checking for updates...")
         if http then
             core.log("action", "[Essentials] Getting an Github version...")
@@ -183,11 +184,20 @@ core.register_on_joinplayer(function(player)
                 end
                 if git > this then
                     core.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    core.chat_send_player(name, essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git)))
+                    need_update = {value = true, msg = essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git))}
                 end
             end)
         end
+        core.after(5, function()
+            checkforupdates()
+        end)
     end
+end
+checkforupdates()
+
+core.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
+    if need_update.value then core.chat_send_player(name, need_update.msg) end
 end)
 
 core.after(0, function()
