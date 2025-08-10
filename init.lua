@@ -188,7 +188,7 @@ local function checkforupdates()
                 end
             end)
         end
-        core.after(5, function()
+        core.after(10, function()
             checkforupdates()
         end)
     end
