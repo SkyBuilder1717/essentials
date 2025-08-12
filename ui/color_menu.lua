@@ -7,7 +7,6 @@ end
 
 core.register_on_chat_message(function(name, message)
 	local prop = core.get_player_by_name(name):get_properties()
-    --core.chat_send_player(name, dump(prop.nametag_color))
 	core.chat_send_all(core.format_chat_message(core.colorize(convertColor(prop.nametag_color), name), message))
 	return true
 end)
@@ -31,8 +30,6 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
     local name = player:get_player_name()
-    essentials.player_sound("clicked", name)
-    
     if fields.done then
         if core.is_singleplayer() then
             core.chat_send_player(name, core.colorize("red", S("Cannot coloring nickname in single mode!")))

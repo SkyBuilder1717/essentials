@@ -33,7 +33,6 @@ core.register_on_player_receive_fields(function(player, formname, field)
 	end
     local itemstack = player:get_wielded_item()
 	local meta = itemstack:get_meta()
-    essentials.player_sound("clicked", name)
 
     if field.format ~= nil then
 		local pmeta = player:get_meta()
@@ -57,7 +56,6 @@ core.register_on_player_receive_fields(function(player, formname, field)
         meta:set_string("description", field.new_name)
     end
 
-	--meta:set_string("color", field.color)
 	player:set_wielded_item(itemstack)
     core.close_formspec(player:get_player_name(), formname)
 end)

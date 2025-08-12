@@ -51,3 +51,8 @@ function essentials.get_players()
 	end
     return pls
 end
+
+core.register_on_player_receive_fields(function(player, formname, fields)
+	if not string.find(formname, "essentials:") then return end
+	essentials.player_sound("clicked", player:get_player_name())
+end)

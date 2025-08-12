@@ -612,13 +612,6 @@ core.register_chatcommand("mute_menu", {
    end
 })
 
-core.register_chatcommand("about", {
-   description = S("Opens an about menu."),
-   func = function(name, param)
-        essentials.show_about_screen(name)
-   end
-})
-
 -- not working or scrapped bullshit
 --[[
 core.register_chatcommand("password", {
@@ -877,3 +870,29 @@ else
         func = inv_cmd,
     })
 end
+
+local function show_about_screen(name)
+	local formspec = {
+        "formspec_version[6]",
+        "size[12,6]",
+        "hypertext[0.1,0.1;5.8,5.8;about;", core.hypertext_escape(table.concat({
+            "<big><b>About Essentials</b></big>",
+            "Essentials — Luanti mod, inspired by EssentialsX plug-in for Minecraft.",
+            "Mod was intended to be command overhaul, to make moderation for the admin easier.",
+            "",
+            "<i>More information coming soon...</i>"
+        }, "\n")), "]",
+        "image[6.1,0.1;5.8,5.8;essentials_skybuilder_approved.png]"
+    }
+	core.show_formspec(name, "essentials:about", table.concat(formspec))
+end
+
+core.register_chatcommand("essentials", {
+    params = "<about | version>",
+    func = function(name, param)
+        local params = param:gsub("%s+", "")
+        if param == "about" then show_about_screen(name)
+        elseif param == "version" then return true, S("@1 current: @2", core.colorize("lightgrey", essentials.main_tr), core.colorize(essentials.need_update.value and "red" or "lime", "v"..essentials.version))
+        else return false end
+    end
+})

@@ -71,10 +71,6 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 	local name = player:get_player_name()
-	essentials.player_sound("clicked", name)
-    
-	local def = {}
-	
 	if fields.report then
 		idrs[name] = fields.report
 		local formspec = get_formspec(idrs[name])

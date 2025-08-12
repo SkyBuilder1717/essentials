@@ -73,7 +73,7 @@ essentials_beta_test (BETA-TEST Functions) bool false
 #    Requires: essentials_beta_test
 essentials_simple_edit (Simple Edit) bool false
 
-# Adds an eraser, which can be used only one times!
+# Adds an eraser, which can be used only once!
 #
 #    Requires: essentials_beta_test, essentials_simple_edit
 essentials_disposable_eraser (Disposable Eraser) bool true

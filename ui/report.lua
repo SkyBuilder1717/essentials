@@ -21,8 +21,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
-	essentials.player_sound("clicked", name)
-
+	
 	if fields.send then
 		local reporting = fields.reporting
 		local broken_rule = fields.broken_rule

@@ -1,5 +1,3 @@
-local FORMNAME = "essentials:reports_log"
-
 function essentials.show_reports_log(name)
 	local ids = ""
 	if not essentials_reports == nil then
@@ -19,15 +17,5 @@ function essentials.show_reports_log(name)
 		"label[1.2,0.5;", S("Reports log"), "]",
 		"textlist[0.7,1;9.1,9.3;report_logger;", ids, ";1;false]"
 	}
-
-	core.show_formspec(name, FORMNAME, table.concat(formspec))
+	core.show_formspec(name, "essentials:reports_log", table.concat(formspec))
 end
-
-core.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= FORMNAME then
-		return
-	end
-	local name = player:get_player_name()
-	essentials.player_sound("clicked", name)
-	return
-end)

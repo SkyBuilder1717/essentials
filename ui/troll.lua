@@ -230,14 +230,15 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 	local name = player:get_player_name()
-	essentials.player_sound("clicked", name)
 
     if (fields.player == nil) or (fields.player == "") then
         return
     end
+
     if core.get_player_by_name(fields.player) == nil then
         return
     end
+
 	local player = core.get_player_by_name(fields.player)
 	local pos = player:get_pos()
 	if fields.punch then
@@ -245,11 +246,13 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		core.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
 		troll_message(fields, name)
 	end
+	
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
 		core.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
 		troll_message(fields, name)
 	end
+
 	if fields.freeze then
 		if player:get_meta():get_string("_essentials__troll__is_freezed_troll") ~= "" then
 			freeze_it(fields, nil, name)
@@ -258,10 +261,9 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		freeze_it(fields, true, name)
 		troll_message(fields, name)
 	end
+
 	if fields.trap then
-		if tonumber(fields.trap_in) == 1 then
-			return
-		end
+		if tonumber(fields.trap_in) == 1 then return end
 		local def = nodes[tonumber(fields.trap_in) - 1]
 		trap_in(player, def[2])
 		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, def[1]))

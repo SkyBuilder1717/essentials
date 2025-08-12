@@ -35,7 +35,6 @@ core.register_on_player_receive_fields(function(player, formname, field)
     local new_name = field.new_name
     local color = field.color
     local othername = field.name
-	essentials.player_sound("clicked", name)
 
     if field.rename then
         if core.is_singleplayer() then

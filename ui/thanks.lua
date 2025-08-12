@@ -59,12 +59,7 @@ function essentials.show_thanks_screen(name)
 end
 
 core.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= FORMNAME then
-		return
-	end
-	local name = player:get_player_name()
-	essentials.player_sound("clicked", name)
-
+	if formname ~= FORMNAME then return end
     if fields.no_show then
         essentials.set_thanks(player)
     end

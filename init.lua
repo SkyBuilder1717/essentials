@@ -29,8 +29,8 @@ essentials = {
     moderators = {},
 
     -- Text
-    info = "Created by SkyBuilder1717 (ContentDB)",
-    version = "1.1.4",
+    info = "Created by SkyBuilder1717",
+    version = "1.1.5",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -119,11 +119,10 @@ dofile(modpath.."/ui/rename_item.lua")
 dofile(modpath.."/ui/troll.lua")
 dofile(modpath.."/ui/textbox.lua")
 dofile(modpath.."/ui/inventory.lua")
+dofile(modpath.."/ui/thanks.lua")
 if essentials.enable_simple_edit then
     dofile(modpath.."/simple_edit.lua")
 end
-dofile(modpath.."/ui/thanks.lua")
-dofile(modpath.."/ui/about.lua")
 
 local function into_number(s)
     local c=0
@@ -151,7 +150,7 @@ local function add_zeros(s, l)
     end
 end
 
-local need_update = {value = false, msg = ""}
+essentials.need_update = {value = false, msg = ""}
 
 local function checkforupdates()
     if essentials.check_for_updates then
@@ -176,15 +175,11 @@ local function checkforupdates()
                     return
                 end
                 local this = into_number(essentials.version)
-                local _type
-                if core.is_singleplayer() then
-                    _type = {"World", S("World")}
-                else
-                    _type = {"Server", S("Server")}
-                end
+                local _type = {"Server", S("Server")}
+                if core.is_singleplayer() then _type = {"World", S("World")} end
                 if git > this then
                     core.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    need_update = {value = true, msg = essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git))}
+                    essentials.need_update = {value = true, msg = essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git))}
                 end
             end)
         end
@@ -197,7 +192,7 @@ checkforupdates()
 
 core.register_on_joinplayer(function(player)
     local name = player:get_player_name()
-    if need_update.value then core.chat_send_player(name, need_update.msg) end
+    if essentials.need_update.value then core.chat_send_player(name, essentials.need_update.msg) end
 end)
 
 core.after(0, function()

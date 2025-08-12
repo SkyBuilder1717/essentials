@@ -10,6 +10,27 @@ Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@
 All ok! @1 using lastest version of mod.=Всё окей! Ваш @1 использует последнюю версию мода.
 Please, add mod @1 to @2 for checking an updates!=Пожалуйста, добавьте мод @1 в @2 для проверки обновлений!
 
+# Privileges Description
+Can rename items=Может переименовать предметы
+Cannot be hurted by someone=Не может быть повреждённым кем то
+Can annonce all the server=Может анонсировать всему серверу
+Can be fast or slow=Может быть быстрым или медленным
+Can heal yourself or someone=Может восстановить здоровье себе и окружающим
+Can kill anyone=Может убить кого угодно
+Can get position of player=Может узнать позицию игрока
+Can see the seed of world/server=Может увидеть зерно мира/сервера
+Can be invisible=Может быть невидимым
+Can open troll menu for trolling=Может открывать тролль меню для троллинга
+Can request to players a teleportation=Может запросить игрокам запрос на телепортацию
+Can use @1 command to know ip of players.=Может использовать команду @1 чтобы узнать IP адрес игрока
+Can see current biome info=Может увидеть информацию теущего биома
+Can mute players=Может заглушить игроков
+Can open other player's inventories=Может открывать инвентари других игроков
+# Temporary unused
+Can use admin items (Block and Pickaxe)=Может использовать предметы администратора (Блок и кирка)
+Can rename self or someone else=Может переименовать себя или кого угодно
+Can color nicknames=Может раскрашивать имена игроков
+
 # Commands Description
 Opens player's inventory=Открывает инвентарь игрока.
 Show the IP of a player.=Показывает IP игрока.
@@ -21,7 +42,6 @@ Shows the seed of mapgen.=Показывает сид мира/сервера.
 Enable/Disabe the god mode.=Включает/Выключает режим бога.
 Opens a ban menu.=Открывает меню блокировки.
 Opens a kick menu.=Открывает меню выгоняния.
-Opens an about menu.=Открывает меню информации.
 Open the trolls menu.=Открывает меню троллинга.
 Gets the position of another player.=Получает позицию другого игрока.
 Hold item in hand and open this menu for renaming it.=Держите предмет в руке, а потом введите эту команду для меню переименовывания предмета.
@@ -159,7 +179,7 @@ In @1=В @1
 Bedrock=Коренную породу
 (Custom)=(Пользовательский)
 
-# Reports Messages
+# Reports Menu
 Approved=Одобрен
 Declined=Отклонён
 Your report @1 to player @2 is @3.=Ваш репорт @1 на игрока @2 был @3.
@@ -167,8 +187,6 @@ Your report @1 to player @2 has been @3 and coming soon that player will get pun
 @1 has been reported!=@1 был зарепорчен!
 Cant report yourself.=Нельзя репортить самого себя.
 You cannot report in single mode!=Вы не можете репортить в одиночном режиме!
-
-# Report Menu
 Player:=Игрок:
 Report the player=Зарепортить игрока
 Description to report=Описание к репорту
@@ -185,28 +203,7 @@ Approve=Одобрить
 @1 has been reported!=@1 зарепорчен!
 Cannot report yourself.=Не можете зарепортить самого себя.
 
-# Privileges Description
-Can rename items=Может переименовать предметы
-Cannot be hurted by someone=Не может быть повреждённым кем то
-Can annonce all the server=Может анонсировать всему серверу
-Can be fast or slow=Может быть быстрым или медленным
-Can heal yourself or someone=Может восстановить здоровье себе и окружающим
-Can kill anyone=Может убить кого угодно
-Can get position of player=Может узнать позицию игрока
-Can see the seed of world/server=Может увидеть зерно мира/сервера
-Can be invisible=Может быть невидимым
-Can open troll menu for trolling=Может открывать тролль меню для троллинга
-Can request to players a teleportation=Может запросить игрокам запрос на телепортацию
-Can use @1 command to know ip of players.=Может использовать команду @1 чтобы узнать IP адрес игрока
-Can see current biome info=Может увидеть информацию теущего биома
-Can mute players=Может заглушить игроков
-Can open other player's inventories=Может открывать инвентари других игроков
-# Temporary unused
-Can use admin items (Block and Pickaxe)=Может использовать предметы администратора (Блок и кирка)
-Can rename self or someone else=Может переименовать себя или кого угодно
-Can color nicknames=Может раскрашивать имена игроков
-
-# Simple Edit translate
+# Simple Edit
 Block @1 sets successful at @2 @3 @4!=Блок @1 успешно установлен на @2 @3 @4
 Zone filled from @1 @2 @3 to @4 @5 @6 with a @7=Область заполнена с @1 @2 @3 до @4 @5 @6 блоком @7
 Something wrong!=Что-то неправильно!
@@ -222,3 +219,6 @@ Mute Menu=Мьют Меню
 Kick Menu=Кик Меню
 Report Menu=Репорт Меню
 Rename item in hand=Переименовать предмет в руке
+
+# Essentials Command
+@1 current: @2=@1 текущая: @2
