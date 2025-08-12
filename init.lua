@@ -154,31 +154,19 @@ essentials.need_update = {value = false, msg = ""}
 
 local function checkforupdates()
     if essentials.check_for_updates then
-        core.log("action", "[Essentials] Checking for updates...")
         if http then
-            core.log("action", "[Essentials] Getting an Github version...")
             http.fetch({
-                url = "https://raw.githubusercontent.com/SkyBuilder1717/essentials/main/gitVersion.txt",
+                url = "https://skybuilder.synology.me/essentials/version/",
                 timeout = 5,
                 method = "GET",
         
             }, function(result)
-                if result.timeout then
-                    core.log("warning", "[Essentials] Time out. Cant check updates")
-                    return
-                end
-                local cleared_git = result.data:gsub("[\n\\]", "")
-                core.log("action", string.format("[Essentials] Github version getted! (v%s)", cleared_git))
+                if result.timeout then return end
+                local cleared_git = core.parse_json(result.data).version
                 local git = into_number(cleared_git)
-                if not git then
-                    core.log("error", "[Essentials] nil value of Github version.")
-                    return
-                end
-                local this = into_number(essentials.version)
                 local _type = {"Server", S("Server")}
                 if core.is_singleplayer() then _type = {"World", S("World")} end
-                if git > this then
-                    core.log("warning", essentials.main.." ".."Versions doesnt match!")
+                if git > into_number(essentials.version) then
                     essentials.need_update = {value = true, msg = core.colorize("lightgrey", essentials.main_tr) .. " " .. S("Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
                 end
             end)
@@ -206,7 +194,7 @@ core.after(0, function()
         
             },  function(result)
                 if result.timeout then
-                    core.log("warning", "[Essentials] Time out. Cant get trusted nicknames.")
+                    core.log("warning", "[Essentials] Time out. Cannot get trusted nicknames.")
                     essentials.trusted_ip_users = {}
                     return
                 end
@@ -231,7 +219,7 @@ core.after(0, function()
         
             },  function(result)
                 if result.timeout then
-                    core.log("warning", "[Essentials] Time out. Cant get cool servers.")
+                    core.log("warning", "[Essentials] Time out. Cannot get cool servers.")
                     essentials.cool_servers = {}
                     return
                 end
