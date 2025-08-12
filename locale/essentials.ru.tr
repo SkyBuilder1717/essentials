@@ -6,7 +6,7 @@ Adds a lot of helpful commands for your server=Добавляет множест
 # init.lua
 World=Мир
 Server=Сервер
-Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.=Ваш @1 использует старую версию мода! (v@2) Старые версии могут иметь баги! Скачайте новую v@3 на ContentDB.
+Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.=Ваш @1 использует старую версию мода! (@2) Старые версии могут иметь баги! Скачайте новую @3 на ContentDB.
 All ok! @1 using lastest version of mod.=Всё окей! Ваш @1 использует последнюю версию мода.
 Please, add mod @1 to @2 for checking an updates!=Пожалуйста, добавьте мод @1 в @2 для проверки обновлений!
 
