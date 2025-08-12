@@ -179,7 +179,7 @@ local function checkforupdates()
                 if core.is_singleplayer() then _type = {"World", S("World")} end
                 if git > this then
                     core.log("warning", essentials.main.." ".."Versions doesnt match!")
-                    essentials.need_update = {value = true, msg = essentials.main_tr.." "..S("Your @1 using old version of mod! (v@2) Old version can have a bugs! Download v@3 on ContentDB.", _type[2], core.colorize("red", essentials.version), core.colorize("lime", cleared_git))}
+                    essentials.need_update = {value = true, msg = core.colorize("lightgrey", essentials.main_tr) .. " " .. S("Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
                 end
             end)
         end
