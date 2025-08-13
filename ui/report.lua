@@ -24,8 +24,8 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	
 	if fields.send then
 		local reporting = fields.reporting
-		local broken_rule = fields.broken_rule
-		local description = fields.description
+		local broken_rule = essentials.trim(fields.broken_rule, 32)
+		local description = essentials.trim(fields.description, 512)
 
 		if reporting == "" or (broken_rule == "" or description == "") then
 			essentials.player_sound("error", name)

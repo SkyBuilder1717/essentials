@@ -43,7 +43,53 @@ function essentials.set_thanks(player)
     meta:set_string(thanks_ok_meta, "yes")
 end
 
--- Util function for formspec
+local function utf8len(s)
+    local _, c = s:gsub("[^\128-\191]", "")
+    return c
+end
+
+local function utf8sub(s, char, endchar)
+    local start = 1
+    while char > 1 do
+        local byte = string.byte(s, start)
+        if byte >= 240 then
+            start = start + 4
+        elseif byte >= 224 then
+            start = start + 3
+        elseif byte >= 192 then
+            start = start + 2
+        else
+            start = start + 1
+        end
+        char = char - 1
+    end
+
+    local cur = start
+    while endchar and endchar >= 1 do
+        local byte = string.byte(s, cur)
+        if byte >= 240 then
+            cur = cur + 4
+        elseif byte >= 224 then
+            cur = cur + 3
+        elseif byte >= 192 then
+            cur = cur + 2
+        else
+            cur = cur + 1
+        end
+        endchar = endchar - 1
+    end
+
+    return string.sub(s, start, cur - 1)
+end
+
+function essentials.trim(text, limit)
+    if utf8len(text) > limit then
+        return utf8sub(text, 1, limit) .. "..."
+    else
+        return text
+    end
+end
+
 function essentials.get_players()
     local pls = ""
     for _, p in ipairs(core.get_connected_players()) do
