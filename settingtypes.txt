@@ -11,10 +11,13 @@ essentials_biome (Biome command) bool true
 # for trolling other players.
 essentials_trolling (Trolling) bool false
 
-# Adds an ip discover command
+# Adds an ip discovering command
 #
 #    Requires: !essentials_offline_mode
 essentials_ip (IP address command) bool false
+
+# Adds a command for coloring nicknames
+essentials_colored_nickname (Colored nicknames command) bool false
 
 # The time after which the teleportation request will expire
 essentials_teleport_exporation (Teleportation Exporation Time) float 15

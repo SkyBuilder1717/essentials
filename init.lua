@@ -12,6 +12,7 @@ essentials = {
     changed_by = st:get_bool("essentials_changed_by", true),
     add_privs = st:get_bool("essentials_additional_privileges", true),
     enable_ip_cmd = st:get_bool("essentials_ip", false),
+    enable_color_cmd = st:get_bool("essentials_colored_nickname", false),
     enable_troll_cmd = st:get_bool("essentials_trolling", false),
     offline_mode = st:get_bool("essentials_offline_mode", false),
     beta_test = st:get_bool("essentials_beta_test", false),

@@ -671,18 +671,20 @@ else
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "colored_nickname") then
-    core.register_chatcommand("color", {
-        description = S("Opens a coloring menu."),
-        privs = {colored_nickname = true},
-        func = essentials.show_coloring_menu
-    })
-else
-    core.register_chatcommand("color", {
-        description = S("Opens a coloring menu."),
-        privs = {kick = true},
-        func = essentials.show_coloring_menu
-    })
+if essentials.enable_color_cmd then
+    if essentials.add_privs and is_contain(essentials.add_privs_list, "colored_nickname") then
+        core.register_chatcommand("color", {
+            description = S("Opens a coloring menu."),
+            privs = {colored_nickname = true},
+            func = essentials.show_coloring_menu
+        })
+    else
+        core.register_chatcommand("color", {
+            description = S("Opens a coloring menu."),
+            privs = {kick = true},
+            func = essentials.show_coloring_menu
+        })
+    end
 end
 
 if essentials.add_privs and is_contain(essentials.add_privs_list, "kill") then
