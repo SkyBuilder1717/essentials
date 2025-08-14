@@ -328,6 +328,10 @@ local function troll_cmd(name, param)
 end
 
 local function ip_cmd(name, param)
+    if param == "" then
+        essentials.show_ip_information(name, name)
+        return true
+    end
     if core.get_player_by_name(param) == nil then
         essentials.player_sound("error", name)
         return false, core.colorize("red", S("Player @1 not found!", param))
