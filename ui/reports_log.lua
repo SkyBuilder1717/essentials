@@ -1,7 +1,7 @@
 function essentials.show_reports_log(name)
 	local ids = ""
-	if not essentials_reports == nil then
-		for i, name in ipairs(essentials_reports.log) do
+	if not essentials.reports == nil then
+		for i, name in ipairs(essentials.reports.log) do
 			if i == 1 then
 				ids = id..name
 			else

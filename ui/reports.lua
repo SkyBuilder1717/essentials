@@ -14,17 +14,17 @@ end)
 
 local function load_ids()
 	ids = ""
-	for id, def in pairs(essentials_reports) do
+	for id, def in pairs(essentials.reports) do
 		ids = ids..","..id
 	end
 end
 
 local function get_formspec(id)
-	local def = essentials_reports[id]
+	local def = essentials.reports[id]
 	local selected_id = 1
 
 	local i = 1
-	for iden, _ in pairs(essentials_reports) do
+	for iden, _ in pairs(essentials.reports) do
 		i = i + 1
 		if id == tostring(iden) then
 			selected_id = i
@@ -35,7 +35,7 @@ local function get_formspec(id)
 	load_ids()
 
 	local formspec
-	if (not essentials_reports[id]) or (id == "0000") then
+	if (not essentials.reports[id]) or (id == "0000") then
 		formspec = {
 			"formspec_version[6]",
 			"size[10.5,11.5]",

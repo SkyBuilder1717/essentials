@@ -1,21 +1,42 @@
 local FORMNAME = "essentials:color_menu"
-
-local function convertColor(table)
-    local hex = string.format("#%02X%02X%02X", table.r, table.g, table.b)
-    return hex
-end
+local S = essentials.translate
 
 core.register_on_chat_message(function(name, message)
-	local prop = core.get_player_by_name(name):get_properties()
-	core.chat_send_all(core.format_chat_message(core.colorize(convertColor(prop.nametag_color), name), message))
-	return true
+    local player = core.get_player_by_name(name)
+    local color = player:get_meta():get_string("_essentials_nametag_color")
+    if color == "" then return false end
+    local new_name = essentials.hide_names[name]
+	if new_name then
+	    core.chat_send_all(core.format_chat_message(core.colorize("#AAAAAA", "*")..core.colorize(color, new_name), message))
+	    return true
+    end
+    core.chat_send_all(core.format_chat_message(essentials.get_nickname(name), message))
+    return true
 end)
 
-function essentials.show_color_menu(name)
+core.register_on_joinplayer(function(player)
+    core.after(0, function()
+        local name = player:get_player_name()
+        local new_name = essentials.hide_names[name]
+        local color = player:get_meta():get_string("_essentials_nametag_color")
+        if color == "" then return end
+        if new_name then
+            player:set_properties({
+                nametag = core.colorize("#AAAAAA", "*")..core.colorize(color, new_name)
+            })
+            return
+        end
+        player:set_properties({
+            nametag = core.colorize(color, name)
+        })
+    end)
+end)
+
+function essentials.show_coloring_menu(name)
 	local formspec = {
         "formspec_version[6]",
         "size[10,8]",
-        "button[2.9,6.5;4.4,1.2;done;", S("Accept"), "]",
+        "button[2.9,6.5;4.4,1.2;done;", S("Done"), "]",
         "image_button_exit[8.8,0.2;1,1;essentials_close_btn.png;close;]",
         "field[1.5,4.4;7.2,1.1;color;", S("Color"), ";]",
         "label[1.7,5.9;", core.formspec_escape(S("Or hex color or common color (red, blue, etc.)")), "]",
@@ -37,10 +58,11 @@ core.register_on_player_receive_fields(function(player, formname, fields)
             return
         end
         player:set_properties({
-            nametag_color = fields.color
+            nametag = core.colorize(fields.color, name)
         })
-        player:get_meta():set_string("essentials_color", fields.color)
-        essentials.player_sound("clicked", name)
+        essentials.hide_names[name] = nil
+        essentials.save_nicknames()
+        player:get_meta():set_string("_essentials_nametag_color", fields.color)
         core.close_formspec(name, formname)
     end
 end)

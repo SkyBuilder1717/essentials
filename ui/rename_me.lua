@@ -1,16 +1,6 @@
 local S = essentials.translate
 local FORMNAME = "essentials:rename_me"
-hide_names = {}
-
-core.register_on_chat_message(function(name, message)
-	local new_name = hide_names[name]
-	if new_name then
-        local player = core.get_player_by_name(name)
-        local color = player:get_meta():get_string("_essentials_nametag_color")
-		core.chat_send_all(core.format_chat_message(core.colorize(color, new_name), message))
-		return true
-	end
-end)
+essentials.hide_names = {}
 
 function essentials.show_rename_menu(name)
     local formspec = {
@@ -57,23 +47,23 @@ core.register_on_player_receive_fields(function(player, formname, field)
         
         local meta = player:get_meta()
         if color == "" then
-            hide_names[name] = new_name
-            core.chat_send_player(name, core.colorize("green", S("Name of @1 changed to @2", othername, new_name)))
+            essentials.hide_names[name] = new_name
+            core.chat_send_player(name, S("Name of @1 changed to @2", othername, new_name))
             if essentials.changed_by then
-                core.chat_send_player(othername, core.colorize("green", S("Your name changed to @1 by @2", new_name, name)))
+                core.chat_send_player(othername, S("Your name changed to @1 by @2", new_name, name))
             end
             essentials.player_sound("done", name)
             
             otherp:set_properties({
                 nametag = core.colorize("#AAAAAA", "*"..new_name)
             })
-            meta:set_string("_essentials_nametag_color", "")
+            meta:set_string("_essentials_nametag_color", "white")
             core.close_formspec(name, formname)
         else
-            hide_names[name] = new_name
+            essentials.hide_names[name] = new_name
             core.chat_send_player(name, S("Name of @1 changed to @2 with @3", othername, new_name, core.colorize(color, "color ".. color)))
             if essentials.changed_by then
-                core.chat_send_player(othername, core.colorize("green", S("Your name changed to @1 with @2 by @3", new_name, core.colorize(color, S("color @1", color)), name)))
+                core.chat_send_player(othername, S("Your name changed to @1 with @2 by @3", new_name, core.colorize(color, S("color @1", color)), name))
             end
             essentials.player_sound("done", name)
             otherp:set_properties({
@@ -82,5 +72,6 @@ core.register_on_player_receive_fields(function(player, formname, field)
             meta:set_string("_essentials_nametag_color", color)
             core.close_formspec(name, formname)
         end
+        essentials.save_nicknames()
     end
 end)

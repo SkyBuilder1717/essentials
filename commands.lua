@@ -11,15 +11,6 @@ local function is_contain(table, value)
 	return false
 end
 
-local function show_ip_error(name)
-    local text = S("If you want to use /ip command, you must send a mail to the next address:@1SkyBuilderOFFICAL@gmail.com@2And your message must have that text:@3@4@5If you will accepted, creator will put you in list of trusted ip users and you will can use /ip command", "\n\n", "\n\n", "\n\n", "\"I want to use a /ip command for Essentials mod in core.\"\n\"Add a nickname \'Player\' in trusted ip users\"", "\n\n")
-	core.show_formspec(name, "essentials:ip_help", table.concat({
-        "formspec_version[6]",
-        "size[10.5,4.5]",
-        "textarea[0.6,0.45;9.2,5.7;;;", text, "]"
-    }))
-end
-
 local function remove_val(table, value)
     local tbl = {}
     local j = 1
@@ -72,7 +63,6 @@ local function announcement_cmd(name, param)
 end
 
 local function biome_cmd(name, param)
-    -- Thanks to @mckaygerhard on github for that part of script!
     if not core.has_feature("object_use_texture_alpha") then
         core.log("error", essentials.main.." "..S("Your Engine version is deprecated! Update it for \'/biome\' command."))
         essentials.player_sound("error", name)
@@ -260,9 +250,11 @@ core.register_globalstep(function(dtime)
 end)
 
 core.register_on_prejoinplayer(function(name)
-    if essentials.maintenance and check_moderator(name) then
-        return essentials.maintenance_msg
-    end
+    if essentials.maintenance and check_moderator(name) then return essentials.maintenance_msg end
+end)
+
+core.register_can_bypass_userlimit(function(name, ip)
+    if check_moderator(name) then return true end
 end)
 
 local function vanish_cmd(name, param)
@@ -324,7 +316,6 @@ local function vanish_cmd(name, param)
         end
     end
     player:set_properties(prop)
-    --core.chat_send_player(name, dump(vis))
 end
 
 local function troll_cmd(name, param)
@@ -336,31 +327,15 @@ local function troll_cmd(name, param)
 end
 
 local function ip_cmd(name, param)
-    --[[
-    if not is_contain(essentials.trusted_ip_users, name) then
-        core.chat_send_player(name, core.colorize("red", S("You are not of trusted administrator!")))
-        essentials.player_sound("error", name)
-        show_ip_error(name)
-        return
-        -- \/ deprecated \/ --
-        --show_ip_info(name)
-    end
-    ]]--
     if param == "" then
-        core.chat_send_player(name, S("Your IP address is @1", core.get_player_ip(name)))
+        essentials.show_ip_information(name, name)
         return
     end
     if core.get_player_by_name(param) == nil then
         essentials.player_sound("error", name)
         return false, core.colorize("red", S("Player @1 not found!", param))
     end
-
-    core.chat_send_player(name, S("IP address of @1 is @2", param, core.get_player_ip(param)))
-
-    --[[ 
-        -- TODO: Make the "/ip" command more manageable
-      show_ip_error(name)
-    ]]--
+    essentials.show_ip_information(name, param)
 end
 
 local function inv_cmd(name, param)
@@ -449,7 +424,7 @@ local function call_cmd(name, param, status)
     end
 end
 
-if essentials.enable_ip_cmd then
+if essentials.enable_ip_cmd and not essentials.offline_mode then
     if essentials.add_privs and is_contain(essentials.add_privs_list, "ip") then
         core.register_chatcommand("ip", {
             params = "[<name>]",
@@ -531,7 +506,6 @@ else
     end
 end
 
---core.get_mapgen_object
 if essentials.add_privs then
     if essentials.seed then
         core.register_chatcommand("seed", {
@@ -612,16 +586,6 @@ core.register_chatcommand("mute_menu", {
    end
 })
 
--- not working or scrapped bullshit
---[[
-core.register_chatcommand("password", {
-    privs = {password = true},
-    params = "<name>",
-    description = S("Shows the password of the authorized player."),
-    func = password_cmd,
-})
-]]--
-
 if essentials.reports_system then
     core.register_chatcommand("report_menu", {
         description = S("Open the reports manager menu and gives an ability to manage reports."),
@@ -651,17 +615,13 @@ if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {rename_player = true},
-        func = function(name)
-            essentials.show_rename_menu(name)
-        end
+        func = essentials.show_rename_menu
     })
 else
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {kick = true},
-        func = function(name)
-            essentials.show_rename_menu(name)
-        end
+        func = essentials.show_rename_menu
     })
 end
 
@@ -711,25 +671,19 @@ else
     })
 end
 
---[[
-if essentials.add_privs then
+if essentials.add_privs and is_contain(essentials.add_privs_list, "colored_nickname") then
     core.register_chatcommand("color", {
-        description = S("Shows menu for coloring nickname.",
+        description = S("Opens a coloring menu."),
         privs = {colored_nickname = true},
-        func = function(name, param)
-            show_color_menu(name)
-        end
+        func = essentials.show_coloring_menu
     })
 else
     core.register_chatcommand("color", {
-        description = S("Shows menu for coloring nickname.",
+        description = S("Opens a coloring menu."),
         privs = {kick = true},
-        func = function(name, param)
-            show_color_menu(name)
-        end
+        func = essentials.show_coloring_menu
     })
 end
-]]--
 
 if essentials.add_privs and is_contain(essentials.add_privs_list, "kill") then
     core.register_chatcommand("kill", {

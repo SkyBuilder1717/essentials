@@ -21,7 +21,7 @@ essentials_teleport_exporation (Teleportation Exporation Time) float 15
 
 [Messages and Players]
 # Players, that will not be kicked, while maintenance
-# Players will be separated by ", "
+# Players will be separated by commas
 #
 # Example: "Admin, -SkyBuilder-" and etc.
 essentials_moderators (Moderators) string
@@ -31,7 +31,7 @@ essentials_killed_by ("You have been killed by" message) bool true
 
 # Enables sending a message to those who have changed any attributes
 # (like speed or nickname)
-essentials_changed_by ("Your name changed by" message) bool true
+essentials_changed_by ("Your (something) changed by" message) bool true
 
 # If on player has been activated trolling stuff,
 # it will send message to trolled player
@@ -39,17 +39,22 @@ essentials_changed_by ("Your name changed by" message) bool true
 #    Requires: essentials_trolling
 essentials_trolled_by ("You have been trolled by" message) bool false
 
+# Adds an in-game reports system
+#
+#    Requires: !essentials_offline_mode
+essentials_report_system (Reports) bool false
+
 [Privileges]
 # Enables an additional privileges for commands
 essentials_additional_privileges (Additional Privileges) bool true
 
-# Type here a privs do you want to be exist for "Additional Privileges" by ", "
+# Type here a privs do you want to be exist for "Additional Privileges" separated by commas
 #
 # All Additional Privileges:
-# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv
+# rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv, colored_nickname
 #
 #    Requires: essentials_additional_privileges
-essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv
+essentials_all_privs (Privileges for Commands) string rename_item, rename_player, god_mode, broadcast, speed, heal, kill, get_pos, seed, invisible, troll, ip, biome, call, mute, inv, colored_nickname
 
 [Internet]
 # If you are doesn't have internet connection, this option will help you with playing in the singleplayer.
@@ -77,9 +82,3 @@ essentials_simple_edit (Simple Edit) bool false
 #
 #    Requires: essentials_beta_test, essentials_simple_edit
 essentials_disposable_eraser (Disposable Eraser) bool true
-
-# Adds an in-game reports system
-# (Its really buggy)
-#
-#    Requires: essentials_beta_test, !essentials_offline_mode
-essentials_report_system (Reports) bool false

@@ -15,7 +15,7 @@ core.after(0, function()
         local admin = essentials.get_admin_name()
         if name ~= admin then return end
         local ip = essentials.get_address()
-        local server = c(essentials.cool_servers, ip)
+        local server = c(essentials.approved_servers, ip)
         local check = essentials.is_thanks(player)
         if server and check then
             essentials.show_thanks_screen(name)

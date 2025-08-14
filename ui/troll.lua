@@ -167,7 +167,7 @@ local function freeze_it(fields, bool, name)
 			new_move = true,
 		})
 		meta:set_string("_essentials__troll__is_freezed_troll", "")
-		core.chat_send_player(name, msgr..S("Player @1 has been unfreezed.", fields.player))
+		core.chat_send_player(name, msgr..S("Player @1 has been unfreezed.", essentials.get_nickname(fields.player)))
 		return
 	end
 	meta:set_string("_essentials__troll__looky", core.serialize(look))
@@ -192,7 +192,7 @@ local function freeze_it(fields, bool, name)
 		new_move = false,
 	})
 	player:set_pos(pos)
-	core.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", fields.player, seconds))
+	core.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", essentials.get_nickname(fields.player), seconds))
 	core.after(seconds, function()
 		if meta:get_string("_essentials__troll__is_freezed_troll") == "" then
 			return
@@ -243,13 +243,13 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	local pos = player:get_pos()
 	if fields.punch then
 		punch_time(player, 0.01)
-		core.chat_send_player(name, msgr..S("Player @1 punched.", fields.player))
+		core.chat_send_player(name, msgr..S("Player @1 punched.", essentials.get_nickname(fields.player)))
 		troll_message(fields, name)
 	end
 	
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
-		core.chat_send_player(name, msgr..S("Player @1 launched in space.", fields.player))
+		core.chat_send_player(name, msgr..S("Player @1 launched in space.", essentials.get_nickname(fields.player)))
 		troll_message(fields, name)
 	end
 
@@ -266,7 +266,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		if tonumber(fields.trap_in) == 1 then return end
 		local def = nodes[tonumber(fields.trap_in) - 1]
 		trap_in(player, def[2])
-		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", fields.player, def[1]))
+		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", essentials.get_nickname(fields.player), def[1]))
 		troll_message(fields, name)
 	end
 end)

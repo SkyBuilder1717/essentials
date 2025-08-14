@@ -16,6 +16,12 @@ if essentials.add_privs then
             give_to_singleplayer = false,
         })
     end
+    if is_contain(essentials.add_privs_list, "rename_player") then
+        core.register_privilege("rename_player", {
+            description = S("Can rename self"),
+            give_to_singleplayer = false,
+        })
+    end
     if is_contain(essentials.add_privs_list, "god_mode") then
         core.register_privilege("god_mode", {
             description = S("Cannot be hurted by someone"),
@@ -100,6 +106,11 @@ if essentials.add_privs then
             give_to_singleplayer = false,
         })
     end
+    if is_contain(essentials.add_privs_list, "colored_nickname") then
+        core.register_privilege("colored_nickname", {
+            description = S("Can color nicknames"),
+        })
+    end
     --[[
     if essentials.admin_block then
         core.register_privilege("admin_stuff", {
@@ -109,9 +120,6 @@ if essentials.add_privs then
     end
     core.register_privilege("rename_player", {
         description = S("Can rename self or someone else"),
-    })
-    core.register_privilege("colored_nickname", {
-        description = S("Can color nicknames"),
     })
     ]]--
 end

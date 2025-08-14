@@ -98,7 +98,108 @@ function essentials.get_players()
     return pls
 end
 
-core.register_on_player_receive_fields(function(player, formname, fields)
-	if not string.find(formname, "essentials:") then return end
-	essentials.player_sound("clicked", player:get_player_name())
-end)
+function essentials.get_nickname(name)
+    local player = core.get_player_by_name(name)
+    if not player then return name end
+    local color = player:get_meta():get_string("_essentials_nametag_color")
+    if color == "" then return name end
+	return core.colorize(color, name)
+end
+
+local worldpath = core.get_worldpath().."/"
+local data_reports = "essentials.reports.json"
+local data_nicknames = "essentials_nicknames.json"
+
+local function write_file(path, content)
+    local f = io.open(path, "w")
+    f:write(content)
+    f:close()
+end
+
+local function read_file(path)
+    local f = io.open(path, "r")
+    if not f then
+        return nil
+    end
+    local txt = f:read("*all")
+    f:close()
+    return txt
+end
+
+function essentials.save_reports()
+    local tbl = essentials.reports
+    local content = core.write_json(tbl)
+    local path = worldpath..data_reports
+    write_file(path, content)
+end
+
+function essentials.load_reports()
+    local content = read_file(worldpath..data_reports)
+    if not content then return false end
+    local tbl = core.parse_json(content) or {}
+    essentials.reports = tbl
+    return true
+end
+
+function essentials.save_nicknames()
+    local tbl = essentials.hide_names
+    local content = core.write_json(tbl)
+    local path = worldpath..data_nicknames
+    write_file(path, content)
+end
+
+function essentials.load_nicknames()
+    local content = read_file(worldpath..data_nicknames)
+    if not content then return false end
+    local tbl = core.parse_json(content) or {}
+    essentials.hide_names = tbl
+    return true
+end
+
+function essentials.add_report(broked_rule, name, reported, description)
+    local newid = tostring(math.random(1000, 9999), 4)
+    essentials.reports[newid] = {
+        broken_rule = broked_rule,
+        by_name = name,
+        reported_name = reported,
+        about = description
+    }
+
+    essentials.save_reports()
+end
+
+function essentials.appdec_report(id, state, admin)
+    local def = essentials.reports[id]
+    local player = core.get_player_by_name(def.by_name)
+    if def then
+        if state == "decline" then
+            if player then
+                core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
+            end
+            core.log("action", admin.." declined report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
+        elseif state == "approve" then
+            if player then
+                core.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("lime", S("Approved"))))
+            end
+            core.log("action", admin.." approved report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
+        end
+    end
+    essentials.reports[id] = nil
+    essentials.save_reports()
+end
+
+local function remove_report(id)
+    for aid, def in ipairs(essentials.reports) do
+        if def.id == id then
+            essentials.reports[aid] = nil
+        end 
+    end
+    essentials.save_reports()
+end
+
+if essentials.reports_system then
+    core.register_on_mods_loaded(function()
+        essentials.load_reports()
+        essentials.load_nicknames()
+    end)
+end

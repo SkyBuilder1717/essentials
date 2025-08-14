@@ -30,7 +30,7 @@ essentials = {
 
     -- Text
     info = "Created by SkyBuilder1717",
-    version = "1.1.5",
+    version = "1.1.6",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -39,16 +39,16 @@ essentials = {
     maintenance = false,
     maintenance_msg = "",
 
-    -- Trusted users of ip command
-    trusted_ip_users = {"singleplayer"},
+    -- approved servers with this mod
+    approved_servers = {},
 
-    -- Cool servers with this mod
-    cool_servers = {},
+    -- Reports
+    reports = {},
 
     -- All custom privileges in the mod
     privs = {
         "rename_item",
-        "rename_",
+        "rename_player",
         "god_mode",
         "broadcast",
         "speed",
@@ -62,7 +62,8 @@ essentials = {
         "biome",
         "call",
         "mute",
-        "inv"
+        "inv",
+        "colored_nickname"
     },
     -- Privileges in text
     privstring = "",
@@ -71,7 +72,7 @@ essentials = {
     is_http = false,
 }
 local S = essentials.translate
-essentials.main_tr = "["..S("Essentials").."]"
+essentials.main_tr = core.colorize("lightgrey", "["..S("Essentials").."]")
 
 if http then
     essentials.is_http = true
@@ -99,29 +100,34 @@ else
 end
 essentials.maintenance_msg = S("@n@1@n@n@nSorry, but server is in maintenance mode right now!@nCome back later!", essentials.main_tr)
 
--- Stuff
-dofile(modpath.."/api.lua")
-dofile(modpath.."/commands.lua")
-dofile(modpath.."/priveleges.lua")
-
-if essentials.have_unified_inventory then
-    dofile(modpath.."/unified_inventory.lua")
+if essentials.enable_simple_edit then
+    dofile(modpath.."/simple_edit.lua")
 end
 
 -- Menus
 dofile(modpath.."/ui/ban_menu.lua")
 dofile(modpath.."/ui/kick_menu.lua")
 dofile(modpath.."/ui/mute_menu.lua")
-
---dofile(modpath.."/ui/color_menu.lua")
 dofile(modpath.."/ui/rename_me.lua")
 dofile(modpath.."/ui/rename_item.lua")
+dofile(modpath.."/ui/color_menu.lua")
 dofile(modpath.."/ui/troll.lua")
 dofile(modpath.."/ui/textbox.lua")
 dofile(modpath.."/ui/inventory.lua")
 dofile(modpath.."/ui/thanks.lua")
-if essentials.enable_simple_edit then
-    dofile(modpath.."/simple_edit.lua")
+
+if essentials.reports_system then
+    dofile(modpath.."/ui/report.lua")
+    dofile(modpath.."/ui/reports.lua")
+end
+
+-- Main
+dofile(modpath.."/api.lua")
+dofile(modpath.."/commands.lua")
+dofile(modpath.."/priveleges.lua")
+
+if essentials.have_unified_inventory then
+    dofile(modpath.."/unified_inventory.lua")
 end
 
 local function into_number(s)
@@ -167,7 +173,7 @@ local function checkforupdates()
                 local _type = {"Server", S("Server")}
                 if core.is_singleplayer() then _type = {"World", S("World")} end
                 if git > into_number(essentials.version) then
-                    essentials.need_update = {value = true, msg = core.colorize("lightgrey", essentials.main_tr) .. " " .. S("Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
+                    essentials.need_update = {value = true, msg = essentials.main_tr .. " " .. S("Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
                 end
             end)
         end
@@ -185,32 +191,7 @@ end)
 
 core.after(0, function()
     if not core.is_singleplayer() then
-        core.log("action", "[Essentials] Trusted nicknames are in processing...")
-        if http then
-            http.fetch({
-                url = "https://skybuilder.synology.me/essentials/players/",
-                timeout = 10,
-                method = "GET",
-        
-            },  function(result)
-                if result.timeout then
-                    core.log("warning", "[Essentials] Time out. Cannot get trusted nicknames.")
-                    essentials.trusted_ip_users = {}
-                    return
-                end
-                essentials.trusted_ip_users = core.deserialize("return "..result.data)
-                core.log("action", "[Essentials] Trusted nicknames successfully getted.")
-            end)
-        else
-            core.log("warning", "[Essentials] Cant get trusted nicknames, table will be nil.")
-            essentials.trusted_ip_users = {}
-        end
-    end
-end)
-
-core.after(0, function()
-    if not core.is_singleplayer() then
-        core.log("action", "[Essentials] Cool servers are in processing...")
+        core.log("action", "[Essentials] Approved servers are in processing...")
         if http then
             http.fetch({
                 url = "https://skybuilder.synology.me/essentials/servers/",
@@ -219,105 +200,71 @@ core.after(0, function()
         
             },  function(result)
                 if result.timeout then
-                    core.log("warning", "[Essentials] Time out. Cannot get cool servers.")
-                    essentials.cool_servers = {}
+                    core.log("warning", "[Essentials] Time out. Cannot get approved servers.")
+                    essentials.approved_servers = {}
                     return
                 end
-                essentials.cool_servers = core.deserialize("return "..result.data)
-                core.log("action", "[Essentials] Successfully got cool servers!")
+                essentials.approved_servers = core.deserialize("return "..result.data)
+                core.log("action", "[Essentials] Successfully got approved servers!")
             end)
         else
-            core.log("warning", "[Essentials] Cant get cool servers, table will be nil.")
-            essentials.cool_servers = {}
+            core.log("warning", "[Essentials] Cant get approved servers, table will be nil.")
+            essentials.approved_servers = {}
         end
     end
 end)
 
-essentials_reports = {}
-local worldpath = core.get_worldpath().."/"
-local data_reports = "essentials_reports.json"
-
-local function write_file(path, content)
-    local f = io.open(path, "w")
-    f:write(content)
-    f:close()
-end
-
-local function read_file(path)
-    local f = io.open(path, "r")
-    if not f then
-        return nil
-    end
-    local txt = f:read("*all")
-    f:close()
-    return txt
-end
-
-function essentials.save_reports()
-    local tbl = essentials_reports
-    local content = core.write_json(tbl)
-    local path = worldpath..data_reports
-    write_file(path, content)
-end
-
-function essentials.load_reports()
-    local content = read_file(worldpath..data_reports)
-    if not content then
-        return false
-    end
-    local tbl = core.parse_json(content) or {}
-    essentials_reports = tbl
-    return true
-end
-
-function essentials.add_report(broked_rule, name, reported, description)
-    local newid = tostring(math.random(1000, 9999), 4)
-    essentials_reports[newid] = {
-        broken_rule = broked_rule,
-        by_name = name,
-        reported_name = reported,
-        about = description
-    }
-
-    essentials.save_reports()
-end
-
-function essentials.appdec_report(id, state, admin)
-    local def = essentials_reports[id]
-    local player = core.get_player_by_name(def.by_name)
-    if def then
-        if state == "decline" then
-            if player then
-                core.chat_send_player(def.by_name, S("Your report @1 to player @2 is @3.", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("red", S("Declined"))))
-            end
-            core.log("action", admin.." declined report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
-        elseif state == "approve" then
-            if player then
-                core.chat_send_player(def.by_name, S("Your report @1 to player @2 has been @3 and coming soon that player will get punishment!", "\""..core.colorize("gray", def.broken_rule).."\"", core.colorize("lightgray", def.reported_name), core.colorize("lime", S("Approved"))))
-            end
-            core.log("action", admin.." approved report for "..def.reported_name.." (broken rule: "..def.broken_rule..")")
+function essentials.show_ip_information(sender, name, loading)
+    if loading == nil then
+        local ip = core.get_player_information(name).address
+        if http then
+            http.fetch({
+                url = "https://skybuilder.synology.me/essentials/ip/?ip="..ip,
+                timeout = 10,
+                method = "GET",
+        
+            },  function(result)
+                if result.timeout then
+                    core.chat_send_player(sender, S("@1 Time out for @2 information.", essentials.main_tr, ip))
+                    return
+                end
+                local ip_info = core.parse_json(result.data)
+                if ip_info.error then
+                    core.chat_send_player(sender, S("@1 Error while getting @2 information: @3", essentials.main_tr, ip, ip_info.error))
+                    return
+                end
+                essentials.show_ip_information(sender, name, ip_info)
+            end)
+        else
+            core.chat_send_player(sender, S("@1 No HTTP access.", essentials.main_tr))
         end
+        return
     end
-    essentials_reports[id] = nil
-    essentials.save_reports()
-end
-
-local function remove_report(id)
-    for aid, def in ipairs(essentials_reports) do
-        if def.id == id then
-            essentials_reports[aid] = nil
-        end 
+    local player = core.get_player_by_name(name)
+    if not player then return end
+    local textures = {}
+    for _, texture in pairs(player:get_properties().textures) do
+        table.insert(textures, core.formspec_escape(texture))
     end
-    essentials.save_reports()
-end
-
-if essentials.reports_system then
-    core.register_on_mods_loaded(function()
-        essentials.load_reports()
-    end)
-
-    dofile(modpath.."/ui/report.lua")
-    dofile(modpath.."/ui/reports.lua")
+    local model
+    local data
+    local mcl = core.global_exists("mcl_player")
+    if core.global_exists("player_api") then
+        data = player_api.get_animation(player)
+        local animation = player_api.registered_models[data.model].animations[data.animation]
+        model = "model[0.1,0.1;5.4,10.8;preview;" .. data.model .. ";" .. table.concat(textures, ",") .. ";0,180;true;false;" .. animation.x .. "," .. animation.y .. ";" .. data.animation_speed .. "]" 
+    elseif mcl then 
+        data = mcl_player.player_get_animation(player)
+        local animation = mcl_player.registered_player_models[data.model]
+        model = "model[0.1,0.1;5.4,10.8;preview;" .. data.model .. ";" .. table.concat(textures, ",") .. ";0,180;true;false;" .. animation.animations[data.animation].x .. "," .. animation.animations[data.animation].y .. ";" .. animation.animation_speed .. "]" 
+    else return end
+    local formspec = {
+        "formspec_version[6]",
+        "size[11,11]",
+        model,
+        "hypertext[5.5,0.1;5.4,10.8;information;", (mcl and "<style color='#444444'>" or ""), "<center><bigger><b>", name, "</b></bigger></center>\n",  core.hypertext_escape(table.concat(loading, "\n")), "</style>]"
+    }
+    core.show_formspec(sender, "essentials:ip", table.concat(formspec))
 end
 
 core.log("action", "[Essentials] Mod initialised. Version: ".. essentials.version)
