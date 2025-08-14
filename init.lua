@@ -249,7 +249,7 @@ function essentials.show_ip_information(sender, name, loading)
     end
     local model
     local data
-    local mcl = core.global_exists("mcl_player")
+    local mcl = core.global_exists("mcl_player") and core.global_exists("mcl_formspec")
     if core.global_exists("player_api") then
         data = player_api.get_animation(player)
         local animation = player_api.registered_models[data.model].animations[data.animation]
@@ -263,7 +263,7 @@ function essentials.show_ip_information(sender, name, loading)
         "formspec_version[6]",
         "size[11,11]",
         model,
-        "hypertext[5.5,0.1;5.4,10.8;information;", (mcl and "<style color='#313131'>" or ""), "<center><bigger><b>", name, "</b></bigger></center>\n",  core.hypertext_escape(table.concat(loading, "\n")), "]"
+        "hypertext[5.5,0.1;5.4,10.8;information;", (mcl and "<style color='" .. mcl_formspec.label_color .. "'>" or ""), "<center><bigger><b>", name, "</b></bigger></center>\n",  core.hypertext_escape(table.concat(loading, "\n")), "]"
     }
     core.show_formspec(sender, "essentials:ip", table.concat(formspec))
 end
