@@ -263,7 +263,7 @@ function essentials.show_ip_information(sender, name, loading)
         "formspec_version[6]",
         "size[11,11]",
         model,
-        "hypertext[5.5,0.1;5.4,10.8;information;", (mcl and "<style color='#444444'>" or ""), "<center><bigger><b>", name, "</b></bigger></center>\n",  core.hypertext_escape(table.concat(loading, "\n")), "</style>]"
+        "hypertext[5.5,0.1;5.4,10.8;information;", (mcl and "<style color='#313131'>" or ""), "<center><bigger><b>", name, "</b></bigger></center>\n",  core.hypertext_escape(table.concat(loading, "\n")), "]"
     }
     core.show_formspec(sender, "essentials:ip", table.concat(formspec))
 end
