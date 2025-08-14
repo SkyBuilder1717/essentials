@@ -857,7 +857,7 @@ core.register_chatcommand("essentials", {
         if param == "about" then
             show_about_screen(name)
             return true
-        elseif param == "version" then return true, S("@1 current: @2", core.colorize("lightgrey", essentials.main_tr), core.colorize(essentials.need_update.value and "red" or "lime", "v"..essentials.version))
+        elseif param == "version" then return true, S("@1 current: @2", core.colorize("lightgrey", essentials.main_tr), core.colorize(essentials.need_update.value and "red" or (essentials.check_for_updates and "lime" or "grey"), "v"..essentials.version))
         else return false end
     end
 })
