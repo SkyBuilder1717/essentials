@@ -87,7 +87,7 @@ local function biome_cmd(name, param)
             end
         else
             essentials.player_sound("error", name)
-            return false, core.colorize("red", S("You cant check more information without privelege!"))
+            return false, core.colorize("red", S("You cannot check more information without privelege!"))
         end
     end
 end
@@ -321,7 +321,7 @@ end
 local function troll_cmd(name, param)
     if core.is_singleplayer() then
         essentials.player_sound("error", name)
-        return false, core.colorize("red", S("You cant troll in single mode!"))
+        return false, core.colorize("red", S("You cannot troll in single mode!"))
     end
     essentials.show_troll_menu(name)
     return true
@@ -357,7 +357,7 @@ local function call_cmd(name, param, status)
         end
         if param == name then
             essentials.player_sound("error", name)
-            return false, core.colorize("red", S("Cant send teleport request to yourself!"))
+            return false, core.colorize("red", S("Cannot send teleport request to yourself!"))
         end
         essentials.teleport_requests[param] = {}
         local player = core.get_player_by_name(param)

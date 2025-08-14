@@ -209,7 +209,7 @@ core.after(0, function()
                 core.log("action", "[Essentials] Successfully got approved servers!")
             end)
         else
-            core.log("warning", "[Essentials] Cant get approved servers, table will be nil.")
+            core.log("warning", "[Essentials] Cannot get approved servers, table will be nil.")
             essentials.approved_servers = {}
         end
     end
