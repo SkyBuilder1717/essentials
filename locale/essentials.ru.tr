@@ -130,30 +130,25 @@ Inventory=Инвентарь
 # Ban Menu
 Reason of ban=Причина блокировки
 Ban the player=Заблокировать игрока
-You cannot ban in single mode!=Вы не можете блокировать в одиночном режиме!
-You cannot ban yourself!=Вы не можете заблокировать самого себя!
-You cannot ban administrator!=Вы не можете заблокировать администратора!
-You cannot ban server owner!=Вы не можете заблокировать владельца сервера!
+You cannot ban this player!=Вы не можете заблокировать этого игрока!
 
 # Kick Menu
 Reason of kick=Причина вышвырения
 Kick the player=Выгнать игрока
 Kicked @1.=@1 выгнан.
 Kicked @1 for '@2'.=@1 выгнан за '@2'.
-You cannot kick in single mode!=Вы не можете выгонять в одиночном режиме!
-You cannot kick yourself!=Вы не можете выгнать самого себя!
-You cannot kick administrator!=Вы не можете выгнать администратора!
-You cannot kick server owner!=Вы не можете выгнать владельца сервера!
+You cannot kick this player!=Вы не можете выгнать этого игрока!
 
 # Mute Menu
 Un/Mute the player=Раз/Заглушить игрока
 Player @1 has been @2.=Игрок @1 был @2.
 muted=заглушён.
 unmuted=разглушён.
-You cannot mute in single mode!=Вы не можете глушить в одиночном режиме!
-You cannot mute yourself!=Вы не можете заглушить самого себя!
-You cannot mute administrator!=Вы не можете заглушить администратора!
-You cannot mute server owner!=Вы не можете заглушить владельца сервера!
+You cannot mute this player!=Вы не можете заглушить этого игрока!
+Player @1 has been automatically unmuted.=Игрок @1 был разглушён автоматически.
+You are muted for @1 seconds more!=Вы не можете говорить ещё @1 секунд!
+Player @1 has been muted for @2 seconds.=Игрок @1 был заглушён на @2 секунд.
+Player @1 has been unmuted.=Игрок @1 был разглушён.
 
 # Color Menu
 Done=Готово

@@ -22,6 +22,9 @@ essentials = {
     teleport_request_expire = (st:get("essentials_teleport_exporation") or 15.0),
     teleport_requests = {},
 
+    -- Muted players table
+    muted_players = {},
+
     -- Unified Inventory detection
     have_unified_inventory = core.get_modpath("unified_inventory") and core.global_exists("unified_inventory"),
 
@@ -31,7 +34,7 @@ essentials = {
 
     -- Text
     info = "Created by SkyBuilder1717",
-    version = "1.1.6",
+    version = "1.1.7",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",

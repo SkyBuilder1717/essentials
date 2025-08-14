@@ -20,39 +20,17 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
+    if core.is_singleplayer() then return end
     local name = player:get_player_name()
-    if not fields.player or not core.get_player_by_name(fields.player) then
-        return
-    end
-
     if fields.ban then
-        if core.is_singleplayer() then
-            core.chat_send_player(name, core.colorize("red", S("You cannot ban in single mode!")))
-            essentials.player_sound("error", name)
-            return
-        end
-
         local target = fields.player
         if not core.get_player_by_name(target) then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", mp)))
+            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", target)))
             essentials.player_sound("error", name)
             return
         end
-
-        if target == name then
-            core.chat_send_player(name, core.colorize("red", S("You cannot ban yourself!")))
-            essentials.player_sound("error", name)
-            return
-        end
-        
-        if target == core.settings:get("name") then
-            core.chat_send_player(name, core.colorize("red", S("You cannot ban server owner!")))
-            essentials.player_sound("error", name)
-            return
-        end
-
-        if core.check_player_privs(target, {server = true}) then
-            core.chat_send_player(name, core.colorize("red", S("You cannot ban administrator!")))
+        if target == name or target == core.settings:get("name") or core.check_player_privs(target, {server = true}) then
+            core.chat_send_player(name, core.colorize("red", S("You cannot ban this player!")))
             essentials.player_sound("error", name)
             return
         end
@@ -61,7 +39,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
         if xban2_mod then
             xban.ban_player(target, name, nil, reason)
         else
-            core.ban_player(fields.player)
+            core.ban_player(target)
         end
         if reason == "" then
             core.chat_send_all(S("target @1.", target))

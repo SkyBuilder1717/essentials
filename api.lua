@@ -107,8 +107,9 @@ function essentials.get_nickname(name)
 end
 
 local worldpath = core.get_worldpath().."/"
-local data_reports = "essentials.reports.json"
+local data_reports = "essentials_reports.json"
 local data_nicknames = "essentials_nicknames.json"
+local data_muted_players = "essentials_muted_players.json"
 
 local function write_file(path, content)
     local f = io.open(path, "w")
@@ -153,6 +154,21 @@ function essentials.load_nicknames()
     if not content then return false end
     local tbl = core.parse_json(content) or {}
     essentials.hide_names = tbl
+    return true
+end
+
+function essentials.save_muted_players()
+    local tbl = essentials.muted_players
+    local content = core.write_json(tbl)
+    local path = worldpath..data_muted_players
+    write_file(path, content)
+end
+
+function essentials.load_muted_players()
+    local content = read_file(worldpath..data_muted_players)
+    if not content then return false end
+    local tbl = core.parse_json(content) or {}
+    essentials.muted_players = tbl
     return true
 end
 
@@ -201,5 +217,6 @@ if essentials.reports_system then
     core.register_on_mods_loaded(function()
         essentials.load_reports()
         essentials.load_nicknames()
+        essentials.load_muted_players()
     end)
 end

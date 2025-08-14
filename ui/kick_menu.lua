@@ -19,35 +19,17 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
+    if core.is_singleplayer() then return end
     local name = player:get_player_name()
     if fields.kick_btn then
-        if core.is_singleplayer() then
-            core.chat_send_player(name, core.colorize("red", S("You cannot kick in single mode!")))
-            essentials.player_sound("error", name)
-            return
-        end
-
         local target = fields.player
         if not core.get_player_by_name(target) then
-            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", mp)))
+            core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", target)))
             essentials.player_sound("error", name)
             return
         end
-
-        if target == name then
-            core.chat_send_player(name, core.colorize("red", S("You cannot kick yourself!")))
-            essentials.player_sound("error", name)
-            return
-        end
-
-        if target == core.settings:get("name") then
-            core.chat_send_player(name, core.colorize("red", S("You cannot kick server owner!")))
-            essentials.player_sound("error", name)
-            return
-        end
-
-        if core.check_player_privs(target, {server = true}) then
-            core.chat_send_player(name, core.colorize("red", S("You cannot kick administrator!")))
+        if target == name or target == core.settings:get("name") or core.check_player_privs(target, {server = true}) then
+            core.chat_send_player(name, core.colorize("red", S("You cannot kick this player!")))
             essentials.player_sound("error", name)
             return
         end
