@@ -27,11 +27,11 @@ local function speed_cmd(name, param)
     local speed = string.match(param, "([^ ]+)") or 1
     local oname = string.match(param, speed.." (.+)")
     if oname == nil then
-        return true, S("Your speed now is @1.", speed)
         essentials.player_sound("done", name)
         core.get_player_by_name(name):set_physics_override({
             speed = tonumber(speed)
         })
+        return true, S("Your speed now is @1.", speed)
     else
         if core.get_player_by_name(oname) == nil then
             essentials.player_sound("error", name)
