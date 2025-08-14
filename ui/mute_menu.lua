@@ -60,7 +60,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
                 essentials.player_sound("error", name)
                 return
             end
-            essentials.muted_players[target] = { expires = os.time() + duration }
+            essentials.muted_players[target] = {expires = os.time() + duration}
             core.change_player_privs(target, {shout = false})
             core.chat_send_all(S("Player @1 has been muted for @2 seconds.", essentials.get_nickname(target), duration))
         else

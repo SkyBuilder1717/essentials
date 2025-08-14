@@ -136,9 +136,9 @@ local function freeze_it(fields, bool, name)
 	}
 	local meta = player:get_meta()
 	local pos = player:get_pos()
-	local seconds = tonumber(fields.freeze_seconds)
+	local seconds = tonumber(fields.freeze_seconds) or 0
 	if seconds > 60 then
-		core.chat_send_player(name, S("Too many duration for freezing! (@1 sec)", seconds))
+		core.chat_send_player(name, S("Too many time for freezing! (@1 seconds)", seconds))
 		essentials.player_sound("error", name)
 		return
 	elseif seconds < 1 or floating(seconds) then
