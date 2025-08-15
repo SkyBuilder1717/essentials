@@ -1,16 +1,16 @@
 local thanks_ok_meta = "__essentials_thanks_screen__ok_dont_show"
 
-function essentials.play_sound(sound)
+function essentials.player_sound(sound, name)
     if not sound then return end
-    for _, p in ipairs(core.get_connected_players()) do
-        core.sound_play("essentials_"..sound, p:get_player_name())
-    end
+    if not name then return end
+    core.sound_play("essentials_"..sound, {to_player = name})
 end
 
-function essentials.player_sound(sound, name)
-    if not name then return end
+function essentials.play_sound(sound)
     if not sound then return end
-    core.sound_play("essentials_"..sound, name)
+    for _, p in pairs(core.get_connected_players()) do
+        essentials.player_sound(sound, p:get_player_name())
+    end
 end
 
 function essentials.get_address()

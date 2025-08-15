@@ -270,19 +270,9 @@ local function vanish_cmd(name, param)
         end
         other = true
     end
-    local prop
     local vis = player:get_meta():get_int("invisible")
     if vis == nil or vis == 0 then
         player:get_meta():set_int("invisible", 1)
-        prop = {
-            visual_size = {x = 0, y = 0, z = 0},
-            is_visible = false,
-            nametag_color = {r=0,g=0,b=0,a=0},
-            pointable = false,
-            makes_footstep_sound = false,
-            show_on_minimap = false,
-        }
-        player:set_properties(prop)
         if other then
             if essentials.changed_by then
                 essentials.player_sound("done", param)
@@ -296,15 +286,20 @@ local function vanish_cmd(name, param)
         end
     else
         player:get_meta():set_int("invisible", 0)
-        prop = {
+        local prop = {
             visual_size = {x = 1, y = 1, z = 1},
             is_visible = true,
-            nametag_color = {r=255,g=255,b=255,a=255},
+            nametag_color = 0xFFFFFF,
+            nametag_bgcolor = false,
             pointable = true,
             makes_footstep_sound = true,
             show_on_minimap = true,
         }
-        player:set_properties(prop)
+        if core.global_exists("mcl_util") then
+            mcl_util.set_properties(player, prop)
+        else
+            player:set_properties(prop)
+        end
         essentials.update_nickname(player)
         if other then
             if essentials.changed_by then
@@ -319,6 +314,28 @@ local function vanish_cmd(name, param)
         end
     end
 end
+
+core.register_globalstep(function()
+    for _, player in pairs(core.get_connected_players()) do
+        local vis = player:get_meta():get_int("invisible")
+        if not (vis == nil or vis == 0) then
+            local prop = {
+                visual_size = {x = 0, y = 0, z = 0},
+                is_visible = false,
+                nametag_color = 0x00000000,
+                nametag_bgcolor = 0x00000000,
+                pointable = false,
+                makes_footstep_sound = false,
+                show_on_minimap = false,
+            }
+            if core.global_exists("mcl_util") then
+                mcl_util.set_properties(player, prop)
+            else
+                player:set_properties(prop)
+            end
+        end
+    end
+end)
 
 local function troll_cmd(name, param)
     if core.is_singleplayer() then
