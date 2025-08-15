@@ -1,3 +1,5 @@
+essentials.trolled_players = {}
+
 local FORMNAME = "essentials:troll_menu"
 local S = essentials.translate
 local Sdef = core.get_translator("default")
@@ -52,6 +54,8 @@ local function to_number(s)
     return tonumber(r)
 end
 
+local function troll_message(target, name) if essentials.trolled_by then core.chat_send_player(target, S("You have been trolled by @1.", name)) end end
+
 function essentials.show_troll_menu(name, custom)
 	local formspec = {
 		"formspec_version[6]",
@@ -104,7 +108,7 @@ function essentials.show_troll_menu(name, custom)
 end
 
 local function punch_time(player, puch)
-	for i = 1, 30 do -- No big minetest.afters!
+	for i = 1, 30 do
 		local dir = player:get_look_dir()
 		local vel = {}
 		for name, value in pairs(dir) do
@@ -128,7 +132,7 @@ local function trap_in(player, block)
 	core.set_node({x = pos.x, y = pos.y+2, z = pos.z}, {name=block})
 end
 
-local function freeze_it(seconds, bool, sender, name)
+function essentials.freeze_player(seconds, sender, name, unfreeze)
 	local player = core.get_player_by_name(name)
 	if not player then return end
 	local look = {
@@ -138,7 +142,7 @@ local function freeze_it(seconds, bool, sender, name)
 	local meta = player:get_meta()
 	local pos = player:get_pos()
 	if seconds > 60 then
-		core.chat_send_player(sender, S("Duration is too big for freezing! (@1 seconds)", seconds))
+		core.chat_send_player(sender, S("Duration is too big for freezing! (@1 sec)", seconds))
 		essentials.player_sound("error", sender)
 		return
 	elseif seconds < 1 or floating(seconds) then
@@ -147,7 +151,7 @@ local function freeze_it(seconds, bool, sender, name)
 		return
 	end
 
-	if not bool then
+	if not unfreeze then
 		player:set_physics_override({
 			speed = 1,
 			speed_walk = 1,
@@ -166,13 +170,14 @@ local function freeze_it(seconds, bool, sender, name)
 			sneak_glitch = false,
 			new_move = true,
 		})
-		meta:set_string("_essentials__troll__is_freezed_troll", "")
+		essentials.trolled_players[name] = nil
 		core.chat_send_player(sender, msgr..S("Player @1 has been unfreezed.", essentials.get_nickname(name)))
 		return
 	end
+	troll_message(name, sender)
 	meta:set_string("_essentials__troll__looky", core.serialize(look))
 	meta:set_string("_essentials__troll__position_troll", core.serialize(pos))
-	meta:set_string("_essentials__troll__is_freezed_troll", "true")
+	essentials.trolled_players[name] = {type = "freeze", expires = os.time() + seconds}
 	player:set_physics_override({
 		speed = 0,
 		speed_walk = 0,
@@ -194,9 +199,7 @@ local function freeze_it(seconds, bool, sender, name)
 	player:set_pos(pos)
 	core.chat_send_player(sender, msgr..S("Player @1 has freezed for @2 second(-s).", essentials.get_nickname(name), seconds))
 	core.after(seconds, function()
-		if meta:get_string("_essentials__troll__is_freezed_troll") == "" then
-			return
-		end
+		if not essentials.trolled_players[name] then return end
 		player:set_physics_override({
 			speed = 1,
 			speed_walk = 1,
@@ -215,14 +218,8 @@ local function freeze_it(seconds, bool, sender, name)
 			sneak_glitch = false,
 			new_move = true,
 		})
-		meta:set_string("_essentials__troll__is_freezed_troll", "")
+		essentials.trolled_players[name] = nil
 	end)
-end
-
-local function troll_message(target, name)
-	if essentials.trolled_by then
-		core.chat_send_player(target, S("You have been trolled by @1.", name))
-	end
 end
 
 core.register_on_player_receive_fields(function(send, formname, fields)
@@ -250,12 +247,11 @@ core.register_on_player_receive_fields(function(send, formname, fields)
 
 	if fields.freeze then
 		local seconds = tonumber(fields.freeze_seconds) or 0
-		if player:get_meta():get_string("_essentials__troll__is_freezed_troll") ~= "" then
-			freeze_it(seconds, nil, name, target)
+		if essentials.trolled_players[target] then
+			essentials.freeze_player(seconds, name, target)
 			return
 		end
-		freeze_it(seconds, true, name, target)
-		troll_message(target, name)
+		essentials.freeze_player(seconds, name, target, true)
 	end
 
 	if fields.trap then
@@ -268,9 +264,10 @@ core.register_on_player_receive_fields(function(send, formname, fields)
 end)
 
 core.register_globalstep(function(dtime)
-	for _, player in ipairs(core.get_connected_players()) do
-		local meta = player:get_meta()
-		if meta:get_string("_essentials__troll__is_freezed_troll") ~= "" then
+	for _, player in pairs(core.get_connected_players()) do
+		local data = essentials.trolled_players[player:get_player_name()]
+		if data and (data.type == "freeze") and (os.time() < data.expires) then
+			local meta = player:get_meta()
 			local look = core.deserialize(meta:get_string("_essentials__troll__looky"))
 			local ppos = core.deserialize(meta:get_string("_essentials__troll__position_troll"))
 			player:set_look_vertical(look.ver)

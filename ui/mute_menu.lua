@@ -6,7 +6,7 @@ function essentials.show_mute_menu(name)
         "formspec_version[6]",
         "size[12.5,4.5]",
 		"dropdown[4.5,0.3;6.8,1.1;player;", essentials.get_players(), ";1;false]",
-        "field[4.5,2;6.8,1.1;reason;", S("Mute duration (in seconds)"), ";]",
+        "field[4.5,2;6.8,1.1;duration;", S("Mute duration (in seconds)"), ";]",
         "button[4.5,3.3;6.8,1.1;mute;", S("Un/Mute the player"), "]",
         "image[0.2,0.2;4.2,4.2;essentials_mute_user.png]",
         "image_button_exit[11.4,0.1;1,1;essentials_close_btn.png;close;]"
@@ -40,7 +40,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     if core.is_singleplayer() then return end
     local name = player:get_player_name()
     local target = fields.player
-    local duration = tonumber(fields.reason) or 0
+    local duration = tonumber(fields.duration) or 0
     if fields.mute then
         if not core.get_player_by_name(target) then
             core.chat_send_player(name, core.colorize("red", S("Player @1 not found!", target)))
