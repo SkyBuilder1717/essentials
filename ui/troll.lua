@@ -128,22 +128,22 @@ local function trap_in(player, block)
 	core.set_node({x = pos.x, y = pos.y+2, z = pos.z}, {name=block})
 end
 
-local function freeze_it(fields, bool, name)
+local function freeze_it(seconds, bool, sender, name)
 	local player = core.get_player_by_name(name)
+	if not player then return end
 	local look = {
 		ver = player:get_look_vertical(),
 		hor = player:get_look_horizontal(),
 	}
 	local meta = player:get_meta()
 	local pos = player:get_pos()
-	local seconds = tonumber(fields.freeze_seconds) or 0
 	if seconds > 60 then
-		core.chat_send_player(name, S("Too many time for freezing! (@1 seconds)", seconds))
-		essentials.player_sound("error", name)
+		core.chat_send_player(sender, S("Too many time for freezing! (@1 seconds)", seconds))
+		essentials.player_sound("error", sender)
 		return
 	elseif seconds < 1 or floating(seconds) then
-		core.chat_send_player(name, S("Invalid duration!"))
-		essentials.player_sound("error", name)
+		core.chat_send_player(sender, S("Invalid duration!"))
+		essentials.player_sound("error", sender)
 		return
 	end
 
@@ -167,7 +167,7 @@ local function freeze_it(fields, bool, name)
 			new_move = true,
 		})
 		meta:set_string("_essentials__troll__is_freezed_troll", "")
-		core.chat_send_player(name, msgr..S("Player @1 has been unfreezed.", essentials.get_nickname(fields.player)))
+		core.chat_send_player(sender, msgr..S("Player @1 has been unfreezed.", essentials.get_nickname(name)))
 		return
 	end
 	meta:set_string("_essentials__troll__looky", core.serialize(look))
@@ -192,7 +192,7 @@ local function freeze_it(fields, bool, name)
 		new_move = false,
 	})
 	player:set_pos(pos)
-	core.chat_send_player(name, msgr..S("Player @1 has freezed for @2 second(-s).", essentials.get_nickname(fields.player), seconds))
+	core.chat_send_player(sender, msgr..S("Player @1 has freezed for @2 second(-s).", essentials.get_nickname(name), seconds))
 	core.after(seconds, function()
 		if meta:get_string("_essentials__troll__is_freezed_troll") == "" then
 			return
@@ -219,55 +219,51 @@ local function freeze_it(fields, bool, name)
 	end)
 end
 
-local function troll_message(fields, name)
+local function troll_message(target, name)
 	if essentials.trolled_by then
-		core.chat_send_player(fields.player, S("You have been trolled by @1.", name))
+		core.chat_send_player(target, S("You have been trolled by @1.", name))
 	end
 end
 
-core.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(send, formname, fields)
 	if formname ~= FORMNAME then
 		return
 	end
-	local name = player:get_player_name()
+	local name = send:get_player_name()
+	local target = fields.player
+    if (target == "") or (target == nil) then return end
+	if core.get_player_by_name(target) == nil then return end
 
-    if (fields.player == nil) or (fields.player == "") then
-        return
-    end
-
-    if core.get_player_by_name(fields.player) == nil then
-        return
-    end
-
-	local player = core.get_player_by_name(fields.player)
+	local player = core.get_player_by_name(target)
 	local pos = player:get_pos()
 	if fields.punch then
 		punch_time(player, 0.01)
-		core.chat_send_player(name, msgr..S("Player @1 punched.", essentials.get_nickname(fields.player)))
-		troll_message(fields, name)
+		core.chat_send_player(name, msgr..S("Player @1 punched.", essentials.get_nickname(target)))
+		troll_message(target, name)
 	end
 	
 	if fields.launch then
 		player:add_velocity({x=1,y=75,z=0})
-		core.chat_send_player(name, msgr..S("Player @1 launched in space.", essentials.get_nickname(fields.player)))
-		troll_message(fields, name)
+		core.chat_send_player(name, msgr..S("Player @1 launched in space.", essentials.get_nickname(target)))
+		troll_message(target, name)
 	end
 
 	if fields.freeze then
+		local seconds = tonumber(fields.freeze_seconds) or 0
 		if player:get_meta():get_string("_essentials__troll__is_freezed_troll") ~= "" then
-			freeze_it(fields, nil, name)
+			freeze_it(seconds, nil, name, target)
 			return
 		end
-		freeze_it(fields, true, name)
-		troll_message(fields, name)
+		freeze_it(seconds, true, name, target)
+		troll_message(target, name)
 	end
 
 	if fields.trap then
 		if tonumber(fields.trap_in) == 1 then return end
 		local def = nodes[tonumber(fields.trap_in) - 1]
 		trap_in(player, def[2])
-		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", essentials.get_nickname(fields.player), def[1]))
-		troll_message(fields, name)
+		core.chat_send_player(name, msgr..S("Player @1 trapped in @2.", essentials.get_nickname(target), def[1]))
+		troll_message(target, name)
 	end
 end)
 
