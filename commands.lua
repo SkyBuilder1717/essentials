@@ -277,7 +277,8 @@ local function vanish_cmd(name, param)
         prop = {
             visual_size = {x = 0, y = 0, z = 0},
             is_visible = false,
-            nametag = " ",
+            nametag = "",
+            nametag_bgcolor = {r=0,g=0,b=0,a=255}, 
             nametag_color = {r=0,g=0,b=0,a=255},
             pointable = false,
             makes_footstep_sound = false,
@@ -301,6 +302,7 @@ local function vanish_cmd(name, param)
             visual_size = {x = 1, y = 1, z = 1},
             is_visible = true,
             nametag_color = {r=255,g=255,b=255,a=0},
+            nametag = "",
             pointable = true,
             makes_footstep_sound = true,
             show_on_minimap = true,
