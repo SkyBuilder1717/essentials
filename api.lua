@@ -106,6 +106,22 @@ function essentials.get_nickname(name)
 	return core.colorize(color, name)
 end
 
+function essentials.update_nickname(player)
+    local name = player:get_player_name()
+    local new_name = essentials.hide_names[name]
+    local color = player:get_meta():get_string("_essentials_nametag_color")
+    if color == "" then return end
+    if new_name then
+        player:set_properties({
+            nametag = core.colorize("#AAAAAA", "*")..core.colorize(color, new_name)
+        })
+        return
+    end
+    player:set_properties({
+        nametag = core.colorize(color, name)
+    })
+end
+
 local worldpath = core.get_worldpath().."/"
 local data_reports = "essentials_reports.json"
 local data_nicknames = "essentials_nicknames.json"

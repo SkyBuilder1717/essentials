@@ -16,19 +16,7 @@ end)
 
 core.register_on_joinplayer(function(player)
     core.after(0, function()
-        local name = player:get_player_name()
-        local new_name = essentials.hide_names[name]
-        local color = player:get_meta():get_string("_essentials_nametag_color")
-        if color == "" then return end
-        if new_name then
-            player:set_properties({
-                nametag = core.colorize("#AAAAAA", "*")..core.colorize(color, new_name)
-            })
-            return
-        end
-        player:set_properties({
-            nametag = core.colorize(color, name)
-        })
+        essentials.update_nickname(player)
     end)
 end)
 

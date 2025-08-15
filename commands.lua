@@ -277,6 +277,7 @@ local function vanish_cmd(name, param)
         prop = {
             visual_size = {x = 0, y = 0, z = 0},
             is_visible = false,
+            nametag = "",
             nametag_color = {r=0,g=0,b=0,a=0},
             pointable = false,
             makes_footstep_sound = false,
@@ -305,6 +306,7 @@ local function vanish_cmd(name, param)
             show_on_minimap = true,
         }
         player:set_properties(prop)
+        essentials.update_nickname(player)
         if other then
             if essentials.changed_by then
                 essentials.player_sound("done", param)
