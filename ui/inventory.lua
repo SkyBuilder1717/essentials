@@ -1,6 +1,5 @@
 local FORMNAME = "essentials:inventory"
 local S = essentials.translate
-local mcl_formspec = core.get_modpath("mcl_formspec")
 
 function essentials.show_player_inventory(name, pname)
     local player = core.get_player_by_name(name)
@@ -59,7 +58,7 @@ function essentials.show_player_inventory(name, pname)
     detached:set_size("main", target:get_size("main"))
     detached:set_list("main", target:get_list("main"))
 
-    if mcl_formspec then
+    if core.global_exists("mcl_formspec") then
         table.insert(formspec, mcl_formspec.get_itemslot_bg_v4(0.4, 6.4, hbi, 4))
         table.insert(formspec, mcl_formspec.get_itemslot_bg_v4(0.4, 0.8, phbi, 4))
     end
