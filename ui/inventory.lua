@@ -1,5 +1,6 @@
 local FORMNAME = "essentials:inventory"
 local S = essentials.translate
+local mcl = core.global_exists("mcl_formspec")
 
 function essentials.show_player_inventory(name, pname)
     local player = core.get_player_by_name(name)
@@ -17,8 +18,8 @@ function essentials.show_player_inventory(name, pname)
 
 	local formspec = {
         "formspec_version[6]",
-        "size[", (width + 2.5), ",11.5]",
-        (core.global_exists("mcl_formspec") and (mcl_formspec.get_itemslot_bg_v4(0.4, 6.4, hbi, 4)..mcl_formspec.get_itemslot_bg_v4(0.4, 0.8, phbi, 4))),
+        "size[", (width + 2.5 + (mcl and 0.275 or 0)), ",11.5]",
+        (mcl and (mcl_formspec.get_itemslot_bg_v4(0.4, 6.4, hbi, 4)..mcl_formspec.get_itemslot_bg_v4(0.4, 0.8, phbi, 4)) or ""),
         "list[current_player;main;0.4,6.4;", hbi, ",4;0]",
         "label[0.4,0.4;", S("@1's inventory", pname), "]",
         "list[detached:essentials:", pname, "_inv;main;0.4,0.8;", phbi, ",4;0]",
