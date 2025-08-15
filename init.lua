@@ -163,7 +163,7 @@ end
 essentials.need_update = {value = false, msg = ""}
 
 local function checkforupdates()
-    if essentials.check_for_updates then
+    if essentials.check_for_updates and not essentials.offline_mode then
         if http then
             http.fetch({
                 url = "https://skybuilder.synology.me/essentials/version/",
