@@ -18,10 +18,10 @@ function essentials.show_player_inventory(name, pname)
 	local formspec = {
         "formspec_version[6]",
         "size[", (width + 2.5), ",11.5]",
+        (core.global_exists("mcl_formspec") and (mcl_formspec.get_itemslot_bg_v4(0.4, 6.4, hbi, 4)..mcl_formspec.get_itemslot_bg_v4(0.4, 0.8, phbi, 4))),
         "list[current_player;main;0.4,6.4;", hbi, ",4;0]",
         "label[0.4,0.4;", S("@1's inventory", pname), "]",
         "list[detached:essentials:", pname, "_inv;main;0.4,0.8;", phbi, ",4;0]",
-        --"list[player:", pname, ";main;0.4,0.8;", phbi, ",4;0]",
         "label[0.4,6;", S("Inventory"), "]"
     }
 
@@ -57,11 +57,6 @@ function essentials.show_player_inventory(name, pname)
     })
     detached:set_size("main", target:get_size("main"))
     detached:set_list("main", target:get_list("main"))
-
-    if core.global_exists("mcl_formspec") then
-        table.insert(formspec, mcl_formspec.get_itemslot_bg_v4(0.4, 6.4, hbi, 4))
-        table.insert(formspec, mcl_formspec.get_itemslot_bg_v4(0.4, 0.8, phbi, 4))
-    end
 
 	core.show_formspec(name, FORMNAME, table.concat(formspec))
 end
