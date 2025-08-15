@@ -126,6 +126,7 @@ local function godmode_cmd(name, param)
         local ag = player:get_armor_groups()
         if not ag["immortal"] then
             ag["immortal"] = 1
+            player:set_armor_groups(ag)
             if param == "" then
                 essentials.player_sound("request", name)
                 return true, core.colorize("yellow", S("God mode enabled."))
@@ -137,17 +138,17 @@ local function godmode_cmd(name, param)
             end
         else
             ag["immortal"] = nil
+            player:set_armor_groups(ag)
             if param == "" then
                 essentials.player_sound("disable", name)
                 return true, core.colorize("yellow", S("God mode disabled."))
             else
                 core.chat_send_player(param, S("God mode disabled for you by @1.", name))
-                essentials.player_sound("disabled", param)
+                essentials.player_sound("disable", param)
                 essentials.player_sound("done", name)
                 return true, S("God mode disabled for @1.", param)
             end
         end
-        player:set_armor_groups(ag)
     else
         essentials.player_sound("error", name)
         return false, core.colorize("red", S("Damage is disabled!"))
