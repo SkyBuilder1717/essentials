@@ -197,21 +197,33 @@ local function kill_cmd(name, param)
 end
 
 local function heal_cmd(name, param)
+    local player = core.get_player_by_name(name)
     if param == "" or param == nil then
-        core.get_player_by_name(name):set_hp(core.PLAYER_MAX_HP_DEFAULT)
+        player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
+        if core.global_exists("mcl_hunger") then
+            mcl_hunger.set_saturation(player, 5)
+            mcl_hunger.set_exhaustion(player, 0)
+            mcl_hunger.set_hunger(player, 20)
+        end
         return true, S("You has been healed to the possible max health.")
     else
-        if core.get_player_by_name(param) == nil then
+        player = core.get_player_by_name(param) 
+        if not player then
             essentials.player_sound("error", name)
             return false, core.colorize("red", S("Player @1 not found!", param))
         end
-        core.get_player_by_name(param):set_hp(core.PLAYER_MAX_HP_DEFAULT)
+        player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
+        if core.global_exists("mcl_hunger") then
+            mcl_hunger.set_saturation(player, 5)
+            mcl_hunger.set_exhaustion(player, 0)
+            mcl_hunger.set_hunger(player, 20)
+        end
         if essentials.changed_by then
             essentials.player_sound("done", param)
             core.chat_send_player(param, S("You has been fully healed by @1.", name))
         end
         essentials.player_sound("done", name)
-        return true, S("Player @1 healed to the @2 health.", param, core.get_player_by_name(param):get_hp())
+        return true, S("Player @1 healed to the @2 health.", param, player:get_hp())
     end
 end
 
