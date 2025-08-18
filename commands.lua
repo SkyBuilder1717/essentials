@@ -201,7 +201,7 @@ local function heal_cmd(name, param)
     if param == "" or param == nil then
         player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
         if core.global_exists("mcl_hunger") then
-            mcl_hunger.set_saturation(player, 5)
+            mcl_hunger.set_saturation(player, 20)
             mcl_hunger.set_exhaustion(player, 0)
             mcl_hunger.set_hunger(player, 20)
         end
@@ -214,7 +214,7 @@ local function heal_cmd(name, param)
         end
         player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
         if core.global_exists("mcl_hunger") then
-            mcl_hunger.set_saturation(player, 5)
+            mcl_hunger.set_saturation(player, 20)
             mcl_hunger.set_exhaustion(player, 0)
             mcl_hunger.set_hunger(player, 20)
         end
