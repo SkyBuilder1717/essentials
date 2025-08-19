@@ -204,6 +204,10 @@ local function heal_cmd(name, param)
             mcl_hunger.set_saturation(player, 20)
             mcl_hunger.set_exhaustion(player, 0)
             mcl_hunger.set_hunger(player, 20)
+        elseif core.global_exists("stamina") then
+            stamina.set_saturation(player, 40)
+            stamina.set_poisoned(player, false)
+            stamina.set_exhaustion(player, 0)
         end
         return true, S("You has been healed to the possible max health.")
     else
@@ -217,6 +221,10 @@ local function heal_cmd(name, param)
             mcl_hunger.set_saturation(player, 20)
             mcl_hunger.set_exhaustion(player, 0)
             mcl_hunger.set_hunger(player, 20)
+        elseif core.global_exists("stamina") then
+            stamina.set_saturation(player, 40)
+            stamina.set_poisoned(player, false)
+            stamina.set_exhaustion(player, 0)
         end
         if essentials.changed_by then
             essentials.player_sound("done", param)
