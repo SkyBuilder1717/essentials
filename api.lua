@@ -1,3 +1,5 @@
+function table.contain(t, r) if not t then return false end for _, v in pairs(t) do if v == r then return true end end return false end
+
 local thanks_ok_meta = "__essentials_thanks_screen__ok_dont_show"
 
 function essentials.player_sound(sound, name)

@@ -2,15 +2,6 @@ local enable_damage = core.settings:get_bool("enable_damage")
 local speeds = {}
 local S = essentials.translate
 
-local function is_contain(table, value)
-	for _, v in ipairs(table) do
-		if v == value then
-			return true
-		end
-	end
-	return false
-end
-
 local function remove_val(table, value)
     local tbl = {}
     local j = 1
@@ -236,7 +227,7 @@ local function heal_cmd(name, param)
 end
 
 local function check_moderator(name)
-    if (not is_contain(essentials.moderators, name)) or (not (name == essentials.get_admin_name())) then
+    if (not table.contain(essentials.moderators, name)) or (not (name == essentials.get_admin_name())) then
         return true
     else
         return false
@@ -410,7 +401,7 @@ local function call_cmd(name, param, status)
         essentials.player_sound("done", name)
         essentials.player_sound("request", param)
         core.after(essentials.teleport_request_expire, function()
-            if is_contain(essentials.teleport_requests[param], name) then
+            if table.contain(essentials.teleport_requests[param], name) then
                 core.chat_send_player(param, core.colorize("#c2c2c2", S("Teleportation request from @1 has been expired.", name)))
                 core.chat_send_player(name, core.colorize("#ff0000", S("Teleportation request to player @1 has been expired.", param)))
                 essentials.player_sound("disable", param)
@@ -467,7 +458,7 @@ local function call_cmd(name, param, status)
 end
 
 if essentials.enable_ip_cmd and not essentials.offline_mode then
-    if essentials.add_privs and is_contain(essentials.add_privs_list, "ip") then
+    if essentials.add_privs and table.contain(essentials.add_privs_list, "ip") then
         core.register_chatcommand("ip", {
             params = "[<name>]",
             description = S("Show the IP of a player."),
@@ -484,7 +475,7 @@ if essentials.enable_ip_cmd and not essentials.offline_mode then
     end
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "broadcast") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "broadcast") then
     core.register_chatcommand("broadcast", {
         params = "<message>",
         description = S("Send GLOBAL message in chat."),
@@ -500,7 +491,7 @@ else
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "speed") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "speed") then
     core.register_chatcommand("speed", {
         params = "<speed> [<player>]",
         description = S("Sets a speed for an any player. (Standart speed is 1)"),
@@ -523,7 +514,7 @@ if essentials.add_privs then
             description = S("Shows the current biome information you are in."),
             func = biome_cmd,
         })
-    elseif is_contain(essentials.add_privs_list, "biome") then 
+    elseif table.contain(essentials.add_privs_list, "biome") then 
         core.register_chatcommand("biome", {
             params = "[<info_name>]",
             privs = {biome = true},
@@ -554,7 +545,7 @@ if essentials.add_privs then
             description = S("Shows the seed of mapgen."),
             func = seed_cmd,
         })
-    elseif is_contain(essentials.add_privs_list, "seed") then 
+    elseif table.contain(essentials.add_privs_list, "seed") then 
         core.register_chatcommand("seed", {
             privs = {seed = true},
             description = S("Shows the seed of mapgen."),
@@ -576,7 +567,7 @@ else
     end
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "god_mode") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "god_mode") then
     core.register_chatcommand("god", {
         params = "[<name>]",
         description = S("Enable/Disabe the god mode."),
@@ -657,7 +648,7 @@ if essentials.reports_system then
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_player") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "rename_player") then
     core.register_chatcommand("rename_me", {
         description = S("Shows the rename menu."),
         privs = {rename_player = true},
@@ -672,7 +663,7 @@ else
 end
 
 if essentials.enable_troll_cmd then
-    if essentials.add_privs and is_contain(essentials.add_privs_list, "troll") then
+    if essentials.add_privs and table.contain(essentials.add_privs_list, "troll") then
         core.register_chatcommand("troll", {
             description = S("Open the trolls menu."),
             privs = {troll = true},
@@ -687,7 +678,7 @@ if essentials.enable_troll_cmd then
     end
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "get_pos") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "get_pos") then
     core.register_chatcommand("getpos", {
         params = "<name>",
         description = S("Gets the position of another player."),
@@ -703,7 +694,7 @@ else
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "rename_item") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "rename_item") then
     core.register_chatcommand("rename_item", {
         description = S("Hold item in hand and open this menu for renaming it."),
         privs = {rename_item = true},
@@ -718,7 +709,7 @@ else
 end
 
 if essentials.enable_color_cmd then
-    if essentials.add_privs and is_contain(essentials.add_privs_list, "colored_nickname") then
+    if essentials.add_privs and table.contain(essentials.add_privs_list, "colored_nickname") then
         core.register_chatcommand("color", {
             description = S("Opens a coloring menu."),
             privs = {colored_nickname = true},
@@ -733,7 +724,7 @@ if essentials.enable_color_cmd then
     end
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "kill") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "kill") then
     core.register_chatcommand("kill", {
         params = "[<name>]",
         description = S("Kill anyone with command."),
@@ -749,7 +740,7 @@ else
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "heal") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "heal") then
     core.register_chatcommand("heal", {
         params = "[<name>]",
         description = S("Heals full health for a player."),
@@ -765,7 +756,7 @@ else
     })
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "maintenance") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "maintenance") then
     core.register_chatcommand("maintenance", {
         description = S("Enables and Disables maintenance mode on server."),
         privs = {maintenance = true},
@@ -783,7 +774,7 @@ core.register_on_joinplayer(function(ObjectRef, last_login)
     ObjectRef:get_meta():set_int("invisible", 0)
 end)
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "invisible") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "invisible") then
     core.register_chatcommand("v", {
         params = "[<name>]",
         description = S("Makes player invisible."),
@@ -807,7 +798,7 @@ core.register_chatcommand("textbox", {
     func = essentials.show_make_textbox
 })
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "call") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "call") then
     core.register_chatcommand("call", {
         params = "<name>",
         description = S("Sends request to teleportation for player."),
@@ -857,7 +848,7 @@ else
     core.log("error", "'/call', '/tpaccept', '/tpdecline' commands have not to be added. Because You don't have 'sethome' mod or 'call' privilege in settings!")
 end
 
-if essentials.add_privs and is_contain(essentials.add_privs_list, "inv") then
+if essentials.add_privs and table.contain(essentials.add_privs_list, "inv") then
     core.register_chatcommand("inv", {
         params = "<name>",
         description = S("Opens player's inventory"),

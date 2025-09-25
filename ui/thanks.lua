@@ -1,12 +1,8 @@
 local S = essentials.translate
 local FORMNAME = "essentials:thanks"
 
-local function c(t, r)
-    if not t then return false end
-    for _, v in ipairs(t) do
-        if v == r then return true end
-    end
-    return false
+function essentials.approved_server()
+    return c(essentials.approved_servers, essentials.get_address())
 end
 
 core.after(0, function()
@@ -14,10 +10,8 @@ core.after(0, function()
         local name = player:get_player_name()
         local admin = essentials.get_admin_name()
         if name ~= admin then return end
-        local ip = essentials.get_address()
-        local server = c(essentials.approved_servers, ip)
         local check = essentials.is_thanks(player)
-        if server and check then
+        if essentials.approved_server() and check then
             essentials.show_thanks_screen(name)
         end
     end)
