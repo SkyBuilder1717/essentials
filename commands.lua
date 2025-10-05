@@ -41,9 +41,7 @@ local function speed_cmd(name, param)
 end
 
 local function announcement_cmd(name, param)
-    if param == "" then
-        return false
-    end
+    if param == "" then return false end
     local admin = essentials.get_admin_name()
     if name == admin then
         core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param))

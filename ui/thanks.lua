@@ -2,7 +2,7 @@ local S = essentials.translate
 local FORMNAME = "essentials:thanks"
 
 function essentials.approved_server()
-    return c(essentials.approved_servers, essentials.get_address())
+    return table.contain(essentials.approved_servers, essentials.get_address())
 end
 
 core.after(0, function()
