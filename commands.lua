@@ -871,19 +871,41 @@ local function show_about_screen(name)
             "Essentials — Luanti mod, inspired by EssentialsX plug-in for Minecraft.",
             "Mod was intended to be command overhaul, to make moderation for the admin easier.",
             "",
-            "<i>More information coming soon...</i>"
+            "Is this server approved by SkyBuilder1717? " .. essentials.approved_server(),
+            "Can server troll players? " .. essentials.enable_troll_cmd,
+            "Can server check IP information about players? " .. essentials.enable_ip_cmd,
+            "Did the server enabled <style color='yellow'>BETA test</style> functions? " .. essentials.beta_test
         }, "\n")), "]",
         "image[6.1,0.1;5.8,5.8;essentials_skybuilder_approved.png]"
     }
 	core.show_formspec(name, "essentials:about", table.concat(formspec))
 end
 
+local function show_approved_screen(name)
+	local formspec = {
+        "formspec_version[6]",
+        "size[12,6]",
+        "hypertext[0.1,0.1;5.8,5.8;servers;", core.hypertext_escape(table.concat({
+            "<big><b>Currently approved Luanti servers</b></big>",
+            table.concat(essentials.approved_servers, "\n")
+        }, "\n")), "]",
+        "image[6.1,0.1;5.8,5.8;essentials_skybuilder_approved.png]"
+    }
+	core.show_formspec(name, "essentials:servers", table.concat(formspec))
+end
+
 core.register_chatcommand("essentials", {
-    params = "<about | version>",
+    params = "<about | version | approved>",
     func = function(name, param)
         local params = param:gsub("%s+", "")
         if param == "about" then
             show_about_screen(name)
+            return true
+        elseif param == "approved" then
+            if not essentials.approved_servers then
+                return false, S("@1 Seems like list is empty! Check your internet connection or disable 'Offline Mode'!", core.colorize("lightgrey", essentials.main_tr))
+            end
+            show_approved_screen(name)
             return true
         elseif param == "version" then return true, S("@1 current: @2", core.colorize("lightgrey", essentials.main_tr), core.colorize(essentials.need_update.value and "red" or (essentials.check_for_updates and "lime" or "grey"), "v"..essentials.version))
         else return false end

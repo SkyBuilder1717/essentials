@@ -1,11 +1,11 @@
 [Commands]
 # Allows EVERYONE to see "seed" of the world through the "/seed" command
 # Otherwise, the command will be available only to administrators
-essentials_seed (Seed command) bool false
+essentials_seed (/seed command) bool false
 
 # Allows to players see current biome information they are standing by the "/biome" command
 # Otherwise, the command will be available only to administrators
-essentials_biome (Biome command) bool true
+essentials_biome (/biome command) bool true
 
 # If enabled, in game will add /troll command
 # for trolling other players.
@@ -22,7 +22,7 @@ essentials_colored_nickname (Colored nicknames command) bool false
 # The time after which the teleportation request will expire
 essentials_teleport_exporation (Teleportation Exporation Time) float 15
 
-[Messages and Players]
+[Messages & Players]
 # Players, that will not be kicked, while maintenance
 # Players will be separated by commas
 #

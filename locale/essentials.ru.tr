@@ -239,3 +239,4 @@ Rename item in hand=Переименовать предмет в руке
 
 # Essentials Command
 @1 current: @2=@1 текущая: @2
+@1 Seems like list is empty! Check your internet connection or disable 'Offline Mode'!=@1 Похоже список пуст! Проверьте интернет подключение или выключите 'Режим оффлайн'!

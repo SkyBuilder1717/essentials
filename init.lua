@@ -34,7 +34,7 @@ essentials = {
 
     -- Text
     info = "Created by SkyBuilder1717",
-    version = "1.1.7",
+    version = "1.1.8",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -82,7 +82,7 @@ if http then
     essentials.is_http = true
 else
     if not essentials.offline_mode then
-        error("\n"..essentials.main_tr.."\n(If \'essentials\' mod is already in \'secure.http_mods\' parameter, check your internet connection or enable the \'Offline mode\' in mods settings.)\n\nHey!\nIt seems like \'essentials\' mod not in \'secure.http_mods\'!\n\nSo, please add mod in \'secure.http_mods\' option for best experience with Essentials!\nWhy?\nIt required for mod to work perfectly with HTTP requests!\n\nThank you.\n\n\n\n")
+        error("\n"..essentials.main_tr.."\n(If \'essentials\' mod is already in \'secure.http_mods\' parameter, check your internet connection or enable the \'Offline mode\' in mods settings.)\n\nHey!\nIt seems like \'essentials\' mod is not in \'secure.http_mods\'!\n\nSo, please add mod in \'secure.http_mods\' option for best experience with Essentials!\nWhy?\nIt required for mod to work perfectly with HTTP requests!\n\nThank you.\n\n\n\n")
     end
 end
 
@@ -177,7 +177,7 @@ local function checkforupdates()
                 local _type = {"Server", S("Server")}
                 if core.is_singleplayer() then _type = {"World", S("World")} end
                 if git > into_number(essentials.version) then
-                    essentials.need_update = {value = true, msg = essentials.main_tr .. " " .. S("Your @1 using old version of mod! (@2) Old version can have a bugs! Download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
+                    essentials.need_update = {value = true, msg = essentials.main_tr .. " " .. S("Your @1 using old version of mod! (@2) Old version can have bugs and critical errors! Recommended to download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
                 end
             end)
         end
@@ -208,7 +208,7 @@ core.after(0, function()
                     essentials.approved_servers = {}
                     return
                 end
-                essentials.approved_servers = core.deserialize("return "..result.data)
+                essentials.approved_servers = core.parse_json(result.data)
                 core.log("action", "[Essentials] Successfully got approved servers!")
             end)
         else
