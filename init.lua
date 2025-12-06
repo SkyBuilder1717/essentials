@@ -134,32 +134,6 @@ if essentials.have_unified_inventory then
     dofile(modpath.."/unified_inventory.lua")
 end
 
-local function into_number(s)
-    local c=0
-    local o=""
-    for i=1, #s do
-        local ch=string.sub(s,i,i)
-        if ch=="." then
-            c=c+1
-            if c<2 then
-                o=o..ch
-            end
-        else
-            o=o..ch
-        end
-    end
-    return tonumber(o)
-end
-
-local function add_zeros(s, l)
-    if string.len(tonumber(s))<l then
-        local z=l-#s
-        return string.rep("0",z)..s
-    else
-        return s
-    end
-end
-
 essentials.need_update = {value = false, msg = ""}
 
 local function checkforupdates()
@@ -172,12 +146,11 @@ local function checkforupdates()
         
             }, function(result)
                 if result.timeout then return end
-                local cleared_git = core.parse_json(result.data).version
-                local git = into_number(cleared_git)
+                local git = core.parse_json(result.data).version
                 local _type = {"Server", S("Server")}
                 if core.is_singleplayer() then _type = {"World", S("World")} end
-                if git > into_number(essentials.version) then
-                    essentials.need_update = {value = true, msg = essentials.main_tr .. " " .. S("Your @1 using old version of mod! (@2) Old version can have bugs and critical errors! Recommended to download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. cleared_git))}
+                if essentials.version ~= git then
+                    essentials.need_update = {value = true, msg = essentials.main_tr .. " " .. S("Your @1 using old version of mod! (@2) Old version can have bugs and critical errors! Recommended to download @3 on ContentDB.", _type[2], core.colorize("red", "v" .. essentials.version), core.colorize("lime", "v" .. git))}
                 end
             end)
         end
