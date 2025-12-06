@@ -871,10 +871,10 @@ local function show_about_screen(name)
             "Essentials — Luanti mod, inspired by EssentialsX plug-in for Minecraft.",
             "Mod was intended to be command overhaul, to make moderation for the admin easier.",
             "",
-            "Is this server approved by SkyBuilder1717? " .. essentials.approved_server(),
-            "Can server troll players? " .. essentials.enable_troll_cmd,
-            "Can server check IP information about players? " .. essentials.enable_ip_cmd,
-            "Did the server enabled <style color='yellow'>BETA test</style> functions? " .. essentials.beta_test
+            "Is this server approved by SkyBuilder1717? " .. dump(essentials.approved_server()),
+            "Can server troll players? " .. dump(essentials.enable_troll_cmd),
+            "Can server check IP information about players? " .. dump(essentials.enable_ip_cmd),
+            "Did the server enabled <style color='yellow'>BETA test</style> functions? " .. dump(essentials.beta_test)
         }, "\n")), "]",
         "image[6.1,0.1;5.8,5.8;essentials_skybuilder_approved.png]"
     }
