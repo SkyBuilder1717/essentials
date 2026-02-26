@@ -34,7 +34,7 @@ essentials = {
 
     -- Text
     info = "Created by SkyBuilder1717",
-    version = "1.1.9",
+    version = "1.1.10",
     translate = core.get_translator("essentials"),
     main_tr = "",
     main = "[Essentials]",
@@ -140,7 +140,7 @@ local function checkforupdates()
     if essentials.check_for_updates and not essentials.offline_mode then
         if http then
             http.fetch({
-                url = "https://skybuilder.synology.me/essentials/version/",
+                url = "https://skybuilder1717.ru/essentials/version/",
                 timeout = 5,
                 method = "GET",
         
@@ -171,7 +171,7 @@ core.after(0, function()
         core.log("action", "[Essentials] Approved servers are in processing...")
         if http then
             http.fetch({
-                url = "https://skybuilder.synology.me/essentials/servers/",
+                url = "https://skybuilder1717.ru/essentials/servers/",
                 timeout = 10,
                 method = "GET",
         
@@ -196,7 +196,7 @@ function essentials.show_ip_information(sender, name, loading)
         local ip = core.get_player_information(name).address
         if http then
             http.fetch({
-                url = "https://skybuilder.synology.me/essentials/ip/?ip="..ip,
+                url = "https://skybuilder1717.ru/essentials/ip/?ip="..ip,
                 timeout = 10,
                 method = "GET",
         
