@@ -185,43 +185,56 @@ local function kill_cmd(name, param)
     end
 end
 
+local function heal_player(player)
+    if core.global_exists("mcl_hunger") then
+        mcl_hunger.set_saturation(player, 20)
+        mcl_hunger.set_exhaustion(player, 0)
+        mcl_hunger.set_hunger(player, 20)
+    elseif core.global_exists("stamina") then
+        if stamina["set_saturation"] then stamina.set_saturation(player, stamina.VISUAL_MAX * 2)
+        elseif staminap["update_saturation"] then stamina.update_saturation(player, stamina.VISUAL_MAX * 2)
+        end
+
+        if stamina["set_poisoned"] then stamina.set_poisoned(player, false)
+        else
+            local name = player and player:get_player_name()
+            local data = stamina.players[name]
+            if data and data.poisoned and data.poisoned > 0 then
+                data.poisoned = nil
+            end
+        end
+
+        if stamina["set_exhaustion"] then stamina.set_exhaustion(player, 0)
+        else
+            local name = player and player:get_player_name()
+            local data = stamina.players[name]
+            if data and data.exhaustion and data.exhaustion > 0 then
+                data.exhaustion = nil
+            end
+        end
+    end
+end
+
 local function heal_cmd(name, param)
     local player = core.get_player_by_name(name)
     if param == "" or param == nil then
         player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
-        if core.global_exists("mcl_hunger") then
-            mcl_hunger.set_saturation(player, 20)
-            mcl_hunger.set_exhaustion(player, 0)
-            mcl_hunger.set_hunger(player, 20)
-        elseif core.global_exists("stamina") then
-            stamina.set_saturation(player, 40)
-            stamina.set_poisoned(player, false)
-            stamina.set_exhaustion(player, 0)
-        end
+        heal_player(player)
         return true, S("You has been healed to the possible max health.")
-    else
-        player = core.get_player_by_name(param) 
-        if not player then
-            essentials.player_sound("error", name)
-            return false, core.colorize("red", S("Player @1 not found!", param))
-        end
-        player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
-        if core.global_exists("mcl_hunger") then
-            mcl_hunger.set_saturation(player, 20)
-            mcl_hunger.set_exhaustion(player, 0)
-            mcl_hunger.set_hunger(player, 20)
-        elseif core.global_exists("stamina") then
-            stamina.set_saturation(player, 40)
-            stamina.set_poisoned(player, false)
-            stamina.set_exhaustion(player, 0)
-        end
-        if essentials.changed_by then
-            essentials.player_sound("done", param)
-            core.chat_send_player(param, S("You has been fully healed by @1.", name))
-        end
-        essentials.player_sound("done", name)
-        return true, S("Player @1 healed to the @2 health.", param, player:get_hp())
     end
+    player = core.get_player_by_name(param) 
+    if not player then
+        essentials.player_sound("error", name)
+        return false, core.colorize("red", S("Player @1 not found!", param))
+    end
+    player:set_hp(core.PLAYER_MAX_HP_DEFAULT)
+    heal_player(player)
+    if essentials.changed_by then
+        essentials.player_sound("done", param)
+        core.chat_send_player(param, S("You has been fully healed by @1.", name))
+    end
+    essentials.player_sound("done", name)
+    return true, S("Player @1 healed to the @2 health.", param, player:get_hp())
 end
 
 local function check_moderator(name)
