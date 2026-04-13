@@ -22,6 +22,7 @@ local function speed_cmd(name, param)
         core.get_player_by_name(name):set_physics_override({
             speed = tonumber(speed)
         })
+        core.log("[essentials] " .. name .. " sets his speed to " .. speed)
         return true, S("Your speed now is @1.", speed)
     else
         if core.get_player_by_name(oname) == nil then
@@ -36,7 +37,44 @@ local function speed_cmd(name, param)
         core.get_player_by_name(oname):set_physics_override({
             speed = tonumber(speed)
         })
+        core.log("[essentials] " .. name .. " sets speed of " .. oname .. " to " .. speed)
         return true, S("Speed of player @1 now is @2.", oname, speed)
+    end
+end
+
+local function check_password_cmd(name, param)
+    if param == "" then return false end
+
+    local pname, pass = string.match(param, "(%S+)%s+(.+)")
+    if not pname or not pass then
+        essentials.player_sound("error", name)
+        return false
+    end
+
+    if not core.player_exists(pname) then
+        essentials.player_sound("error", name)
+        return false
+    end
+
+    local auth = core.get_auth_handler().get_auth(pname)
+    if not auth then
+        essentials.player_sound("error", name)
+        return false
+    end
+
+    local pass2 = auth.password
+    if core.get_player_by_name(pname) then
+        core.chat_send_player(pname, core.colorize("red", S("Someone tried to hash your password...")))
+        essentials.player_sound("error", pname)
+    end
+    core.log("[essentials] " .. name .. " tried to hack " .. pname .. " password")
+
+    essentials.player_sound("done", name)
+    if pass == "\"\"" or pass == "''" then pass = "" end
+    if core.check_password_entry(pname, pass2, pass) then
+        return true, S("Password does match @1's password!", pname)
+    else
+        return true, core.colorize("red", S("Your password doesn't match @1's password!", pname))
     end
 end
 
@@ -44,11 +82,12 @@ local function announcement_cmd(name, param)
     if param == "" then return false end
     local admin = essentials.get_admin_name()
     if name == admin then
-        core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param))
+        core.chat_send_all(core.colorize("red", S("[Announcement]")) .. " " .. param)
     else
-        core.chat_send_all(core.colorize("#0006FF", S("[Announcement]")).." "..core.colorize("#00FFC6", param).." "..core.colorize("#82909D", S("(Announced by @1)", name)))
+        core.chat_send_all(core.colorize("red", S("[Announcement]")) .. " " .. param .. " " .. core.colorize("gray", S("(Announced by @1)", name)))
     end
     essentials.play_sound("broadcast")
+    core.log("[essentials] " .. name .. " announced: " .. param)
     return true
 end
 
@@ -63,9 +102,11 @@ local function biome_cmd(name, param)
     local biomeinfo = core.get_biome_data(pos)
     local biome = core.get_biome_name(biomeinfo.biome)
     if param == "" then
+        core.log("[essentials] " .. name .. " checked his current biome")
         return true, S("Biome")..": ".. dump(biome)
     else
         if core.check_player_privs(name, {debug=true}) then
+            core.log("[essentials] " .. name .. " tried to check his current biome info")
             if param == "heat" then
                 return true, dump(biome) ..": ".. biomeinfo.heat
             elseif param == "humidity" then
@@ -92,11 +133,20 @@ local function getpos_cmd(name, param)
     end
     local pos = player:get_pos()
     local round_pos = vector.round(pos)
+    core.log("[essentials] " .. name .. " checked position of " .. param)
+
     essentials.player_sound("done", name)
-    return true, S("Position of player @1 is @2 @3 @4.", param, core.colorize("#ff0000", " X:"..round_pos.x), core.colorize("#00ff00", " Y:"..round_pos.y), core.colorize("#0000ff", " Z:"..round_pos.z))
+    return true, S(
+        "Position of player @1 is @2 @3 @4.",
+        param,
+        core.colorize("#ff0000", " X:"..round_pos.x),
+        core.colorize("#00ff00", " Y:"..round_pos.y),
+        core.colorize("#0000ff", " Z:"..round_pos.z)
+    )
 end
 
-local function seed_cmd()
+local function seed_cmd(name)
+    core.log("[essentials] " .. name .. " checked server seed")
     return true, S("Seed is @1", core.colorize("lime", core.get_mapgen_setting("seed")))
 end
 
@@ -117,9 +167,11 @@ local function godmode_cmd(name, param)
             ag["immortal"] = 1
             player:set_armor_groups(ag)
             if param == "" then
+                core.log("[essentials] " .. name .. " enabled his god mode")
                 essentials.player_sound("request", name)
                 return true, core.colorize("yellow", S("God mode enabled."))
             else
+                core.log("[essentials] " .. name .. " enabled his god mode for " .. param)
                 essentials.player_sound("request", param)
                 essentials.player_sound("done", name)
                 core.chat_send_player(param, S("God mode enabled for you by @1.", name))
@@ -129,9 +181,11 @@ local function godmode_cmd(name, param)
             ag["immortal"] = nil
             player:set_armor_groups(ag)
             if param == "" then
+                core.log("[essentials] " .. name .. " disabled his god mode")
                 essentials.player_sound("disable", name)
                 return true, core.colorize("yellow", S("God mode disabled."))
             else
+                core.log("[essentials] " .. name .. " disabled his god mode for " .. param)
                 core.chat_send_player(param, S("God mode disabled for you by @1.", name))
                 essentials.player_sound("disable", param)
                 essentials.player_sound("done", name)
@@ -147,6 +201,7 @@ end
 local function kill_cmd(name, param)
     if core.settings:get_bool("enable_damage") then
         if param == "" or param == nil then
+            core.log("[essentials] " .. name .. " killed himself")
             core.get_player_by_name(name):set_hp(0)
         else
             if core.get_player_by_name(param) == nil then
@@ -158,6 +213,7 @@ local function kill_cmd(name, param)
                 essentials.player_sound("error", param)
                 core.chat_send_player(param, S("You has been killed by player @1.", name))
             end
+            core.log("[essentials] " .. name .. " killed " .. param)
             essentials.player_sound("done", name)
             return true, S("You killed player @1.", param)
         end
@@ -186,28 +242,28 @@ local function kill_cmd(name, param)
 end
 
 local function heal_player(player)
+    local name = player and player:get_player_name()
+    core.log("[essentials] " .. name .. " healed ")
+
     if core.global_exists("mcl_hunger") then
         mcl_hunger.set_saturation(player, 20)
         mcl_hunger.set_exhaustion(player, 0)
         mcl_hunger.set_hunger(player, 20)
     elseif core.global_exists("stamina") then
-        if stamina["set_saturation"] then stamina.set_saturation(player, stamina.VISUAL_MAX * 2)
-        elseif staminap["update_saturation"] then stamina.update_saturation(player, stamina.VISUAL_MAX * 2)
+        local data = stamina.players[name]
+        if stamina.set_saturation then stamina.set_saturation(player, stamina.VISUAL_MAX * 2)
+        elseif stamina.update_saturation then stamina.update_saturation(player, stamina.VISUAL_MAX * 2)
         end
 
-        if stamina["set_poisoned"] then stamina.set_poisoned(player, false)
+        if stamina.set_poisoned then stamina.set_poisoned(player, false)
         else
-            local name = player and player:get_player_name()
-            local data = stamina.players[name]
             if data and data.poisoned and data.poisoned > 0 then
                 data.poisoned = nil
             end
         end
 
-        if stamina["set_exhaustion"] then stamina.set_exhaustion(player, 0)
+        if stamina.set_exhaustion then stamina.set_exhaustion(player, 0)
         else
-            local name = player and player:get_player_name()
-            local data = stamina.players[name]
             if data and data.exhaustion and data.exhaustion > 0 then
                 data.exhaustion = nil
             end
@@ -251,6 +307,7 @@ local function maintenance_cmd(name, param)
         return false, core.colorize("red", S("Cannot interact with maintenance mode in singleplayer!"))
     end
     essentials.player_sound("done", param)
+    core.log("[essentials] " .. name .. " switched maintenance mode")
     if essentials.maintenance then
         essentials.maintenance = false
         return true, core.colorize("lightgrey", S("Maintenance mode has been disabled!"))
@@ -293,6 +350,7 @@ local function vanish_cmd(name, param)
         other = true
     end
     local vis = player:get_meta():get_int("invisible")
+    core.log("[essentials] " .. name .. " switched invisibility")
     if vis == nil or vis == 0 then
         player:get_meta():set_int("invisible", 1)
         if other then
@@ -377,6 +435,7 @@ local function ip_cmd(name, param)
         essentials.player_sound("error", name)
         return false, core.colorize("red", S("Player @1 not found!", param))
     end
+    core.log("[essentials] " .. name .. " checked ip info of " .. param)
     essentials.show_ip_information(name, param)
     return true
 end
@@ -391,6 +450,7 @@ local function inv_cmd(name, param)
         return false, core.colorize("red", S("Cannot open inventory of yourself!"))
     end
     essentials.show_player_inventory(name, param)
+    core.log("[essentials] " .. name .. " checked inventory of " .. param)
     return true, S("Opening @1's inventory...", param)
 end
 
@@ -517,6 +577,13 @@ else
         func = speed_cmd,
     })
 end
+
+core.register_chatcommand("check_password", {
+    params = "<player> <password>",
+    description = S("Checks for matches of player's password from yours."),
+    privs = {password = true},
+    func = check_password_cmd,
+})
 
 if essentials.add_privs then
     if essentials.biome then
